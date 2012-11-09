@@ -6,7 +6,9 @@ requirejs.config({
     'backbone': '/javascripts/support/backbone',
     'three': '/javascripts/support/three',
     'stats': '/javascripts/support/stats',
-    'tween': '/javascripts/support/tween'
+    'tween': '/javascripts/support/tween',
+    'q': '/javascripts/support/q',
+    'handlebars': '/javascripts/support/handlebars'
   },
   shim: {
     'backbone': {
@@ -24,11 +26,21 @@ requirejs.config({
     },
     'tween': {
       exports: 'TWEEN'
+    },
+    'handlebars': {
+      exports: 'Handlebars'
+    },
+    'handlebars/templates': {
+      deps: ['handlebars'],
+      exportsFn: function() {
+        return Handlebars.templates;
+      }
     }
   }
 });
 
-require(['game'], function(Game) {
+require(['app'], function(App) {
   // TODO: ?
-  window.game = new Game();
+  window.app = new App();
+  
 });

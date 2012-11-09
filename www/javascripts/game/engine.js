@@ -20,6 +20,7 @@ define('game/engine',
     dispose: function() {
       this.stop();
       this.stats.$domElement.remove();
+
       delete this.stats;
       delete this.boundNextFrame;
       delete this.clock;
@@ -35,31 +36,25 @@ define('game/engine',
       this.running = false;
     },
     nextFrame: function() {
-      this.stats.begin();
+      if (this.running) {
+        this.stats.begin();
+        this.time += this.clock.getDelta();
+        if (this.time > this.tickInterval) {
+          var ticks;
+          var tick;
 
-      this.time += this.clock.getDelta();
-
-      if (this.time > this.tickInterval) {
-        var ticks;
-        var tick;
-
-        ticks = Math.floor(this.time / this.tickInterval);
-
-        for (tick = 0; tick < ticks; ++tick) {
-          this.trigger('tick');
+          ticks = Math.floor(this.time / this.tickInterval);
+          for (tick = 0; tick < ticks; ++tick) {
+            this.trigger('tick');
+          }
+          this.time -= ticks * this.tickInterval;
         }
 
-        this.time -= ticks * this.tickInterval;
-      }
-
-      TWEEN.update();
-      this.trigger('render');
-
-      if (this.running) {
+        TWEEN.update();
+        this.trigger('render');
         window.requestAnimFrame(this.boundNextFrame);
+        this.stats.end();
       }
-
-      this.stats.end();
     }
   });
 

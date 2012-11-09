@@ -1,5 +1,54 @@
+body {
+  background-color: #333;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 500;
+}
+
 canvas {
   display: block;
   position: relative;
   margin: auto;
+
+  background-color: #555;
 }
+
+#Loader {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: #333;
+  color: #ddd;
+}
+
+#Loader > div {
+  display: block;
+  position: relative;
+  margin: -6px 0 0;
+  top: 50%;
+}
+
+#Loader .files,
+#Loader .percent {
+  display: none;
+}
+
+#Loader .progress {
+  display: block;
+  position: relative;
+  margin: 0 auto;
+  width: 200px;
+  border: 2px solid #ddd;
+}
+
+#Loader .progress > .bar {
+  height: 8px;
+  background: #ddd;
+}
+/*
+1194 / 597 px wide
+576 / 288 px tall
+*/
