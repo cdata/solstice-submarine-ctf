@@ -1,6 +1,6 @@
 define('game/env',
-       ['game/object', 'three', 'underscore', 'jquery', 'backbone'],
-       function(GameObject, THREE, _, $, Backbone) {
+       ['game/object', 'game/entity', 'game/graphic', 'three', 'underscore', 'jquery', 'backbone'],
+       function(GameObject, Entity, Graphic, THREE, _, $, Backbone) {
   
   var Buttons = {
     LEFT: 1,
@@ -35,14 +35,17 @@ define('game/env',
     initialize: function(width, height) {
       GameObject.prototype.initialize.apply(this, arguments);
       this.pixelRatio = window.devicePixelRatio || 1;
-      this.width = width || 0;
-      this.height = height || 0;
+      this.width = (width || 0) * this.pixelRatio;
+      this.height = (height || 0) * this.pixelRatio;
 
       this.pressedKeys = 0;
 
-      // TODO: Use WebGL if available maybe?
-      this.renderer = new THREE.CanvasRenderer();
-      this.canvas = this.renderer.domElement;
+      // TODO: Use Three.js for rendering?
+      this.canvas = document.createElement('canvas');
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.canvas.style.width = this.width / 2 + 'px';
+      this.canvas.style.height = this.height / 2 + 'px';
       this.context = this.canvas.getContext('2d');
 
       this.$window = $(window);
@@ -52,10 +55,6 @@ define('game/env',
 
       // Set the scale based on device pixel ratio..
       this.context.scale(this.pixelRatio, this.pixelRatio);
-
-      // Initialize the renderer..
-      this.renderer.setClearColorHex(0x000000, 1);
-      this.renderer.setSize(this.width, this.height);
 
       // TODO: Media queries?
       this.$window.on('resize', _.bind(this.onResize, this));
@@ -77,6 +76,57 @@ define('game/env',
 
       this.$window = null;
       this.$body = null;
+    },
+    draw: function(entity) {
+      if (entity && entity instanceof Graphic) {
+        var x = entity.position.x * this.pixelRatio;
+        var y = entity.position.y * this.pixelRatio;
+        var w = entity.width * this.pixelRatio;
+        var h = entity.height * this.pixelRatio;
+        var w2 = w / 2;
+        var h2 = h / 2;
+        var r = entity.rotation;
+        this.context.translate(x + w2, y + h2);
+        this.context.rotate(r);
+        this.context.drawImage(
+          entity.sprite.image,
+          entity.sprite.clipRect.getX(),
+          entity.sprite.clipRect.getY(),
+          entity.sprite.clipRect.getWidth(),
+          entity.sprite.clipRect.getHeight(),
+          -w2,
+          -h2,
+          w,
+          h
+        );
+        this.context.rotate(-r);
+        this.context.translate(-x - w2, -y - h2);
+      }
+    },
+    drawScene: function(node) {
+      if (node) {
+        var iter = node;
+        var x = 0;
+        var y = 0;
+
+
+        do {
+          x = 0;
+          y = 0;
+
+          if (iter instanceof Entity) {
+            x = iter.position.x * this.pixelRatio;
+            y = iter.position.y * this.pixelRatio;
+          }
+
+          this.draw(iter);
+
+          this.context.translate(x, y);
+          this.drawScene(iter.firstChild);
+          this.context.translate(-x, -y);
+        } while (iter = iter.nextSibling);
+
+      }
     },
     onResize: function(event) {
       // TODO: Respond to orientation change here..

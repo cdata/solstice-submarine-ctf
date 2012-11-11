@@ -1,37 +1,30 @@
 define('game/sprite',
-       ['three', 'game/object'],
-       function(THREE, GameObject) {
+       ['three', 'game/object', 'game/assets'],
+       function(THREE, GameObject, assets) {
   return GameObject.extend({
-    initialize: function(url, imageWidth, imageHeight, cellWidth, cellHeight) {
+    initialize: function(url, width, height) {
       this.url = url;
-      this.imageWidth = imageWidth;
-      this.imageHeight = imageHeight;
-      this.cellWidth = cellWidth;
-      this.cellHeight = cellHeight;
-      this.unitWidth = Math.floor(imageWidth / cellWidth);
-      this.unitHeight = Math.floor(imageHeight / cellHeight);
+      this.image = assets.getImage(url);
+      this.imageWidth = this.image.width || 400;
+      this.imageHeight = this.image.height || 400;
+      this.cellWidth = width;
+      this.cellHeight = height;
+      this.unitWidth = Math.floor(this.imageWidth / this.cellWidth);
+      this.unitHeight = Math.floor(this.imageHeight / this.cellHeight);
+
+      this.clipRect = new THREE.Rectangle();
 
       this.maxIndex = this.unitWidth * this.unitHeight - 1;
-      
-      this.texture = THREE.ImageUtils.loadTexture(url);
-      this.texture.wrapS = this.texture.wrapT = THREE.RepeatWrapping;
-      this.texture.repeat.x = this.cellWidth / this.imageWidth;
-      this.texture.repeat.y = this.cellHeight / this.imageHeight;
-
-      this.material = new T.MeshBasicMaterial({ map: this.texture });
-      this.material.transparent = true;
     },
     dispose: function() {
-      delete this.material;
-      delete this.texture;
+      this.image = null;
+      this.clipRect = null;
     },
     goTo: function(index) {
       if (index < this.maxIndex) {
-        var top = Math.floor(index / this.unitWidth);
-        var left = index % this.unitWidth;
-
-        this.texture.offset.x = left * this.cellWidth / this.imageWidth;
-        this.texture.offset.y = top * this.cellHeight / this.imageHeight;
+        var x = (index % this.unitWidth) * this.cellWidth;
+        var y = Math.floor(index / this.unitWidth) * this.cellHeight;
+        this.clipRect.set(x, y, x + this.cellWidth, y + this.cellHeight);
       }
     }
   });

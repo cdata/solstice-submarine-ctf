@@ -9,7 +9,8 @@ define('game/engine',
       this.stats.$domElement.css({
         'position': 'absolute',
         'top': '0px',
-        'left': '0px'
+        'left': '0px',
+        'zIndex': 10000
       });
       this.stats.$domElement.prependTo($('body'));
 

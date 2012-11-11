@@ -1,17 +1,18 @@
-define('game/entity', ['game/object'], function(GameObject) {
-  return GameObject.extend({
-    initialize: function(name, sprite, frameInterval) {
-      GameObject.prototype.initialize.apply(this, arguments);
-      this.name = name || 'plain';
-      //this.graphic = new Graphic();
-      this.moveTo(-1, -1);
-    },
-    moveTo: function(x, y) {
-      this.x = x;
-      this.y = y;
+define('game/entity',
+       ['game/node', 'three'], 
+       function(Node, THREE) {
+  return Node.extend({
+    frameInterval: 8,
+    initialize: function(name) {
+      Node.prototype.initialize.apply(this, arguments);
+
+      this.name = name || 'Anonymous';
+
+      this.position = new THREE.Vector2();
+      this.rotation = 0;
     },
     toString: function() {
-      return '[Entity ' + this.name + ', x ' + this.x + ', y ' + this.y + ']';
+      return '[' + this.name + ' Entity, x ' + this.position.x + ', y ' + this.position.y + ', r ' + this.rotation + ']';
     }
   });
 });

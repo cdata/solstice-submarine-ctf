@@ -2,9 +2,8 @@ define('view/game',
        ['backbone', 'handlebars/templates', 'game'],
        function(Backbone, templates, Game) {
   return Backbone.View.extend({
-    initialize: function(options) {
-      options = options || {};
-      this.game = new Game(options.assets);
+    initialize: function() {
+      this.game = new Game();
     },
     dispose: function() {
       this.game.dispose();

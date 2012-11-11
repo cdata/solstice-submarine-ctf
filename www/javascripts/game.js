@@ -1,9 +1,8 @@
 define('game', 
-       ['game/object', 'game/loader', 'game/env', 'game/engine', 'game/map', 'game/hero'],
-       function(GameObject, Loader, Env, Engine, Map, Hero) {
+       ['three', 'game/object', 'game/loader', 'game/env', 'game/engine', 'game/map', 'game/hero', 'game/assets'],
+       function(THREE, GameObject, Loader, Env, Engine, Map, Hero, assets) {
   var Game = GameObject.extend({
-    initialize: function(assets) {
-      this.assets = assets || new Assets();
+    initialize: function() {
     },
     dispose: function() {
       this.env.dispose();
@@ -15,12 +14,15 @@ define('game',
     start: function() {
       this.env = new Env(800, 400);
 
+      this.map = new Map('/assets/data/maps/seabound.json');
+
       this.engine = new Engine();
       this.engine.on('render', this.render, this);
       this.engine.start();
+      //this.render();
     },
     render: function() {
-
+      this.env.drawScene(this.map);
     }
   });
 

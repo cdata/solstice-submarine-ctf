@@ -1,7 +1,7 @@
 define('game/assets', 
        ['underscore', 'three', 'game/object'],
        function(_, THREE, GameObject) {
-  return GameObject.extend({
+  var Assets = GameObject.extend({
     initialize: function() {
       this.assets = {};
     },
@@ -24,20 +24,21 @@ define('game/assets',
       return this.cloneImage(this.assets[url]);
     },
     cloneImage: function(image) {
-      var canvas = document.createElement(image);
+      var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
-      var clone = new Image();
 
       canvas.width = image.width;
       canvas.height = image.height;
 
       context.drawImage(image, 0, 0);
-      clone.url = canvas.toDataURL();
 
-      return clone;
+      return canvas;
     },
     cloneData: function(data) {
       return _.clone(data);
     }
   });
+
+  // This assets cache is a singleton for now..
+  return new Assets();
 });

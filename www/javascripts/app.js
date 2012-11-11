@@ -1,6 +1,6 @@
 define('app',
        ['backbone', 'jquery', 'underscore', 'view/game', 'view/loader', 'model/assets', 'model/application', 'game/assets'],
-       function(Backbone, $, _, GameView, LoaderView, AssetsModel, ApplicationModel, GameAssets) {
+       function(Backbone, $, _, GameView, LoaderView, AssetsModel, ApplicationModel, assets) {
   var App = Backbone.Router.extend({
     routes: {
       '': 'index',
@@ -10,7 +10,7 @@ define('app',
     initialize: function() {
       this.assetSources = new AssetsModel({
         data: [
-          '/assets/maps/test.json'
+          '/assets/data/maps/seabound.json'
         ],
         images: [
           '/assets/images/floor.png',
@@ -19,11 +19,11 @@ define('app',
           '/assets/images/teal-sub.png',
           '/assets/images/yellow-sub.png',
           '/assets/images/red-rocket.png',
-          '/assets/images/blue-rocket.png'
+          '/assets/images/blue-rocket.png',
+          '/assets/images/test.png'
         ]
       });
       this.model = new ApplicationModel();
-      this.assets = new GameAssets();
       this.$body = $('body');
 
       Backbone.history.start();
@@ -43,9 +43,7 @@ define('app',
     },
     launchGame: function() {
       if (this.model.get('assetsLoaded')) {
-        var game = this.setCurrentView(new GameView({
-          assets: this.assets
-        }));
+        var game = this.setCurrentView(new GameView());
         game.play();
       } else {
         this.navigate('load', { trigger: true });
@@ -68,7 +66,7 @@ define('app',
       return view;
     },
     onLoadAsset: function(asset) {
-      this.assets.registerAsset(asset.url, asset.data);
+      assets.registerAsset(asset.url, asset.data);
     },
     onLoadComplete: function() {
       this.model.set('assetsLoaded', true);

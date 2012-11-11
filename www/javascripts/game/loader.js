@@ -21,18 +21,16 @@ define('game/loader',
       do {
         (function(url, remaining) {
           var type = /.json$/.test(url) ? 'data' : 'image';
-          queue = queue.then(_.bind(function(data) {
-            if (data) {
+          queue = queue.then(_.bind(function() {
+            return this.loadOne(url, type).then(_.bind(function(data) {
               this.trigger('loaded', data);
-            }
-            this.remainingItems = remaining;
-            
-            return this.loadOne(url, type);
+              this.remainingItems = remaining;
+            }, this));
           }, this));
         }).call(this, this.list.shift(), this.list.length);
       } while (this.list.length);
 
-      queue.then(_.bind(function() {
+      queue = queue.then(_.bind(function() {
         this.trigger('done');
       }, this));
 
@@ -41,17 +39,21 @@ define('game/loader',
     loadOne: function(url, type) {
       this.trigger('loading', url);
 
+      var result = q.defer();
+      var image;
+
+      console.log('Loading ' + type + ': ' + url);
+
       if (type == 'data') {
-        return $.get(url).then(function(data) {
-          return {
+        $.get(url, function(data) {
+          result.resolve({
             data: data,
             type: type,
             url: url
-          };
+          })
         });
       } else {
-        var image = new Image();
-        var result = q.defer();
+        image = new Image();
         image.onload = function() {
           result.resolve({
             data: image,
@@ -60,8 +62,9 @@ define('game/loader',
           });
         };
         image.src = url;
-        return result.promise;
       }
+
+      return result.promise;
     }
   });
 
