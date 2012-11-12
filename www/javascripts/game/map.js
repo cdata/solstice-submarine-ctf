@@ -1,6 +1,6 @@
 define('game/map', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall'], 
-       function(_, Entity, Graphic, assets, Wall) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork'], 
+       function(_, Entity, Graphic, assets, Wall, Fork) {
   return Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -15,11 +15,15 @@ define('game/map',
       this.tiles = data.tiles;
       this.width = data.width;
       this.height = data.height;
+
       this.floor = this.append(new Entity({
         name: 'Floor'
       }));
       this.walls = this.append(new Entity({
-        name: 'Wall'
+        name: 'Walls'
+      }));
+      this.items = this.append(new Entity({
+        name: 'Items'
       }));
 
       _.each(this.tiles, function(type, index) {
@@ -29,18 +33,26 @@ define('game/map',
           url: '/assets/images/floor.png',
           position: position
         });
+        var tile;
 
         position.multiplyScalar(sand.width);
 
         this.floor.append(sand);
 
-        if (type == 1) {
-          wall = new Wall({
-            neighbors: this.neighbors(index),
-            position: position
-          });
-
-          this.walls.append(wall);
+        switch (type) {
+          case 1:
+            this.walls.append(new Wall({
+              neighbors: this.neighbors(index),
+              position: position
+            }));
+            break;
+          case 2:
+          case 3:
+            this.items.append(new Fork({
+              color: type === 2 ? 'yellow' : 'red',
+              position: position.clone()
+            }))
+            break;
         }
       }, this);
     },
