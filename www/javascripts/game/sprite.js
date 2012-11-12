@@ -1,14 +1,19 @@
 define('game/sprite',
-       ['three', 'game/object', 'game/assets'],
-       function(THREE, GameObject, assets) {
+       ['underscore', 'three', 'game/object', 'game/assets'],
+       function(_, THREE, GameObject, assets) {
   return GameObject.extend({
-    initialize: function(url, width, height) {
-      this.url = url;
-      this.image = assets.getImage(url);
+    initialize: function(options) {
+      options = _.defaults(options || {}, {
+        url: '/assets/images/test.png',
+        width: 80,
+        height: 80
+      });
+      this.url = options.url;
+      this.image = assets.getImage(options.url);
       this.imageWidth = this.image.width || 400;
       this.imageHeight = this.image.height || 400;
-      this.cellWidth = width;
-      this.cellHeight = height;
+      this.cellWidth = options.width;
+      this.cellHeight = options.height;
       this.unitWidth = Math.floor(this.imageWidth / this.cellWidth);
       this.unitHeight = Math.floor(this.imageHeight / this.cellHeight);
 

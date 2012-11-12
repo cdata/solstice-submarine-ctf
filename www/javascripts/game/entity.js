@@ -1,15 +1,19 @@
 define('game/entity',
-       ['game/node', 'three'], 
-       function(Node, THREE) {
+       ['underscore', 'game/node', 'three'], 
+       function(_, Node, THREE) {
   return Node.extend({
-    frameInterval: 8,
-    initialize: function(name, position, rotation) {
+    initialize: function(options) {
       Node.prototype.initialize.apply(this, arguments);
 
-      this.name = name || 'Anonymous';
+      options = _.defaults(options || {}, {
+        name: 'Anonymous',
+        position: new THREE.Vector2(),
+        rotation: 0
+      });
 
-      this.position = position || new THREE.Vector2();
-      this.rotation = rotation || 0;
+      this.name = options.name;
+      this.position = options.position;
+      this.rotation = options.rotation;
     },
     dispose: function() {
       this.position = null;

@@ -12,9 +12,14 @@ define('game',
       this.engine = null;
     },
     start: function() {
-      this.env = new Env(800, 400);
+      this.env = new Env({
+        width: 800,
+        height: 400
+      });
 
-      this.map = new Map('/assets/data/maps/seabound.json');
+      this.map = new Map({
+        url: '/assets/data/maps/seabound.json'
+      });
 
       this.engine = new Engine();
       this.engine.on('render', this.render, this);

@@ -32,14 +32,19 @@ define('game/env',
   };
 
   var Env = GameObject.extend({
-    initialize: function(width, height) {
+    initialize: function(options) {
+      _.defaults(options || {}, {
+        width: 800,
+        height: 400
+      });
+
       GameObject.prototype.initialize.apply(this, arguments);
+
       this.pixelRatio = window.pixelRatio || 1;
-      this.graphicRatio = 1;
+      this.graphicRatio = 2;
 
-      this.width = (width || 800) * this.graphicRatio;
-      this.height = (height || 400) * this.graphicRatio;
-
+      this.width = options.width * this.graphicRatio;
+      this.height = options.height * this.graphicRatio;
 
       this.pressedKeys = 0;
 
@@ -109,9 +114,8 @@ define('game/env',
     drawScene: function(node) {
       if (node) {
         var iter = node;
-        var x = 0;
-        var y = 0;
-
+        var x;
+        var y;
 
         do {
           x = 0;

@@ -42,11 +42,15 @@ define('app',
       }
     },
     launchGame: function() {
-      if (this.model.get('assetsLoaded')) {
-        var game = this.setCurrentView(new GameView());
-        game.play();
-      } else {
-        this.navigate('load', { trigger: true });
+      try {
+        if (this.model.get('assetsLoaded')) {
+          var game = this.setCurrentView(new GameView());
+          game.play();
+        } else {
+          this.navigate('load', { trigger: true });
+        }
+      } catch(e) {
+        console.error(e.stack || e.message || e.toString());
       }
     },
     removeCurrentView: function() {

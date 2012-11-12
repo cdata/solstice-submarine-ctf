@@ -1,11 +1,29 @@
-define('game/graphic', ['game/entity', 'game/sprite'], function(Entity, Sprite) {
+define('game/graphic', 
+       ['underscore', 'game/entity', 'game/sprite'],
+       function(_, Entity, Sprite) {
   var Graphic = Entity.extend({
-    initialize: function(url, frame, width, height) {
-      Entity.prototype.initialize.call(this, 'Graphic');
-      this.width = width || 20;
-      this.height = height || 20;
-      this.frame = frame || 0
-      this.sprite = new Sprite(url, 80, 80);
+    initialize: function(options) {
+      options = _.defaults(options || {}, {
+        name: 'Graphic',
+        width: 20,
+        height: 20,
+        frame: 0,
+        url: '/assets/images/test.png',
+        spriteScale: 4
+      });
+
+      Entity.prototype.initialize.call(this, options);
+
+      this.width = options.width;
+      this.height = options.height;
+      this.frame = options.frame;
+      this.spriteScale = options.spriteScale;
+      this.sprite = new Sprite({
+        url: options.url, 
+        width: this.width * this.spriteScale, 
+        height: this.height * this.spriteScale
+      })
+
       this.sprite.goTo(this.frame);
     }
   });

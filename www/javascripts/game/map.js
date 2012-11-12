@@ -1,19 +1,24 @@
 define('game/map', 
-       ['game/entity', 'game/graphic', 'game/assets'], 
-       function(Entity, Graphic, assets) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets'], 
+       function(_, Entity, Graphic, assets) {
   return Entity.extend({
-    initialize: function(url) {
-      Entity.prototype.initialize.call(this, 'Map');
+    initialize: function(options) {
+      options = _.defaults(options || {}, {
+        name: 'Map',
+        url: '/assets/data/seabound.json'
+      });
 
-      this.data = assets.getData(url);
+      Entity.prototype.initialize.call(this, options);
+
+      this.data = assets.getData(options.url);
       this.width = this.data.width;
       this.height = this.data.height;
-      this.floor = this.append(new Entity('Floor'));
-      this.walls = this.append(new Entity('Walls'));
+      this.floor = this.append(new Entity());
+      this.walls = this.append(new Entity());
 
       _.each(this.data.tiles, function(type, index) {
         var position = this.indexToPosition(index);
-        var sand = new Graphic('/assets/images/floor.png');
+        var sand = new Graphic({ url: '/assets/images/floor.png' });
 
         position.multiplyScalar(sand.width);
         sand.position.x = position.x;
@@ -22,7 +27,7 @@ define('game/map',
         this.floor.append(sand);
 
         if (type == 1) {
-          wall = new Graphic('/assets/images/walls.png');
+          wall = new Graphic({ url: '/assets/images/walls.png' });
           wall.position.x = position.x;
           wall.position.y = position.y;
 
