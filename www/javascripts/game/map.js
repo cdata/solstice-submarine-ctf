@@ -12,20 +12,32 @@ define('game/map',
       this.walls = this.append(new Entity('Walls'));
 
       _.each(this.data.tiles, function(type, index) {
+        var position = this.indexToPosition(index);
         var sand = new Graphic('/assets/images/floor.png');
-        var wall;
-        sand.position.x = (index % this.width);
-        sand.position.y = (Math.floor((index - sand.position.x) / this.width));
-        sand.position.multiplyScalar(sand.width);
+
+        position.multiplyScalar(sand.width);
+        sand.position.x = position.x;
+        sand.position.y = position.y;
+
         this.floor.append(sand);
 
         if (type == 1) {
           wall = new Graphic('/assets/images/walls.png');
-          wall.position.x = sand.position.x;
-          wall.position.y = sand.position.y;
+          wall.position.x = position.x;
+          wall.position.y = position.y;
+
           this.walls.append(wall);
         }
       }, this);
+    },
+    indexToPosition: function(index) {
+      var position = new THREE.Vector2();
+      position.x = (index % this.width);
+      position.y = Math.floor((index - position.x) / this.width);
+      return position;
+    },
+    neighbors: function(index) {
+      var position = this.indexToPosition(index);
     }
   });
 });

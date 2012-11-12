@@ -34,9 +34,12 @@ define('game/env',
   var Env = GameObject.extend({
     initialize: function(width, height) {
       GameObject.prototype.initialize.apply(this, arguments);
-      this.pixelRatio = window.devicePixelRatio || 1;
-      this.width = (width || 0) * this.pixelRatio;
-      this.height = (height || 0) * this.pixelRatio;
+      this.pixelRatio = window.pixelRatio || 1;
+      this.graphicRatio = 1;
+
+      this.width = (width || 800) * this.graphicRatio;
+      this.height = (height || 400) * this.graphicRatio;
+
 
       this.pressedKeys = 0;
 
@@ -44,8 +47,8 @@ define('game/env',
       this.canvas = document.createElement('canvas');
       this.canvas.width = this.width;
       this.canvas.height = this.height;
-      this.canvas.style.width = this.width / 2 + 'px';
-      this.canvas.style.height = this.height / 2 + 'px';
+      this.canvas.style.width = this.width / this.pixelRatio + 'px';
+      this.canvas.style.height = this.height / this.pixelRatio + 'px';
       this.context = this.canvas.getContext('2d');
 
       this.$window = $(window);
@@ -79,12 +82,12 @@ define('game/env',
     },
     draw: function(entity) {
       if (entity && entity instanceof Graphic) {
-        var x = entity.position.x * this.pixelRatio;
-        var y = entity.position.y * this.pixelRatio;
-        var w = entity.width * this.pixelRatio;
-        var h = entity.height * this.pixelRatio;
-        var w2 = w / 2;
-        var h2 = h / 2;
+        var x = entity.position.x * this.graphicRatio;
+        var y = entity.position.y * this.graphicRatio;
+        var w = entity.width * this.graphicRatio;
+        var h = entity.height * this.graphicRatio;
+        var w2 = w / this.graphicRatio;
+        var h2 = h / this.graphicRatio;
         var r = entity.rotation;
         this.context.translate(x + w2, y + h2);
         this.context.rotate(r);
@@ -115,8 +118,8 @@ define('game/env',
           y = 0;
 
           if (iter instanceof Entity) {
-            x = iter.position.x * this.pixelRatio;
-            y = iter.position.y * this.pixelRatio;
+            x = iter.position.x * this.graphicRatio;
+            y = iter.position.y * this.graphicRatio;
           }
 
           this.draw(iter);
@@ -125,7 +128,6 @@ define('game/env',
           this.drawScene(iter.firstChild);
           this.context.translate(-x, -y);
         } while (iter = iter.nextSibling);
-
       }
     },
     onResize: function(event) {
