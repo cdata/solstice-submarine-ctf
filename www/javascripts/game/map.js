@@ -1,6 +1,6 @@
 define('game/map', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets'], 
-       function(_, Entity, Graphic, assets) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall'], 
+       function(_, Entity, Graphic, assets, Wall) {
   return Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -10,30 +10,43 @@ define('game/map',
 
       Entity.prototype.initialize.call(this, options);
 
-      this.data = assets.getData(options.url);
-      this.width = this.data.width;
-      this.height = this.data.height;
-      this.floor = this.append(new Entity());
-      this.walls = this.append(new Entity());
+      var data = assets.getData(options.url);
 
-      _.each(this.data.tiles, function(type, index) {
+      this.tiles = data.tiles;
+      this.width = data.width;
+      this.height = data.height;
+      this.floor = this.append(new Entity({
+        name: 'Floor'
+      }));
+      this.walls = this.append(new Entity({
+        name: 'Wall'
+      }));
+
+      _.each(this.tiles, function(type, index) {
         var position = this.indexToPosition(index);
-        var sand = new Graphic({ url: '/assets/images/floor.png' });
+        var sand = new Graphic({
+          name: 'Sand',
+          url: '/assets/images/floor.png',
+          position: position
+        });
 
         position.multiplyScalar(sand.width);
-        sand.position.x = position.x;
-        sand.position.y = position.y;
 
         this.floor.append(sand);
 
         if (type == 1) {
-          wall = new Graphic({ url: '/assets/images/walls.png' });
-          wall.position.x = position.x;
-          wall.position.y = position.y;
+          wall = new Wall({
+            neighbors: this.neighbors(index),
+            position: position
+          });
 
           this.walls.append(wall);
         }
       }, this);
+    },
+    dispose: function() {
+      Entity.prototype.dispose.apply(this, arguments);
+      this.tiles = null;
     },
     indexToPosition: function(index) {
       var position = new THREE.Vector2();
@@ -41,8 +54,32 @@ define('game/map',
       position.y = Math.floor((index - position.x) / this.width);
       return position;
     },
+    positionToIndex: function(position) {
+      if (position.x < 0 || position.y < 0 || position.x >= this.width || position.y >= this.height) {
+        return -1;
+      }
+
+      return position.x + position.y * this.width;
+    },
+    at: function(position) {
+      return this.tiles[this.positionToIndex(position)];
+    },
     neighbors: function(index) {
       var position = this.indexToPosition(index);
+      var result = {};
+
+      position.y = position.y - 1;
+      result.top = this.at(position);
+      position.y = position.y + 2;
+      result.bottom = this.at(position);
+      position.y = position.y - 1;
+      position.x = position.x - 1;
+      result.left = this.at(position);
+      position.x = position.x + 2;
+      result.right = this.at(position);
+      position.x = position.x - 1;
+
+      return result;
     }
   });
 });

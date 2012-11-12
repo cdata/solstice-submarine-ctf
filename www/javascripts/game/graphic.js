@@ -25,6 +25,11 @@ define('game/graphic',
       })
 
       this.sprite.goTo(this.frame);
+    },
+    dispose: function() {
+      Entity.prototype.dispose.apply(this, arguments);
+      this.sprite.dispose();
+      this.sprite = null;
     }
   });
 

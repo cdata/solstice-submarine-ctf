@@ -16,6 +16,7 @@ define('game/entity',
       this.rotation = options.rotation;
     },
     dispose: function() {
+      Node.prototype.dispose.apply(this, arguments);
       this.position = null;
     },
     toString: function() {

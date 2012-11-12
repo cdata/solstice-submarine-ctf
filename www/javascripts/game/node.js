@@ -3,17 +3,24 @@ define('game/node',
        function(GameObject) {
   return GameObject.extend({
     initialize: function() {
-      this.reset();
-    },
-    dispose: function() {
-      this.reset();
-    },
-    reset: function() {
       this.nextSibling = null;
       this.previousSibling = null;
       this.firstChild = null;
       this.lastChild = null;
       this.parent = null;
+    },
+    dispose: function() {
+      if (this.firstChild) {
+        var iter = this.firstChild;
+
+        do {
+          iter.dispose();
+        } while (iter = iter.nextSibling);
+      }
+
+      this.parent = null;
+    },
+    reset: function() {
     },
     append: function(node) {
       return this.insertAfter(node, this.lastChild);
