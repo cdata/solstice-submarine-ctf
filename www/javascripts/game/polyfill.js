@@ -27,5 +27,4 @@ define('game/polyfill', ['underscore'], function(_) {
     }
     return ratio;
   })();
-
 });

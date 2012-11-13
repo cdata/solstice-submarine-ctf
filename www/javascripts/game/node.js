@@ -1,7 +1,7 @@
 define('game/node',
-       ['game/object'],
-       function(GameObject) {
-  return GameObject.extend({
+       ['game/object', 'backbone', 'underscore'],
+       function(GameObject, Backbone, _) {
+  var Node = GameObject.extend({
     initialize: function() {
       this.nextSibling = null;
       this.previousSibling = null;
@@ -20,8 +20,6 @@ define('game/node',
 
       this.parent = null;
     },
-    reset: function() {
-    },
     append: function(node) {
       return this.insertAfter(node, this.lastChild);
     },
@@ -37,6 +35,9 @@ define('game/node',
       return this.link(node,
                 sibling && sibling.previousSibling,
                 sibling || this.firstChild);
+    },
+    remove: function(node) {
+      return this.unlink(node);
     },
     link: function(node, previous, next) {
       if ((previous && previous.parent !== this) ||
@@ -64,6 +65,8 @@ define('game/node',
         next.previousSibling = node;
       }
 
+      node.on('draw', this.onChildDraw, this);
+
       return node;
     },
     unlink: function(node) {
@@ -86,7 +89,15 @@ define('game/node',
         this.lastChild = previous;
       }
 
+      node.off('draw', this.onNodeDraw, this);
+
       return node;
+    },
+    onChildDraw: function(rect) {
+      rect.setX(rect.getX() + this.position.x);
+      rect.setY(rect.getY() + this.position.y);
+
+      this.trigger('draw', rect);
     },
     getChildren: function() {
       var children = [];
@@ -99,4 +110,8 @@ define('game/node',
       return children;
     }
   });
+
+  _.extend(Node.prototype, Backbone.Events);
+
+  return Node;
 })
