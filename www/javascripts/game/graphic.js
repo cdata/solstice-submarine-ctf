@@ -26,6 +26,9 @@ define('game/graphic',
 
       this.sprite.goTo(this.frame);
     },
+    draw: function() {
+      // Defaults to noop..
+    },
     dispose: function() {
       Entity.prototype.dispose.apply(this, arguments);
       this.sprite.dispose();

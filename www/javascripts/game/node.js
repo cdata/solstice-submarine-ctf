@@ -10,15 +10,12 @@ define('game/node',
       this.parent = null;
     },
     dispose: function() {
-      if (this.firstChild) {
-        var iter = this.firstChild;
+      var node;
 
-        do {
-          iter.dispose();
-        } while (iter = iter.nextSibling);
+      while (this.firstChild) {
+        node = this.remove(this.firstChild);
+        node.dispose();
       }
-
-      this.parent = null;
     },
     append: function(node) {
       return this.insertAfter(node, this.lastChild);
@@ -89,14 +86,15 @@ define('game/node',
         this.lastChild = previous;
       }
 
+      node.previousSibling = null;
+      node.nextSibling = null;
+      node.parent = null;
+
       node.off('draw', this.onNodeDraw, this);
 
       return node;
     },
     onChildDraw: function(rect) {
-      rect.setX(rect.getX() + this.position.x);
-      rect.setY(rect.getY() + this.position.y);
-
       this.trigger('draw', rect);
     },
     getChildren: function() {

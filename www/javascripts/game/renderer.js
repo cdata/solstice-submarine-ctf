@@ -71,6 +71,8 @@ define('game/renderer',
       // Set the scale based on device pixel ratio..
       this.context.scale(this.pixelRatio, this.pixelRatio);
 
+      this.sceneRoot.on('draw', this.pushRedrawRectangle, this);
+
       // TODO: Media queries?
       this.$window.on('resize', _.bind(this.onResize, this));
 
@@ -81,6 +83,7 @@ define('game/renderer',
     },
     dispose: function() {
       this.$window.off('resize');
+      this.sceneRoot.off('draw', this.pushRedrawRect, this);
 
       this.$canvas.remove();
 
@@ -88,6 +91,9 @@ define('game/renderer',
       this.canvas = null;
       this.context = null;
       this.renderer = null;
+
+      this.sceneRoot.dispose();
+      this.sceneRoot = null;
 
       this.$window = null;
       this.$body = null;
@@ -98,7 +104,7 @@ define('game/renderer',
       this.translationOrigin = null;
     },
     draw: function(entity) {
-      if (entity && entity instanceof Graphic) {
+      if (entity && entity instanceof Entity) {
         var x = entity.position.x * this.graphicRatio;
         var y = entity.position.y * this.graphicRatio;
         var w = entity.width * this.graphicRatio;
@@ -109,11 +115,10 @@ define('game/renderer',
         var drawRect = new THREE.Rectangle();
 
         drawRect.set(-w2, -h2, -w2 + w, -h2 + h);
+        
+        this.pushTranslation(new THREE.Vector2(w2, h2));
 
-        if (!this.rendered || this.shouldRedraw(drawRect)) {
-          this.pushTranslation(new THREE.Vector2(x + w2, y + h2));
-          r && this.pushRotation(r);
-
+        if (entity instanceof Graphic && (!this.rendered || this.shouldRedraw(drawRect))) {
           this.context.drawImage(
             entity.sprite.image,
             entity.sprite.clipRect.getX(),
@@ -125,10 +130,9 @@ define('game/renderer',
             drawRect.getWidth(),
             drawRect.getHeight()
           );
-
-          r && this.popRotation();
-          this.popTranslation();
         }
+
+        this.popTranslation();
       }
     },
     drawScene: function(node) {
@@ -143,17 +147,17 @@ define('game/renderer',
           y = 0;
           r = 0;
 
-          if (iter instanceof Entity && !iter instanceof Graphic) {
+          if (iter instanceof Entity) {
             x = iter.position.x * this.graphicRatio;
             y = iter.position.y * this.graphicRatio;
             r = iter.rotation;
           }
 
-          this.draw(iter);
 
           this.pushTranslation(new THREE.Vector2(x, y));
           r && this.pushRotation(r);
 
+          this.draw(iter);
           this.drawScene(iter.firstChild);
 
           r && this.popRotation();
@@ -162,7 +166,21 @@ define('game/renderer',
         } while (iter = iter.nextSibling);
       }
     },
+    updateScene: function(node) {
+      if (node) {
+        var iter = node;
+
+        do {
+          if (iter instanceof Graphic) {
+            iter.draw();
+          }
+
+          this.updateScene(iter.firstChild);
+        } while(iter = iter.nextSibling);
+      }
+    },
     render: function() {
+      this.updateScene(this.sceneRoot);
       this.drawScene(this.sceneRoot);
       this.cleanup();
     },
@@ -186,7 +204,7 @@ define('game/renderer',
     pushRotation: function(rotation) {
       if (rotation) {
         this.context.rotate(rotation);
-        this.rotationOrigin += r;
+        this.rotationOrigin += rotation;
         this.rotations.push(rotation);
       }
     },
@@ -199,6 +217,12 @@ define('game/renderer',
     pushRedrawRectangle: function(rect) {
       if (rect) {
         var iter = rect;
+
+        rect.set(rect.getLeft() * this.graphicRatio,
+                 rect.getTop() * this.graphicRatio,
+                 rect.getRight() * this.graphicRatio,
+                 rect.getBottom() * this.graphicRatio);
+
         rect.next = this.redrawRectangles;
 
         while (iter.next) {
@@ -209,15 +233,17 @@ define('game/renderer',
             iter = iter.next;
           }
         }
+
+        this.redrawRectangles = rect;
       }
     },
     adjusted: function(rect) {
-      return new THREE.Rectangle(
-        rect.getLeft() + this.translationOrigin.x,
-        rect.getTop() + this.translationOrigin.y,
-        rect.getRight() + this.translationOrigin.x,
-        rect.getBottom() + this.translationOrigin.y
-      );
+      var adjusted = new THREE.Rectangle();
+      adjusted.set(rect.getLeft() + this.translationOrigin.x,
+               rect.getTop() + this.translationOrigin.y,
+               rect.getRight() + this.translationOrigin.x,
+               rect.getBottom() + this.translationOrigin.y);
+      return adjusted;
     },
     shouldRedraw: function(rect) {
       var iter;

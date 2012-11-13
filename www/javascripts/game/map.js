@@ -1,6 +1,6 @@
 define('game/map', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis'], 
-       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass'], 
+       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass) {
   return Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -45,7 +45,9 @@ define('game/map',
 
         switch (type) {
           case 0:
-
+            if (Math.random() > 0.8) {
+              sand.append(new Grass());
+            }
             break;
           case 2:
           case 4:

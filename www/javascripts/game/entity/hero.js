@@ -8,6 +8,7 @@ define('game/entity/hero',
       });
 
       Graphic.prototype.initialize.call(this, options);
+      //this.rotation = Math.PI / 2;
     }
   });
 });
