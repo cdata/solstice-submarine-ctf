@@ -30,7 +30,6 @@ define('game/graphic/animated',
       var drawRect;
 
       this.frameTime += this.clock.getDelta() * 1000;
-      debugger;
 
       if (this.frameTime > this.frameInterval) {
 

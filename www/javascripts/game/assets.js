@@ -24,6 +24,8 @@ define('game/assets',
       return this.cloneImage(this.assets[url]);
     },
     cloneImage: function(image) {
+      return image;
+
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
 

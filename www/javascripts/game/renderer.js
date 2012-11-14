@@ -1,35 +1,6 @@
 define('game/renderer',
        ['game/object', 'game/node', 'game/entity', 'game/graphic', 'three', 'underscore', 'jquery', 'backbone'],
        function(GameObject, Node, Entity, Graphic, THREE, _, $, Backbone) {
-  
-  var Buttons = {
-    LEFT: 1,
-    UP: 2,
-    RIGHT: 4,
-    DOWN: 8,
-    ARROW: 15,
-    Z: 16,
-    X: 32,
-    A: 64,
-    S: 128,
-    SHIFT: 256,
-    CTRL: 512,
-    SPACE: 1024
-  };
-
-  var Keys = {
-    16: Buttons.SHIFT,
-    17: Buttons.CTRL,
-    32: Buttons.SPACE,
-    37: Buttons.LEFT,
-    38: Buttons.UP,
-    39: Buttons.RIGHT,
-    40: Buttons.DOWN,
-    65: Buttons.A,
-    83: Buttons.S,
-    88: Buttons.X,
-    90: Buttons.Z
-  };
 
   var Renderer = GameObject.extend({
     initialize: function(options) {
@@ -40,21 +11,27 @@ define('game/renderer',
 
       GameObject.prototype.initialize.apply(this, arguments);
 
-      this.pixelRatio = window.pixelRatio || 1;
-      this.graphicRatio = 2;
+      this.canvas = document.createElement('canvas');
+      this.options = options;
 
-      this.width = options.width * this.graphicRatio;
-      this.height = options.height * this.graphicRatio;
+      if (window.matchMedia) {
+        this.matchTinyScreen = window.matchMedia('(max-width: 539px)');
+        this.matchSmallScreen = window.matchMedia('(max-width: 719px)');
+        this.matchMediumScreen = window.matchMedia('(max-width: 1599px)');
+        this.matchLargeScreen = window.matchMedia('(min-width: 1600px)');
+
+        this.boundInvalidateRatios = _.bind(this.invalidateRatios, this);
+
+        this.matchTinyScreen.addListener(this.boundInvalidateRatios);
+        this.matchSmallScreen.addListener(this.boundInvalidateRatios);
+        this.matchMediumScreen.addListener(this.boundInvalidateRatios);
+        this.matchLargeScreen.addListener(this.boundInvalidateRatios);
+      }
+
 
       this.pressedKeys = 0;
       this.rendered = false;
-
-      // TODO: Use Three.js for rendering?
-      this.canvas = document.createElement('canvas');
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      this.canvas.style.width = this.width / this.pixelRatio + 'px';
-      this.canvas.style.height = this.height / this.pixelRatio + 'px';
+      
       this.context = this.canvas.getContext('2d');
       this.sceneRoot = new Node();
       this.redrawRectangles = null;
@@ -68,22 +45,29 @@ define('game/renderer',
       this.$root = $('#Game');
       this.$canvas = $(this.canvas);
 
+      this.invalidateRatios();
       // Set the scale based on device pixel ratio..
-      this.context.scale(this.pixelRatio, this.pixelRatio);
 
       this.sceneRoot.on('draw', this.pushRedrawRectangle, this);
-
-      // TODO: Media queries?
-      this.$window.on('resize', _.bind(this.onResize, this));
-
-      this.$body.on('keydown', _.bind(this.onKeydown, this));
-      this.$body.on('keyup', _.bind(this.onKeyup, this));
 
       this.$root.prepend(this.$canvas);
     },
     dispose: function() {
-      this.$window.off('resize');
       this.sceneRoot.off('draw', this.pushRedrawRect, this);
+
+      if (window.matchMedia) {
+        this.matchTinyScreen.removeListener(this.boundInvalidateRatios);
+        this.matchSmallScreen.removeListener(this.boundInvalidateRatios);
+        this.matchMediumScreen.removeListener(this.boundInvalidateRatios);
+        this.matchLargeScreen.removeListener(this.boundInvalidateRatios);
+
+        this.boundInvalidateRatios = null;
+
+        this.matchTinyScreen = null;
+        this.matchSmallScreen = null;
+        this.matchMediumScreen = null;
+        this.matchLargeScreen = null;
+      }
 
       this.$canvas.remove();
 
@@ -267,32 +251,32 @@ define('game/renderer',
 
       return false;
     },
-    onResize: function(event) {
-      // TODO: Respond to orientation change here..
-    },
-    onKeydown: function(event) {
-      var key = event.which || event.keyCode;
+    invalidateRatios: function() {
+      this.pixelRatio = window.pixelRatio || 1;
+      this.graphicRatio = 2;
 
-      if (key in Renderer.Keys) {
-        event.preventDefault();
-        this.pressedKeys |= Renderer.Keys[key];
+      if (window.matchMedia) {
+        if (this.matchTinyScreen.matches) {
+          this.graphicRatio = 1;
+        } else if (this.matchSmallScreen.matches) {
+          this.graphicRatio = 1.5;
+        } else if (this.matchMediumScreen.matches) {
+          this.graphicRatio = 2;
+        } else if (this.matchLargeScreen.matches) {
+          this.graphicRatio = 3;
+        }
       }
 
-      this.trigger('keydown');
-    },
-    onKeyup: function(event) {
-      var key = event.which || event.keyCode;
+      this.width = this.options.width * (this.pixelRatio / 2) * this.graphicRatio;
+      this.height = this.options.height * (this.pixelRatio / 2) * this.graphicRatio;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.canvas.style.width = this.width / this.pixelRatio + 'px';
+      this.canvas.style.height = this.height / this.pixelRatio + 'px';
 
-      if (key in Renderer.Keys) {
-        event.preventDefault();
-        this.pressedKeys ^= Renderer.Keys[key];
-      }
-
-      this.trigger('keyup');
+      this.context.scale(this.pixelRatio, this.pixelRatio);
+      this.rendered = false;
     }
-  }, {
-    Keys: Keys,
-    Buttons: Buttons
   });
 
   _.extend(Renderer.prototype, Backbone.Events);

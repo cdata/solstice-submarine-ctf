@@ -16,15 +16,16 @@ define('game/polyfill', ['underscore'], function(_) {
     var ratio = window.devicePixelRatio;
     if (!ratio) {
       if(window.matchMedia && 
-         (window.matchMedia('min--moz-device-pixel-ratio: 2').matches ||
-          window.matchMedia('-webkit-min-device-pixel-ratio: 2').matches ||
-          window.matchMedia('-o-min-device-pixel-ratio: 2/1').matches ||
-          window.matchMedia('min-resolution: 2dppx'))) {
+         (window.matchMedia('(min--moz-device-pixel-ratio: 2)').matches ||
+          window.matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches ||
+          window.matchMedia('(-o-min-device-pixel-ratio: 2/1)').matches ||
+          window.matchMedia('(min-resolution: 2dppx)'))) {
         ratio = 2;
       } else {
         ratio = 1;
       }
     }
+    //return 1;
     return ratio;
   })();
 });
