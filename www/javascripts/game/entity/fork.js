@@ -4,6 +4,7 @@ define('game/entity/fork',
   return Graphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
+        name: 'Fork',
         url: '/assets/images/items.png',
         color: 'yellow'
       });

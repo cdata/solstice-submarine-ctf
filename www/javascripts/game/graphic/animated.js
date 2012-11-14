@@ -26,18 +26,18 @@ define('game/graphic/animated',
     },
     updateFrameAnimation: function() {
       var frames = this.animations[this.currentAnimation];
-      var maxFrame = frames.y - frames.x;
+      var frameLength = frames.y - frames.x + 1;
+      var framesPassed;
       var drawRect;
 
       this.frameTime += this.clock.getDelta() * 1000;
 
       if (this.frameTime > this.frameInterval) {
 
-        if (this.frame < maxFrame) {
-          ++this.frame;
-        } else {
-          this.frame = 0;
-        }
+        framesPassed = Math.floor(this.frameTime / this.frameInterval);
+
+        this.frame = (this.frame + framesPassed) % frameLength;
+        this.frameTime = this.frameTime % this.frameInterval;
 
         drawRect = new THREE.Rectangle();
         drawRect.set(this.position.x, 
@@ -47,8 +47,6 @@ define('game/graphic/animated',
 
         this.sprite.goTo(frames.x + this.frame);
         this.trigger('draw', drawRect);
-
-        this.frameTime = 0;
       }
     },
     useFrameAnimation: function(id, frameInterval) {

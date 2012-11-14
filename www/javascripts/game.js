@@ -15,6 +15,7 @@ define('game',
     },
     start: function() {
       this.renderer = new Renderer();
+      this.renderer.on('click:Hero click:Fork', this.handleEntityClick, this);
 
       this.map = this.renderer.sceneRoot.append(new Map({
         url: '/assets/data/maps/seabound.json'
@@ -23,7 +24,9 @@ define('game',
       this.engine = new Engine();
       this.engine.on('render', this.renderer.render, this.renderer);
       this.engine.start();
-      //this.renderer.render();
+    },
+    handleEntityClick: function() {
+      console.log('Click!', arguments);
     }
   });
 

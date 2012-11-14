@@ -26,7 +26,7 @@ define('game/graphic',
 
       this.sprite.goTo(this.frame);
     },
-    draw: function() {
+    draw: function(clicked) {
       // Defaults to noop..
     },
     dispose: function() {

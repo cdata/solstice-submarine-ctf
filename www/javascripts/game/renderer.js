@@ -28,7 +28,6 @@ define('game/renderer',
         this.matchLargeScreen.addListener(this.boundInvalidateRatios);
       }
 
-
       this.pressedKeys = 0;
       this.rendered = false;
       
@@ -39,14 +38,18 @@ define('game/renderer',
       this.rotations = [];
       this.translationOrigin = new THREE.Vector2();
       this.rotationOrigin = 0;
+      this.clickX = -1;
+      this.clickY = -1;
+
+      this.boundHandleClick = _.bind(this.handleClick, this);
 
       this.$window = $(window);
       this.$body = $(document.body);
       this.$root = $('#Game');
       this.$canvas = $(this.canvas);
+      this.$canvas.on('click', this.boundHandleClick);
 
       this.invalidateRatios();
-      // Set the scale based on device pixel ratio..
 
       this.sceneRoot.on('draw', this.pushRedrawRectangle, this);
 
@@ -69,7 +72,10 @@ define('game/renderer',
         this.matchLargeScreen = null;
       }
 
+      this.$canvas.off('click', this.boundHandleClick);
       this.$canvas.remove();
+
+      this.boundHandleClick = null;
 
       this.$canvas = null;
       this.canvas = null;
@@ -86,6 +92,38 @@ define('game/renderer',
       this.translations = null;
       this.rotations = null;
       this.translationOrigin = null;
+    },
+    handleClick: function(event) {
+      this.clickX = event.offsetX;
+      this.clickY = event.offsetY;
+    },
+    clicked: function(entity) {
+      var width;
+      var height;
+      var x;
+      var y;
+      var iter;
+
+      if (!entity instanceof Graphic || this.clickX < 0 || this.clickY < 0) {
+        return false;
+      }
+
+      iter = entity;
+      width = entity.width * this.graphicRatio;
+      height = entity.height * this.graphicRatio;
+      x = 0;
+      y = 0;
+
+      do {
+        if (iter instanceof Entity) {
+          x += iter.position.x * this.graphicRatio;
+          y += iter.position.y * this.graphicRatio;
+        }
+      } while (iter = iter.parent);
+
+      return this.clickX >= x && this.clickY >= y &&
+          this.clickX <= (x + width) &&
+          this.clickY <= (y + height);
     },
     draw: function(entity) {
       if (entity && entity instanceof Entity) {
@@ -137,7 +175,6 @@ define('game/renderer',
             r = iter.rotation;
           }
 
-
           this.pushTranslation(new THREE.Vector2(x, y));
           r && this.pushRotation(r);
 
@@ -156,6 +193,9 @@ define('game/renderer',
 
         do {
           if (iter instanceof Graphic) {
+            if (this.clicked(iter)) {
+              this.trigger('click:' + iter.name, iter);
+            }
             iter.draw();
           }
 
@@ -171,6 +211,8 @@ define('game/renderer',
     cleanup: function() {
       this.rendered = true;
       this.redrawRectangles = null;
+      this.clickX = -1;
+      this.clickY = -1;
     },
     pushTranslation: function(translation) {
       if (translation) {
