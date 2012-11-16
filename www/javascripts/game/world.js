@@ -1,10 +1,10 @@
-define('game/map', 
+define('game/world', 
        ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass'], 
        function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass) {
-  return Entity.extend({
+  var World = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        name: 'Map',
+        name: 'World',
         url: '/assets/data/seabound.json'
       });
 
@@ -25,18 +25,19 @@ define('game/map',
       this.items = this.append(new Entity({
         name: 'Items'
       }));
+      this.highlights = this.append(new Entity({
+        name: 'Highlights'
+      }));
       this.characters = this.append(new Entity({
         name: 'Characters'
       }));
 
       _.each(this.tiles, function(type, index) {
         var position = this.indexToPosition(index);
-        var sand;
-
-        position.multiplyScalar(20);
+        var tile;
 
         if (type !== 1) {
-          sand = this.floor.append(new Graphic({
+          tile = this.floor.append(new Graphic({
             name: 'Sand',
             url: '/assets/images/floor.png',
             position: position
@@ -46,7 +47,7 @@ define('game/map',
         switch (type) {
           case 0:
             if (Math.random() > 0.8) {
-              sand.append(new Grass());
+              tile.append(new Grass());
             }
             break;
           case 2:
@@ -58,10 +59,16 @@ define('game/map',
             break;
           case 8:
           case 16:
-            this.characters.append(new Hero({
+            tile = this.characters.append(new Hero({
               color: type === 8 ? 'alpha' : 'beta',
               position: position.clone()
             }));
+            
+            if (type === 8) {
+              this.heroAlpha = tile;
+            } else {
+              this.heroBeta = tile;
+            }
             break;
           case 32:
           case 64:
@@ -87,6 +94,38 @@ define('game/map',
       this.walls = null;
       this.items = null;
     },
+    highlight: function(position, distance) {
+      var tile;
+      var neighbors;
+
+      if (this.is(position, World.tile.WALL) ||
+          this.is(position, World.tile.HIGHLIGHT)) {
+        return;
+      }
+
+      tile = new Graphic({
+        url: '/assets/images/highlight.png',
+        position: position.clone()
+      });
+
+      this.highlights.append(tile);
+      this.or(position, World.tile.HIGHLIGHT);
+      
+      if (distance > 0) {
+        neighbors = this.neighborPositions(position);
+
+        while (neighbors.length) {
+          this.highlight(neighbors.pop(), distance - 1);
+        }
+      }
+    },
+    clearHighlight: function() {
+      while (this.highlights.firstChild) {
+        this.xor(this.highlights.firstChild.position, 
+                 World.tile.HIGHLIGHT);
+        this.highlights.remove(this.highlights.firstChild);
+      }
+    },
     indexToPosition: function(index) {
       var position = new THREE.Vector2();
       position.x = (index % this.width);
@@ -102,6 +141,45 @@ define('game/map',
     },
     at: function(position) {
       return this.tiles[this.positionToIndex(position)];
+    },
+    is: function(position, value) {
+      return !!(this.at(position) & value);
+    },
+    or: function(position, value) {
+      this.tiles[this.positionToIndex(position)] = this.at(position) | value;
+    },
+    xor: function(position, value) {
+      this.tiles[this.positionToIndex(position)] = this.at(position) ^ value;
+    },
+    isInBounds: function(position) {
+      return this.positionToIndex(position) < this.tiles.length;
+    },
+    neighborPositions: function(position) {
+      var neighbors = [];
+
+      position = position.clone();
+      position.x = position.x + 1;
+      if (this.isInBounds(position)) {
+        neighbors.push(position);
+      }
+      position = position.clone();
+      position.x = position.x - 2;
+      if (this.isInBounds(position)) {
+        neighbors.push(position);
+      }
+      position = position.clone();
+      position.x = position.x + 1;
+      position.y = position.y - 1;
+      if (this.isInBounds(position)) {
+        neighbors.push(position);
+      }
+      position = position.clone();
+      position.y = position.y + 2;
+      if (this.isInBounds(position)) {
+        neighbors.push(position);
+      }
+
+      return neighbors;
     },
     neighbors: function(index) {
       var position = this.indexToPosition(index);
@@ -120,5 +198,13 @@ define('game/map',
 
       return result;
     }
+  }, {
+    tile: {
+      SAND: 0,
+      WALL: 1,
+      HIGHLIGHT: 3
+    }
   });
+
+  return World;
 });

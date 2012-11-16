@@ -94,6 +94,7 @@ define('game/renderer',
       this.translationOrigin = null;
     },
     handleClick: function(event) {
+      console.log(event);
       this.clickX = event.offsetX;
       this.clickY = event.offsetY;
     },
@@ -116,8 +117,8 @@ define('game/renderer',
 
       do {
         if (iter instanceof Entity) {
-          x += iter.position.x * this.graphicRatio;
-          y += iter.position.y * this.graphicRatio;
+          x += iter.position.x * this.graphicRatio * this.tileSize;
+          y += iter.position.y * this.graphicRatio * this.tileSize;
         }
       } while (iter = iter.parent);
 
@@ -127,8 +128,8 @@ define('game/renderer',
     },
     draw: function(entity) {
       if (entity && entity instanceof Entity) {
-        var x = entity.position.x * this.graphicRatio;
-        var y = entity.position.y * this.graphicRatio;
+        var x = entity.position.x * this.graphicRatio * this.tileSize;
+        var y = entity.position.y * this.graphicRatio * this.tileSize;
         var w = entity.width * this.graphicRatio;
         var h = entity.height * this.graphicRatio;
         var w2 = w / this.graphicRatio;
@@ -170,8 +171,8 @@ define('game/renderer',
           r = 0;
 
           if (iter instanceof Entity) {
-            x = iter.position.x * this.graphicRatio;
-            y = iter.position.y * this.graphicRatio;
+            x = iter.position.x * this.graphicRatio * this.tileSize;
+            y = iter.position.y * this.graphicRatio * this.tileSize;
             r = iter.rotation;
           }
 
@@ -194,7 +195,7 @@ define('game/renderer',
         do {
           if (iter instanceof Graphic) {
             if (this.clicked(iter)) {
-              this.trigger('click:' + iter.name, iter);
+              iter.trigger('click', iter);
             }
             iter.draw();
           }
@@ -244,10 +245,10 @@ define('game/renderer',
       if (rect) {
         var iter = rect;
 
-        rect.set(rect.getLeft() * this.graphicRatio,
-                 rect.getTop() * this.graphicRatio,
-                 rect.getRight() * this.graphicRatio,
-                 rect.getBottom() * this.graphicRatio);
+        rect.set(rect.getLeft() * this.graphicRatio * this.tileSize,
+                 rect.getTop() * this.graphicRatio * this.tileSize,
+                 rect.getRight() * this.graphicRatio * this.tileSize,
+                 rect.getBottom() * this.graphicRatio * this.tileSize);
 
         rect.next = this.redrawRectangles;
 
@@ -296,6 +297,7 @@ define('game/renderer',
     invalidateRatios: function() {
       this.pixelRatio = window.pixelRatio || 1;
       this.graphicRatio = 2;
+      this.tileSize = 20;
 
       if (window.matchMedia) {
         if (this.matchTinyScreen.matches) {

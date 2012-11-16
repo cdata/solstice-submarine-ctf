@@ -28,7 +28,6 @@ define('game/graphic/animated',
       var frames = this.animations[this.currentAnimation];
       var frameLength = frames.y - frames.x + 1;
       var framesPassed;
-      var drawRect;
 
       this.frameTime += this.clock.getDelta() * 1000;
 
@@ -39,14 +38,8 @@ define('game/graphic/animated',
         this.frame = (this.frame + framesPassed) % frameLength;
         this.frameTime = this.frameTime % this.frameInterval;
 
-        drawRect = new THREE.Rectangle();
-        drawRect.set(this.position.x, 
-                     this.position.y,
-                     this.position.x + this.width,
-                     this.position.y + this.height);
-
         this.sprite.goTo(frames.x + this.frame);
-        this.trigger('draw', drawRect);
+        this.redraw();
       }
     },
     useFrameAnimation: function(id, frameInterval) {
@@ -55,6 +48,7 @@ define('game/graphic/animated',
       this.frame = 0;
 
       this.sprite.goTo(this.animations[this.currentAnimation].x);
+      this.redraw();
     },
     defineFrameAnimation: function(id, startFrame, endFrame) {
       this.animations[id] = new THREE.Vector2(startFrame, endFrame);

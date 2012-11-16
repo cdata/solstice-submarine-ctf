@@ -21,6 +21,7 @@ define('app',
           '/assets/images/red-rocket.png',
           '/assets/images/blue-rocket.png',
           '/assets/images/font.png',
+          '/assets/images/highlight.png',
           '/assets/images/test.png'
         ]
       });

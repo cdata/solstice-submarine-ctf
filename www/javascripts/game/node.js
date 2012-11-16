@@ -10,12 +10,7 @@ define('game/node',
       this.parent = null;
     },
     dispose: function() {
-      var node;
-
-      while (this.firstChild) {
-        node = this.remove(this.firstChild);
-        node.dispose();
-      }
+      this.clearChildren();
     },
     append: function(node) {
       return this.insertAfter(node, this.lastChild);
@@ -106,6 +101,14 @@ define('game/node',
       } while (iter = iter.nextSibling);
 
       return children;
+    },
+    clearChildren: function() {
+      var iter;
+
+      while (this.firstChild) {
+        iter = this.remove(this.firstChild);
+        iter.dispose();
+      }
     }
   });
 

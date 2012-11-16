@@ -1,6 +1,6 @@
 define('game', 
-       ['three', 'game/object', 'game/loader', 'game/renderer', 'game/engine', 'game/map', 'game/assets'],
-       function(THREE, GameObject, Loader, Renderer, Engine, Map, assets) {
+       ['three', 'game/object', 'game/loader', 'game/renderer', 'game/engine', 'game/brain'],
+       function(THREE, GameObject, Loader, Renderer, Engine, Brain) {
   var Game = GameObject.extend({
     initialize: function() {
     },
@@ -15,18 +15,14 @@ define('game',
     },
     start: function() {
       this.renderer = new Renderer();
-      this.renderer.on('click:Hero click:Fork', this.handleEntityClick, this);
 
-      this.map = this.renderer.sceneRoot.append(new Map({
-        url: '/assets/data/maps/seabound.json'
-      }));
+      this.brain = new Brain({
+        scene: this.renderer.sceneRoot
+      });
 
       this.engine = new Engine();
       this.engine.on('render', this.renderer.render, this.renderer);
       this.engine.start();
-    },
-    handleEntityClick: function() {
-      console.log('Click!', arguments);
     }
   });
 

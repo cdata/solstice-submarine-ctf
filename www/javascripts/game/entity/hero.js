@@ -11,9 +11,16 @@ define('game/entity/hero',
 
       AnimatedGraphic.prototype.initialize.call(this, options);
 
-      this.defineFrameAnimation('idle', 0, 1);
-      this.useFrameAnimation('idle');
-      //this.rotation = Math.PI / 2;
+      this.defineFrameAnimation('idle-blur', 0, 1);
+      this.defineFrameAnimation('idle-focus', 2, 3);
+
+      this.blur();
+    },
+    blur: function() {
+      this.useFrameAnimation('idle-blur');
+    },
+    focus: function() {
+      this.useFrameAnimation('idle-focus');
     }
   });
 });
