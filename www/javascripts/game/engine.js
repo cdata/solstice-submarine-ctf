@@ -3,7 +3,6 @@ define('game/engine',
        function(THREE, TWEEN, Stats, Backbone, $, _, GameObject) {
   var Engine = GameObject.extend({
     initialize: function() {
-
       this.stats = new Stats();
       this.stats.$domElement = $(this.stats.domElement);
       this.stats.$domElement.css({

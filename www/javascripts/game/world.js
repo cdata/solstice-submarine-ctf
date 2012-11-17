@@ -108,7 +108,7 @@ define('game/world',
         position: position.clone()
       });
 
-      this.highlights.append(tile);
+      this.highlights.append(tile).redraw();
       this.or(position, World.tile.HIGHLIGHT);
       
       if (distance > 0) {
@@ -123,6 +123,7 @@ define('game/world',
       while (this.highlights.firstChild) {
         this.xor(this.highlights.firstChild.position, 
                  World.tile.HIGHLIGHT);
+        this.highlights.firstChild.redraw();
         this.highlights.remove(this.highlights.firstChild);
       }
     },

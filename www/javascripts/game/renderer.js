@@ -93,10 +93,21 @@ define('game/renderer',
       this.rotations = null;
       this.translationOrigin = null;
     },
+    // Adapted from http://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
     handleClick: function(event) {
-      console.log(event);
-      this.clickX = event.offsetX;
-      this.clickY = event.offsetY;
+      var x;
+      var y;
+      if (event.pageX || event.pageY) {
+        x = event.pageX;
+        y = event.pageY;
+      } else {
+        x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+        y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+      }
+      x -= this.canvas.offsetLeft;
+      y -= this.canvas.offsetTop;
+      this.clickX = x;
+      this.clickY = y;
     },
     clicked: function(entity) {
       var width;
@@ -209,8 +220,54 @@ define('game/renderer',
       this.drawScene(this.sceneRoot);
       this.cleanup();
     },
+    renderDebugInfo: function() {
+      var iter = this.redrawRectangles;
+      var count = 0;
+
+      while (iter) {
+        iter.alpha = 0.2;
+        iter = iter.next;
+      }
+
+      if (this.oldRedrawRectangles) {
+        iter = this.oldRedrawRectangles;
+        while (iter) {
+          if (!iter.next) {
+            iter.next = this.redrawRectangles;
+            break;
+          }
+          iter = iter.next;
+        }
+      } else {
+        this.oldRedrawRectangles = this.redrawRectangles;
+      }
+
+      iter = this.oldRedrawRectangles;
+
+      while (iter) {
+        ++count;
+        this.context.fillStyle = 'rgba(255, 0, 0, ' + iter.alpha + ')';
+        this.context.fillRect(iter.getX(), iter.getY(), iter.getWidth(), iter.getHeight());
+
+        iter.alpha -= 0.005;
+
+        while (iter.next && iter.next.alpha <= 0) {
+          iter.next = iter.next.next;
+        }
+
+        iter = iter.next;
+      }
+    },
     cleanup: function() {
-      this.rendered = true;
+
+      //this.debug = true;
+
+      if (this.debug) {
+        this.renderDebugInfo();
+      } else {
+        this.rendered = true;
+      }
+
       this.redrawRectangles = null;
       this.clickX = -1;
       this.clickY = -1;
@@ -244,11 +301,12 @@ define('game/renderer',
     pushRedrawRectangle: function(rect) {
       if (rect) {
         var iter = rect;
+        var top = rect.getTop() * this.graphicRatio * this.tileSize;
+        var left = rect.getLeft() * this.graphicRatio * this.tileSize;
+        var right = left + this.graphicRatio * rect.getWidth();
+        var bottom = top + this.graphicRatio * rect.getHeight();
 
-        rect.set(rect.getLeft() * this.graphicRatio * this.tileSize,
-                 rect.getTop() * this.graphicRatio * this.tileSize,
-                 rect.getRight() * this.graphicRatio * this.tileSize,
-                 rect.getBottom() * this.graphicRatio * this.tileSize);
+        rect.set(left, top, right, bottom);
 
         rect.next = this.redrawRectangles;
 
