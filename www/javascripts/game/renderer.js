@@ -151,6 +151,7 @@ define('game/renderer',
         drawRect.set(-w2, -h2, -w2 + w, -h2 + h);
         
         this.pushTranslation(new THREE.Vector2(w2, h2));
+        r && this.pushRotation(r);
 
         if (entity instanceof Graphic && (!this.rendered || this.shouldRedraw(drawRect))) {
           this.context.drawImage(
@@ -166,7 +167,10 @@ define('game/renderer',
           );
         }
 
+        r && this.popRotation();
         this.popTranslation();
+
+        return r;
       }
     },
     drawScene: function(node) {
@@ -184,16 +188,13 @@ define('game/renderer',
           if (iter instanceof Entity) {
             x = iter.position.x * this.graphicRatio * this.tileSize;
             y = iter.position.y * this.graphicRatio * this.tileSize;
-            r = iter.rotation;
           }
 
           this.pushTranslation(new THREE.Vector2(x, y));
-          r && this.pushRotation(r);
 
           this.draw(iter);
           this.drawScene(iter.firstChild);
 
-          r && this.popRotation();
           this.popTranslation();
 
         } while (iter = iter.nextSibling);
@@ -259,7 +260,6 @@ define('game/renderer',
       }
     },
     cleanup: function() {
-
       //this.debug = true;
 
       if (this.debug) {

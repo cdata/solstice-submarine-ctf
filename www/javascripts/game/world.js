@@ -1,6 +1,6 @@
 define('game/world', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass'], 
-       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight'], 
+       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight) {
   var World = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -94,30 +94,41 @@ define('game/world',
       this.walls = null;
       this.items = null;
     },
-    highlight: function(position, distance) {
+    placeHighlightTile: function(position, distance) {
       var tile;
       var neighbors;
 
-      if (this.is(position, World.tile.WALL) ||
-          this.is(position, World.tile.HIGHLIGHT)) {
+      if (this.is(position, World.tile.WALL)) {
         return;
       }
 
-      tile = new Graphic({
-        url: '/assets/images/highlight.png',
-        position: position.clone()
-      });
+      if (!this.is(position, World.tile.HIGHLIGHT)) {
+        tile = new Highlight({
+          position: position.clone()
+        });
 
-      this.highlights.append(tile).redraw();
-      this.or(position, World.tile.HIGHLIGHT);
+        this.highlights.append(tile).redraw();
+        this.or(position, World.tile.HIGHLIGHT);
+      }
       
       if (distance > 0) {
         neighbors = this.neighborPositions(position);
-
         while (neighbors.length) {
-          this.highlight(neighbors.pop(), distance - 1);
+          this.placeHighlightTile(neighbors.pop(), distance - 1);
         }
       }
+    },
+    highlight: function(position, distance) {
+      var iter;
+
+      this.clearHighlight();
+      this.placeHighlightTile(position, distance);
+
+      iter = this.highlights.firstChild;
+
+      do {
+        iter.invalidateNeighbors(this.neighbors(this.positionToIndex(iter.position)));
+      } while (iter = iter.nextSibling);
     },
     clearHighlight: function() {
       while (this.highlights.firstChild) {
@@ -153,7 +164,7 @@ define('game/world',
       this.tiles[this.positionToIndex(position)] = this.at(position) ^ value;
     },
     isInBounds: function(position) {
-      return this.positionToIndex(position) < this.tiles.length;
+      return position.x > -1 && position.y > -1 && this.positionToIndex(position) < this.tiles.length;
     },
     neighborPositions: function(position) {
       var neighbors = [];
@@ -203,7 +214,13 @@ define('game/world',
     tile: {
       SAND: 0,
       WALL: 1,
-      HIGHLIGHT: 3
+      YELLOW_FORK: 2,
+      RED_FORK: 4,
+      HERO_ALPHA: 8,
+      HERO_BETA: 16,
+      NEMESIS_ALPHA: 32,
+      NEMESIS_BETA: 64,
+      HIGHLIGHT: 128
     }
   });
 

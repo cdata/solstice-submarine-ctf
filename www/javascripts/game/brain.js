@@ -31,9 +31,7 @@ define('game/brain',
       this.interactive = false;
     },
     onClickHero: function(sub) {
-      this.clearSelection();
       this.select(sub);
-      this.world.clearHighlight();
       this.world.highlight(sub.position, 4);
     },
     clearSelection: function() {
@@ -46,6 +44,7 @@ define('game/brain',
       }
     },
     select: function(entity) {
+      this.clearSelection();
       this.selected.push(entity);
       if (entity.focus) {
         entity.focus();
