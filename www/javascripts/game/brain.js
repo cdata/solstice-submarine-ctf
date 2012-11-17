@@ -14,8 +14,9 @@ define('game/brain',
       }));
       this.selected = [];
 
-      this.world.heroAlpha.on('click', this.onClickHero, this);
-      this.world.heroBeta.on('click', this.onClickHero, this);
+      this.world.heroAlpha.on('click', this.selectHero, this);
+      this.world.heroBeta.on('click', this.selectHero, this);
+      this.world.on('click:highlight', this.selectMovePosition, this);
 
       this.enableInteraction();
     },
@@ -30,9 +31,13 @@ define('game/brain',
     disableInteraction: function() {
       this.interactive = false;
     },
-    onClickHero: function(sub) {
-      this.select(sub);
-      this.world.highlight(sub.position, 4);
+    selectHero: function(hero) {
+      this.select(hero);
+      this.world.highlight(hero.position, 4);
+    },
+    selectMovePosition: function(position) {
+      this.selected[0].move(position);
+      this.world.clearHighlight();
     },
     clearSelection: function() {
       var selected;

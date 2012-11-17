@@ -36,7 +36,7 @@ define('game/world',
         var position = this.indexToPosition(index);
         var tile;
 
-        if (type !== 1) {
+        if (type !== World.tile.WALL) {
           tile = this.floor.append(new Graphic({
             name: 'Sand',
             url: '/assets/images/floor.png',
@@ -45,20 +45,20 @@ define('game/world',
         }
 
         switch (type) {
-          case 0:
+          case World.tile.SAND:
             if (Math.random() > 0.8) {
               tile.append(new Grass());
             }
             break;
-          case 2:
-          case 4:
+          case World.tile.YELLOW_FORK:
+          case World.tile.RED_FORK:
             this.items.append(new Fork({
               color: type === 2 ? 'yellow' : 'red',
               position: position.clone()
             }))
             break;
-          case 8:
-          case 16:
+          case World.tile.HERO_ALPHA:
+          case World.tile.HERO_BETA:
             tile = this.characters.append(new Hero({
               color: type === 8 ? 'alpha' : 'beta',
               position: position.clone()
@@ -70,14 +70,14 @@ define('game/world',
               this.heroBeta = tile;
             }
             break;
-          case 32:
-          case 64:
+          case World.tile.NEMESIS_ALPHA:
+          case World.tile.NEMESIS_BETA:
             this.characters.append(new Nemesis({
               color: type === 32 ? 'alpha' : 'beta',
               position: position.clone()
             }));
             break;
-          case 1:
+          case World.tile.WALL:
             this.walls.append(new Wall({
               neighbors: this.neighbors(index),
               position: position
@@ -107,6 +107,8 @@ define('game/world',
           position: position.clone()
         });
 
+        tile.on('click', this.handleHighlightClick, this);
+
         this.highlights.append(tile).redraw();
         this.or(position, World.tile.HIGHLIGHT);
       }
@@ -135,8 +137,12 @@ define('game/world',
         this.xor(this.highlights.firstChild.position, 
                  World.tile.HIGHLIGHT);
         this.highlights.firstChild.redraw();
+        this.highlights.firstChild.off('click', this.handleHighlightClick, this);
         this.highlights.remove(this.highlights.firstChild);
       }
+    },
+    handleHighlightClick: function(tile) {
+      this.trigger('click:highlight', tile.position);
     },
     indexToPosition: function(index) {
       var position = new THREE.Vector2();

@@ -223,7 +223,6 @@ define('game/renderer',
     },
     renderDebugInfo: function() {
       var iter = this.redrawRectangles;
-      var count = 0;
 
       while (iter) {
         iter.alpha = 0.2;
@@ -246,7 +245,6 @@ define('game/renderer',
       iter = this.oldRedrawRectangles;
 
       while (iter) {
-        ++count;
         this.context.fillStyle = 'rgba(255, 0, 0, ' + iter.alpha + ')';
         this.context.fillRect(iter.getX(), iter.getY(), iter.getWidth(), iter.getHeight());
 
