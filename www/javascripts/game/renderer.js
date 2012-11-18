@@ -143,8 +143,8 @@ define('game/renderer',
         var y = entity.position.y * this.graphicRatio * this.tileSize;
         var w = entity.width * this.graphicRatio;
         var h = entity.height * this.graphicRatio;
-        var w2 = w / this.graphicRatio;
-        var h2 = h / this.graphicRatio;
+        var w2 = w / 2;
+        var h2 = h / 2;
         var r = entity.rotation;
         var drawRect = new THREE.Rectangle();
 
@@ -262,6 +262,7 @@ define('game/renderer',
 
       if (this.debug) {
         this.renderDebugInfo();
+        this.rendered = false;
       } else {
         this.rendered = true;
       }
@@ -272,6 +273,7 @@ define('game/renderer',
     },
     pushTranslation: function(translation) {
       if (translation) {
+        this.context.save();
         this.context.translate(translation.x, translation.y);
         this.translationOrigin.add(this.translationOrigin, translation);
         this.translations.push(translation);
@@ -280,11 +282,12 @@ define('game/renderer',
     popTranslation: function() {
       var translation = this.translations.pop();
       this.translationOrigin.sub(this.translationOrigin, translation);
-      this.context.translate(-translation.x, -translation.y);
+      this.context.restore();
       return translation;
     },
     pushRotation: function(rotation) {
       if (rotation) {
+        this.context.save();
         this.context.rotate(rotation);
         this.rotationOrigin += rotation;
         this.rotations.push(rotation);
@@ -293,7 +296,7 @@ define('game/renderer',
     popRotation: function() {
       var rotation = this.rotations.pop();
       this.rotationOrigin -= rotation;
-      this.context.rotate(-rotation);
+      this.context.restore();
       return rotation;
     },
     pushRedrawRectangle: function(rect) {

@@ -1,6 +1,6 @@
 define('game/entity/hero',
-       ['underscore', 'game/graphic/animated', 'tween'],
-       function(_, AnimatedGraphic, TWEEN) {
+       ['underscore', 'q', 'game/graphic/animated', 'tween'],
+       function(_, q, AnimatedGraphic, TWEEN) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -22,11 +22,82 @@ define('game/entity/hero',
     focus: function() {
       this.useFrameAnimation('idle-focus');
     },
-    move: function(destination) {
-      this.tween = new TWEEN.Tween(this.position)
-      .to({ x: destination.x, y: destination.y }, 500)
-      .onUpdate(_.bind(this.redraw, this))
-      .start();
+    moveTo: function(destination) {
+      var movement = q.resolve();
+      var unit = new THREE.Vector2(1, 0);
+      var destUnit = destination.clone().subSelf(this.position).normalize();
+      var rotation = (Math.acos(unit.dot(destUnit) / (unit.length() * destUnit.length())));
+
+      if (destUnit.y === -1)
+        rotation *= -1;
+
+      if (rotation !== this.rotation) {
+        console.log('Rotating from', this.rotation, 'to', rotation);
+        movement = movement.then(_.bind(function() {
+          var result = q.defer();
+          this.tween = new TWEEN.Tween(this)
+            .to({ rotation: rotation }, 100)
+            .onUpdate(_.bind(this.redraw, this))
+            .onComplete(function() {
+              result.resolve();
+            })
+            .start();
+          return result.promise;
+        }, this));
+      }
+
+      movement = movement.then(_.bind(function() {
+        var result = q.defer();
+        this.tween = new TWEEN.Tween(this.position)
+          .to({ x: destination.x, y: destination.y }, Math.abs(this.position.distanceTo(destination)) * 250)
+          .onUpdate(_.bind(this.redraw, this))
+          .onComplete(function() {
+            result.resolve();
+          })
+          .start();
+        return result.promise;
+      }, this));
+
+      return movement
+    },
+    walkPath: function(path) {
+      var start = this.position;
+      var waypoints = [];
+      var moves = q.resolve();
+      var lastNormal;
+      var normal;
+      var point;
+      var index;
+
+      for (index = 0; index < path.length; index++) {
+        if (!waypoints.length) {
+          waypoints.push(path[index].clone());
+        } else {
+          lastWaypoint = waypoints[waypoints.length - 1];
+          previousWaypoint = waypoints[waypoints.length -2] || start;
+
+          lastNormal = lastWaypoint.clone().subSelf(previousWaypoint).normalize();
+          normal = path[index].clone().subSelf(lastWaypoint).normalize();
+
+          if (lastNormal.equals(normal)) {
+            lastWaypoint.x += normal.x;
+            lastWaypoint.y += normal.y;
+          } else {
+            waypoints.push(path[index].clone());
+          }
+        }
+      }
+
+      while (point = waypoints.shift()) {
+        _.bind(function(point) {
+          moves = moves.then(_.bind(function() {
+            console.log('Moving to', point);
+            return this.moveTo(point);
+          }, this));
+        }, this)(point)
+      }
+
+      return moves;
     }
   });
 });

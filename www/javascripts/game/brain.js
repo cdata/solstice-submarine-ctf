@@ -36,7 +36,11 @@ define('game/brain',
       this.world.highlight(hero.position, 4);
     },
     selectMovePosition: function(position) {
-      this.selected[0].move(position);
+      var hero = this.selected[0];
+      var path = this.world.getPath(hero.position, position);
+
+      hero.walkPath(path);
+      //hero.move(position);
       this.world.clearHighlight();
     },
     clearSelection: function() {

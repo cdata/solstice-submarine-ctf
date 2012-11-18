@@ -170,7 +170,9 @@ define('game/world',
       this.tiles[this.positionToIndex(position)] = this.at(position) ^ value;
     },
     isInBounds: function(position) {
-      return position.x > -1 && position.y > -1 && this.positionToIndex(position) < this.tiles.length;
+      return position.x > -1 && position.x < this.width &&
+             position.y > -1 && position.y < this.height &&
+             this.positionToIndex(position) < this.tiles.length;
     },
     neighborPositions: function(position) {
       var neighbors = [];
@@ -215,6 +217,90 @@ define('game/world',
       position.x = position.x - 1;
 
       return result;
+    },
+    getCost: function(from, to) {
+      var interval = to.clone().subSelf(from).normalize();
+      var position = from.clone();
+      var cost = 0;
+
+      while (Math.round(position.x) !== to.x ||
+             Math.round(position.y) !== to.y) {
+        position.x += interval.x;
+        position.y += interval.y;
+
+        cost += this.is(new THREE.Vector2(Math.round(position.x), Math.round(position.y)),
+                        World.tile.WALL) ? 100 : 1;
+      }
+
+      cost += from.distanceTo(to);
+
+      console.log('Cost from', from, 'to', to, 'is', cost);
+
+      return cost;
+    },
+    getPath: function(from, to, list) {
+      var neighborPositions;
+      var neighborPosition;
+      var nextWeight;
+      var weight;
+      var next;
+      var index;
+
+      if (this.is(from, World.tile.WALL) ||
+          this.is(to, World.tile.WALL) ) {
+        console.log('Wall!');
+        return list;
+      }
+
+      console.log('Moving from', from, 'to', to);
+
+      neighborPositions = this.neighborPositions(from);
+      nextWeight = 1000;
+      
+      list = list || [];
+
+      if (list.length > 100) {
+        debugger;
+      }
+
+      while (neighborPosition = neighborPositions.pop()) {
+        if (this.is(neighborPosition, World.tile.WALL)) {
+          console.log(neighborPosition, 'is a wall!');
+          continue;
+        }
+
+        for (index = 0; index < list.length; ++index) {
+          if (list[index].equals(neighborPosition)) {
+            break;
+          }
+        }
+
+        if (index < list.length &&
+            list[index].equals(neighborPosition)) {
+          continue;
+        }
+
+        weight = this.getCost(neighborPosition, to);
+
+        if (!next || weight < nextWeight) {
+          next = neighborPosition; 
+          nextWeight = weight;
+        }
+      }
+      
+      if (next) {
+        console.log('Next is', next, 'with weight', nextWeight);
+        //window.app.currentView.game.renderer.context.fillStyle = '#0000ff';
+        //window.app.currentView.game.renderer.context.fillRect(
+          //next.x * 40 + 15, next.y * 40 + 15, 10, 10);
+        list.push(next);
+        
+        if (nextWeight > 0) {
+          list = this.getPath(next, to, list);
+        }
+      }
+
+      return list;
     }
   }, {
     tile: {
