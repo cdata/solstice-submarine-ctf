@@ -9,7 +9,8 @@ requirejs.config({
     'stats': '/javascripts/support/stats',
     'tween': '/javascripts/support/tween',
     'q': '/javascripts/support/q',
-    'handlebars': '/javascripts/support/handlebars'
+    'handlebars': '/javascripts/support/handlebars',
+    'persona': 'https://login.persona.org/include'
   },
   shim: {
     'backbone': {

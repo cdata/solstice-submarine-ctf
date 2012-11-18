@@ -30,6 +30,13 @@ canvas {
   perspective: 1000;
 }
 
+ul, ol, li, div, section {
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
 #Loader {
   display: block;
   position: fixed;
@@ -69,7 +76,70 @@ canvas {
   height: 8px;
   background: #ddd;
 }
-/*
-1194 / 597 px wide
-576 / 288 px tall
-*/
+
+#Start {
+  display: block;
+  position: relative;
+  width: 720px;
+  height: 360px;
+  margin: 0 auto;
+  background-color: #222;
+}
+
+#Start h1 {
+  margin: 0;
+  padding: 0;
+  height: 0;
+  font-size: 0;
+  visibility: hidden;
+  position: absolute;
+  top: -999px;
+  left: -999px;
+}
+
+#Start header {
+  display: block;
+  position: relative;
+  top: 30px;
+  margin: 0 auto;
+  background: url(/assets/images/logo.png);
+  background-size: 100%;
+  width: 224px;
+  height: 84px;
+}
+
+#Credits {
+  display: block;
+  position: fixed;
+  width: 100%;
+  bottom: 20px;
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 200;
+  color: #346794;
+}
+
+.route-start #Credits,
+.route-choose-mode #Credits,
+.route-play #Credits {
+  position: relative;
+  width: auto;
+  bottom: auto;
+  top: 20px;
+}
+
+#Credits > span {
+  margin: 10px;
+}
+
+#Credits a {
+  color: #6fb0d6;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+#Credits a:hover {
+  color: #f3bc45;
+  text-shadow: 1px 1px 0 #6fb0d6;
+}

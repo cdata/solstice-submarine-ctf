@@ -7,7 +7,7 @@ define('game',
     dispose: function() {
       this.renderer.dispose();
       this.engine.dispose();
-      this.map.dispose();
+      this.brain.dispose();
 
       this.renderer = null;
       this.engine = null;

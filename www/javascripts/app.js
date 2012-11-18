@@ -1,11 +1,13 @@
 define('app',
-       ['backbone', 'jquery', 'underscore', 'view/game', 'view/loader', 'model/assets', 'model/application', 'game/assets'],
-       function(Backbone, $, _, GameView, LoaderView, AssetsModel, ApplicationModel, assets) {
+       ['backbone', 'jquery', 'underscore', 'view/start', 'view/choosemode', 'view/game', 'view/loader', 'model/assets', 'model/application', 'model/user', 'game/assets'],
+       function(Backbone, $, _, StartView, ChooseModeView, GameView, LoaderView, AssetsModel, ApplicationModel, UserModel, assets) {
   var App = Backbone.Router.extend({
     routes: {
       '': 'index',
       'load': 'loadAssets',
-      'play': 'launchGame'
+      'play': 'launchGame',
+      'choose-mode': 'chooseMode',
+      'start': 'start'
     },
     initialize: function() {
       this.assetSources = new AssetsModel({
@@ -22,9 +24,12 @@ define('app',
           '/assets/images/blue-rocket.png',
           '/assets/images/font.png',
           '/assets/images/highlight.png',
+          '/assets/images/logo.png',
           '/assets/images/test.png'
         ]
       });
+
+      this.user = new UserModel();
       this.model = new ApplicationModel();
       this.$body = $('body');
 
@@ -40,23 +45,34 @@ define('app',
         loaderView.loader.on('done', this.onLoadComplete, this);
         loaderView.load();
       } else {
-        this.navigate('play', { trigger: true });
+        this.navigate('start', { trigger: true });
+      }
+    },
+    start: function() {
+      if (this.verifyLoaded()) {
+        this.setCurrentView(new StartView());
+      }
+    },
+    chooseMode: function() {
+      if (this.verifyLoaded()) {
+        this.setCurrentView(new ChooseModeView());
       }
     },
     launchGame: function() {
-      try {
-        if (this.model.get('assetsLoaded')) {
+      if (this.verifyLoaded()) {
+        try {
           var game = this.setCurrentView(new GameView());
           game.play();
-        } else {
-          this.navigate('load', { trigger: true });
+        } catch(e) {
+          console.error(e.stack || e.message || e.toString());
         }
-      } catch(e) {
-        console.error(e.stack || e.message || e.toString());
       }
     },
     removeCurrentView: function() {
       if (this.currentView) {
+        this.$body.removeClass(function(index, className) {
+          return className.match(/(route-(?:[^ ]*))/gi).join(' ');
+        });
         this.currentView.$el.remove();
         this.currentView.off();
         this.currentView.dispose();
@@ -66,6 +82,7 @@ define('app',
     setCurrentView: function(view) {
       if (this.currentView !== view) {
         this.removeCurrentView();
+        this.$body.addClass('route-' + Backbone.history.fragment);
         this.$body.prepend(view.render().$el);
         this.currentView = view;
       }
@@ -76,7 +93,13 @@ define('app',
     },
     onLoadComplete: function() {
       this.model.set('assetsLoaded', true);
-      this.navigate('play', { trigger: true });
+      this.navigate('start', { trigger: true });
+    },
+    verifyLoaded: function() {
+      if (!this.model.get('assetsLoaded')) {
+        this.navigate('load', { trigger: true });
+      }
+      return this.model.get('assetsLoaded');
     }
   });
 
