@@ -229,54 +229,38 @@ define('game/world',
         position.y += interval.y;
 
         cost += this.is(new THREE.Vector2(Math.round(position.x), Math.round(position.y)),
-                        World.tile.WALL) ? 100 : 1;
+                        World.tile.WALL) ? 1 : 0;
       }
 
       cost += from.distanceTo(to);
 
-      console.log('Cost from', from, 'to', to, 'is', cost);
-
       return cost;
     },
-    getPath: function(from, to, list) {
+    getNextStepCost: function(from, to, exclude) {
       var neighborPositions;
       var neighborPosition;
       var nextWeight;
       var weight;
       var next;
       var index;
-
-      if (this.is(from, World.tile.WALL) ||
-          this.is(to, World.tile.WALL) ) {
-        console.log('Wall!');
-        return list;
-      }
-
-      console.log('Moving from', from, 'to', to);
+      var exclusion;
 
       neighborPositions = this.neighborPositions(from);
       nextWeight = 1000;
       
-      list = list || [];
-
-      if (list.length > 100) {
-        debugger;
-      }
-
       while (neighborPosition = neighborPositions.pop()) {
         if (this.is(neighborPosition, World.tile.WALL)) {
-          console.log(neighborPosition, 'is a wall!');
           continue;
         }
 
-        for (index = 0; index < list.length; ++index) {
-          if (list[index].equals(neighborPosition)) {
+        for (index = 0, exclusion = exclude[index];
+             index < exclude.length; exclusion = exclude[++index]) {
+          if (exclusion.equals(neighborPosition)) {
             break;
           }
         }
 
-        if (index < list.length &&
-            list[index].equals(neighborPosition)) {
+        if (exclusion) {
           continue;
         }
 
@@ -287,16 +271,70 @@ define('game/world',
           nextWeight = weight;
         }
       }
+
+      return next ? nextWeight : 1000;
+    },
+    getPath: function(from, to, list, exclude) {
+      var neighborPositions;
+      var neighborPosition;
+      var nextWeight;
+      var weight;
+      var next;
+      var index;
+      var exclusion;
+
+      if (this.is(from, World.tile.WALL) ||
+          this.is(to, World.tile.WALL) ) {
+        return list;
+      }
+
+      neighborPositions = this.neighborPositions(from);
+      nextWeight = 1000;
+      
+      list = list || [];
+      exclude = exclude || [from];
+
+      while (neighborPosition = neighborPositions.pop()) {
+        if (neighborPosition.equals(to)) {
+          next = neighborPosition;
+          nextWeight = 0;
+          break;
+        }
+
+        if (this.is(neighborPosition, World.tile.WALL)) {
+          console.log(neighborPosition, 'is a wall!');
+          continue;
+        }
+
+        for (index = 0, exclusion = exclude[index];
+             index < exclude.length; exclusion = exclude[++index]) {
+          if (exclusion.equals(neighborPosition)) {
+            break;
+          }
+        }
+
+        if (exclusion) {
+          continue;
+        }
+
+        exclude.push(neighborPosition);
+
+        weight = this.getCost(neighborPosition, to) + this.getNextStepCost(neighborPosition, to, exclude);
+
+        if (!next || weight < nextWeight) {
+          next = neighborPosition; 
+          nextWeight = weight;
+        }
+      }
       
       if (next) {
-        console.log('Next is', next, 'with weight', nextWeight);
         //window.app.currentView.game.renderer.context.fillStyle = '#0000ff';
         //window.app.currentView.game.renderer.context.fillRect(
-          //next.x * 40 + 15, next.y * 40 + 15, 10, 10);
+            //next.x * 40 + 15, next.y * 40 + 15, 10, 10);
         list.push(next);
         
         if (nextWeight > 0) {
-          list = this.getPath(next, to, list);
+          list = this.getPath(next, to, list, exclude);
         }
       }
 
