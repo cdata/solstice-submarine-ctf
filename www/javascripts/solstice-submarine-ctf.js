@@ -1,6 +1,6 @@
 requirejs.config({
   baseUrl: '/javascripts',
-  urlArgs: 'bust=' + (new Date()).getTime(),
+  //urlArgs: 'bust=' + (new Date()).getTime(),
   paths: {
     'jquery': '/javascripts/support/jquery',
     'underscore': '/javascripts/support/lodash',

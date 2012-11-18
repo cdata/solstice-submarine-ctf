@@ -97,6 +97,9 @@ define('game/renderer',
     handleClick: function(event) {
       var x;
       var y;
+
+      event.preventDefault();
+
       if (event.pageX || event.pageY) {
         x = event.pageX;
         y = event.pageY;

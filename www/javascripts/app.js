@@ -5,9 +5,12 @@ define('app',
     routes: {
       '': 'index',
       'load': 'loadAssets',
-      'play': 'launchGame',
+      'play-online': 'launchOnlineGame',
+      'play-solo': 'launchSoloGame',
       'choose-mode': 'chooseMode',
-      'start': 'start'
+      'start': 'start',
+      'login': 'login',
+      'logout': 'logout'
     },
     initialize: function() {
       this.assetSources = new AssetsModel({
@@ -22,7 +25,8 @@ define('app',
           '/assets/images/yellow-sub.png',
           '/assets/images/red-rocket.png',
           '/assets/images/blue-rocket.png',
-          '/assets/images/font.png',
+          '/assets/images/font-yellow.png',
+          '/assets/images/font-white.png',
           '/assets/images/highlight.png',
           '/assets/images/logo.png',
           '/assets/images/test.png'
@@ -33,10 +37,31 @@ define('app',
       this.model = new ApplicationModel();
       this.$body = $('body');
 
+      this.user.on('change:id', this.invalidateId, this);
+
       Backbone.history.start();
     },
     index: function() {
       this.navigate('load', { trigger: true });
+    },
+    login: function() {
+      navigator.id.request({
+        siteName: 'The Solstice Submarine: CTF',
+        siteLogo: '/assets/images/logo-small.png',
+        oncancel: function() {
+          history.back();
+        }
+      });
+    },
+    logout: function() {
+      navigator.id.logout();
+    },
+    invalidateId: function() {
+      if (Backbone.history.fragment === 'login') {
+        history.back();
+      } else if (Backbone.history.fragment === 'logout') {
+        this.navigate('start', { trigger: true });
+      }
     },
     loadAssets: function() {
       if (!this.model.get('assetsLoaded')) {
@@ -55,14 +80,27 @@ define('app',
     },
     chooseMode: function() {
       if (this.verifyLoaded()) {
-        this.setCurrentView(new ChooseModeView());
+        this.setCurrentView(new ChooseModeView({
+          model: this.user
+        }));
       }
     },
-    launchGame: function() {
+    launchOnlineGame: function() {
+      if (this.verifyLoaded()) {
+        if (!this.user.get('id')) {
+          this.navigate('logout', { trigger: true });
+        }
+        try {
+          this.setCurrentView(new GameView()).play();
+        } catch(e) {
+          console.error(e.stack || e.message || e.toString());
+        }
+      }
+    },
+    launchSoloGame: function() {
       if (this.verifyLoaded()) {
         try {
-          var game = this.setCurrentView(new GameView());
-          game.play();
+          this.setCurrentView(new GameView()).play();
         } catch(e) {
           console.error(e.stack || e.message || e.toString());
         }

@@ -20,7 +20,7 @@ define('model/user',
           assertion: assertion
         },
         success: _.bind(function(res) {
-          var data = JSON.parse(res);
+          var data = res;
           this.set('id', data.email);
         }, this)
       });

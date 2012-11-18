@@ -32,7 +32,6 @@ define('game/entity/hero',
         rotation *= -1;
 
       if (rotation !== this.rotation) {
-        console.log('Rotating from', this.rotation, 'to', rotation);
         movement = movement.then(_.bind(function() {
           var result = q.defer();
           this.tween = new TWEEN.Tween(this)
@@ -91,7 +90,6 @@ define('game/entity/hero',
       while (point = waypoints.shift()) {
         _.bind(function(point) {
           moves = moves.then(_.bind(function() {
-            console.log('Moving to', point);
             return this.moveTo(point);
           }, this));
         }, this)(point)

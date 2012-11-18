@@ -4,6 +4,10 @@ body {
   font-weight: 500;
 }
 
+a {
+  text-decoration: none;
+}
+
 canvas {
   display: block;
   position: relative;
@@ -40,22 +44,26 @@ ul, ol, li, div, section {
 .game-text {
   display: inline-block;
   position: relative;
-  font-size: 0;
+  margin: 0;
+  padding: 0;
   color: transparent;
 }
 
 .game-text > span {
   display: inline-block;
   position: relative;
+  margin: 0;
+  padding: 0;
   width: 16px;
   height: 16px;
-  background-image: url(/assets/images/font.png);
-  background-size: 1232px 32px;
-  background-position-y: 16px;
+  background-image: url(/assets/images/font-white.png);
+  background-size: 1232px 16px;
+  vertical-align: middle;
 }
 
+a:hover > .game-text > span,
 a.game-text:hover > span {
-  background-position-y: 0px;
+  background-image: url(/assets/images/font-yellow.png);
 }
 
 #Loader {
@@ -98,7 +106,7 @@ a.game-text:hover > span {
   background: #ddd;
 }
 
-#Start {
+section:not(#Game):not(#Loader) {
   display: block;
   position: relative;
   width: 720px;
@@ -133,6 +141,47 @@ a.game-text:hover > span {
 #Start nav {
   display: block;
   position: relative;
+  text-align: center;
+}
+
+#Start nav li {
+  padding: 8px 0;
+}
+
+#Choose-Mode {
+  text-align: center;
+}
+
+#Choose-Mode > nav a > span {
+  display: block;
+  position: relative;
+}
+
+#Choose-Mode nav {
+  display: block;
+  position: relative;
+  margin-top: 30px;
+}
+
+#Choose-Mode li {
+  display: block;
+}
+
+#Choose-Mode a {
+  display: inline-block;
+  position: relative;
+  padding: 8px 8px 10px;
+  margin: 0 auto 8px;
+  border: 2px solid #6fb0d6;
+  background: #346794;
+}
+
+#Choose-Mode footer {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   text-align: center;
 }
 

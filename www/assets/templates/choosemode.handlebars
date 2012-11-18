@@ -1,0 +1,25 @@
+<header>
+  <h1 class="game-text">Choose game mode:</h1>
+</header>
+<nav>
+  <ul>
+    <li><a href="#{{#id}}play-online{{/id}}{{^id}}login{{/id}}">
+      <span class="game-text">Online Matchup</span>
+      {{#id}}
+        <span class="game-text">({{this}})</span>
+      {{/id}}
+      {{^id}}
+        <span class="game-text">(Requires Login)</span>
+      {{/id}}
+    </a></li>
+    <li><a href="#play-solo">
+      <span class="game-text">VS Easy CPU</span>
+      <span class="game-text">(Not as fun :/)</span>
+    </a></li>
+  </ul>
+</nav>
+{{#id}}
+  <footer>
+    <span class="game-text">Not {{this}}? </span><a href="#logout" class="game-text">Logout.</a>
+  </footer>
+{{/id}}

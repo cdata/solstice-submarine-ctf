@@ -302,7 +302,6 @@ define('game/world',
         }
 
         if (this.is(neighborPosition, World.tile.WALL)) {
-          console.log(neighborPosition, 'is a wall!');
           continue;
         }
 

@@ -4,7 +4,7 @@ define('game/text',
   $.fn.gameText = function() {
     this.filter('.game-text').each(function(index, element) {
       var $el = $(element);
-      var text = $el.text().toUpperCase();
+      var text = $el.text();
       var index;
       var letter;
 
@@ -12,7 +12,7 @@ define('game/text',
 
       for (index = 0; index < text.length; index++) {
         letter = $('<span>' + text.charAt(index) + '</span>');
-        letter.css('backgroundPositionX', (text.charCodeAt(index) - 32) * -16 + 'px');
+        letter.css('backgroundPosition', (text.toUpperCase().charCodeAt(index) - 32) * -16 + 'px 0');
         $el.append(letter);
       }
     });
