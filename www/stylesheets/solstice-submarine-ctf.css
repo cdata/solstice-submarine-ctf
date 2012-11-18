@@ -37,6 +37,27 @@ ul, ol, li, div, section {
   padding: 0;
 }
 
+.game-text {
+  display: inline-block;
+  position: relative;
+  font-size: 0;
+  color: transparent;
+}
+
+.game-text > span {
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  background-image: url(/assets/images/font.png);
+  background-size: 1232px 32px;
+  background-position-y: 16px;
+}
+
+a.game-text:hover > span {
+  background-position-y: 0px;
+}
+
 #Loader {
   display: block;
   position: fixed;
@@ -100,12 +121,19 @@ ul, ol, li, div, section {
 #Start header {
   display: block;
   position: relative;
-  top: 30px;
   margin: 0 auto;
-  background: url(/assets/images/logo.png);
+  padding: 40px 0;
+  background: url(/assets/images/logo.png) no-repeat;
+  background-position: center center;
   background-size: 100%;
   width: 224px;
   height: 84px;
+}
+
+#Start nav {
+  display: block;
+  position: relative;
+  text-align: center;
 }
 
 #Credits {
