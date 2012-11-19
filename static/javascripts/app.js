@@ -35,7 +35,7 @@ define('app',
 
       this.user = new UserModel();
       this.model = new ApplicationModel();
-      this.$body = $('body');
+      this.$body = $('body').addClass('solsticesub-ctf');
 
       this.user.on('change:id', this.invalidateId, this);
 
@@ -53,7 +53,13 @@ define('app',
       });
     },
     logout: function() {
+      var manualRedirect = this.user.get('id') === null;
+
       navigator.id.logout();
+
+      if (manualRedirect) {
+        this.navigate('start', { trigger: true });
+      }
     },
     invalidateId: function() {
       if (Backbone.history.fragment === 'login') {

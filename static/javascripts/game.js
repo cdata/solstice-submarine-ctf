@@ -1,13 +1,13 @@
 define('game', 
-       ['three', 'game/object', 'game/loader', 'game/renderer', 'game/engine', 'game/brain'],
-       function(THREE, GameObject, Loader, Renderer, Engine, Brain) {
+       ['three', 'game/object', 'game/loader', 'game/renderer', 'game/engine', 'game/interface'],
+       function(THREE, GameObject, Loader, Renderer, Engine, Interface) {
   var Game = GameObject.extend({
     initialize: function() {
     },
     dispose: function() {
       this.renderer.dispose();
       this.engine.dispose();
-      this.brain.dispose();
+      this.interface.dispose();
 
       this.renderer = null;
       this.engine = null;
@@ -16,7 +16,7 @@ define('game',
     start: function() {
       this.renderer = new Renderer();
 
-      this.brain = new Brain({
+      this.interface = new Interface({
         scene: this.renderer.sceneRoot
       });
 

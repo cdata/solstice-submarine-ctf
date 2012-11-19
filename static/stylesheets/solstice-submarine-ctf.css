@@ -39,6 +39,7 @@ ul, ol, li, div, section {
   position: relative;
   margin: 0;
   padding: 0;
+  font-size: 0;
 }
 
 .game-text {
@@ -46,6 +47,7 @@ ul, ol, li, div, section {
   position: relative;
   margin: 0;
   padding: 0;
+  font-size: 0;
   color: transparent;
 }
 
@@ -76,6 +78,7 @@ a.game-text:hover > span {
 
   background-color: #333;
   color: #ddd;
+  z-index: 10;
 }
 
 #Loader > div {
@@ -106,11 +109,11 @@ a.game-text:hover > span {
   background: #ddd;
 }
 
-section:not(#Game):not(#Loader) {
+section:not(#Loader) {
   display: block;
   position: relative;
   width: 720px;
-  height: 360px;
+  height: 440px;
   margin: 0 auto;
   background-color: #222;
 }
@@ -152,6 +155,10 @@ section:not(#Game):not(#Loader) {
   text-align: center;
 }
 
+#Choose-Mode header {
+  padding: 40px 0;
+}
+
 #Choose-Mode > nav a > span {
   display: block;
   position: relative;
@@ -160,7 +167,6 @@ section:not(#Game):not(#Loader) {
 #Choose-Mode nav {
   display: block;
   position: relative;
-  margin-top: 30px;
 }
 
 #Choose-Mode li {
@@ -170,7 +176,7 @@ section:not(#Game):not(#Loader) {
 #Choose-Mode a {
   display: inline-block;
   position: relative;
-  padding: 8px 8px 10px;
+  padding: 8px;
   margin: 0 auto 8px;
   border: 2px solid #6fb0d6;
   background: #346794;
@@ -185,25 +191,19 @@ section:not(#Game):not(#Loader) {
   text-align: center;
 }
 
-#Credits {
+.solsticesub-ctf #Credits {
   display: block;
-  position: fixed;
-  width: 100%;
-  bottom: 20px;
+}
+
+#Credits {
+  display: none;
+  position: relative;
+  top: 20px;
   text-align: center;
   font-style: italic;
   font-size: 14px;
   font-weight: 200;
   color: #346794;
-}
-
-.route-start #Credits,
-.route-choose-mode #Credits,
-.route-play #Credits {
-  position: relative;
-  width: auto;
-  bottom: auto;
-  top: 20px;
 }
 
 #Credits > span {
@@ -220,3 +220,93 @@ section:not(#Game):not(#Loader) {
   color: #f3bc45;
   text-shadow: 1px 1px 0 #6fb0d6;
 }
+
+
+@media (max-width: 539px) {
+  .game-text > span {
+    width: 8px;
+    height: 8px;
+    background-size: 616px 8px;
+  }
+
+  section:not(#Loader) {
+    display: block;
+    position: relative;
+    width: 360px;
+    height: 220px;
+    margin: 0 auto;
+    background-color: #222;
+  }
+
+  #Start header {
+    padding: 20px 0;
+    width: 112px;
+    height: 42px;
+  }
+
+  #Start nav li {
+    padding: 4px 0;
+  }
+
+  #Choose-Mode header {
+    padding: 20px 0;
+  }
+
+  #Credits {
+    top: 5px;
+  }
+
+  #Credits > span {
+    display: block;
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 540px) and (max-width: 719px) {
+  .game-text > span {
+    width: 12px;
+    height: 12px;
+    background-size: 924px 12px;
+  }
+
+  section:not(#Loader) {
+    display: block;
+    position: relative;
+    width: 540px;
+    height: 330px;
+    margin: 0 auto;
+    background-color: #222;
+  }
+
+  #Start header {
+    padding: 30px 0;
+    width: 178px;
+    height: 63px;
+  }
+
+  #Start nav li {
+    padding: 6px 0;
+  }
+
+  #Choose-Mode header {
+    padding: 30px 0;
+  }
+
+  #Credits {
+    top: 10px;
+  }
+
+  #Credits > span {
+    display: block;
+  }
+}
+
+@media (min-width: 720px) and (max-width: 1599px) {
+
+}
+
+@media (min-width: 1600px) {
+
+}
+
+

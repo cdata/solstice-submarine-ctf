@@ -28,4 +28,27 @@ define('game/polyfill', ['underscore'], function(_) {
     //return 1;
     return ratio;
   })();
+
+  // Adapted from http://html5-demos.appspot.com/static/fullscreen.html
+  /*document.cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.exitFullscreen;
+
+  function enterFullscreen(elem) {
+    console.log("enterFullscreen()");
+    if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else {
+      if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else {
+        elem.requestFullscreen();
+      }
+    }
+  }
+
+  function exitFullscreen() {
+    console.log("exitFullscreen()");
+    document.cancelFullScreen();
+  }*/
+
+
 });

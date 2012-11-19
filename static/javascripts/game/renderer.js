@@ -16,8 +16,8 @@ define('game/renderer',
 
       if (window.matchMedia) {
         this.matchTinyScreen = window.matchMedia('(max-width: 539px)');
-        this.matchSmallScreen = window.matchMedia('(max-width: 719px)');
-        this.matchMediumScreen = window.matchMedia('(max-width: 1599px)');
+        this.matchSmallScreen = window.matchMedia('(min-width: 540px) and (max-width: 719px)');
+        this.matchMediumScreen = window.matchMedia('(min-width: 720px) and (max-width: 1599px)');
         this.matchLargeScreen = window.matchMedia('(min-width: 1600px)');
 
         this.boundInvalidateRatios = _.bind(this.invalidateRatios, this);
@@ -107,8 +107,8 @@ define('game/renderer',
         x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
         y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
       }
-      x -= this.canvas.offsetLeft;
-      y -= this.canvas.offsetTop;
+      x -= this.canvas.parentNode.offsetLeft;
+      y -= this.canvas.parentNode.offsetTop;
       this.clickX = x;
       this.clickY = y;
     },
@@ -364,11 +364,14 @@ define('game/renderer',
       if (window.matchMedia) {
         if (this.matchTinyScreen.matches) {
           this.graphicRatio = 1;
-        } else if (this.matchSmallScreen.matches) {
+        }
+        if (this.matchSmallScreen.matches) {
           this.graphicRatio = 1.5;
-        } else if (this.matchMediumScreen.matches) {
+        }
+        if (this.matchMediumScreen.matches) {
           this.graphicRatio = 2;
-        } else if (this.matchLargeScreen.matches) {
+        }
+        if (this.matchLargeScreen.matches) {
           this.graphicRatio = 3;
         }
       }
