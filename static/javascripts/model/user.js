@@ -14,7 +14,7 @@ define('model/user',
     },
     login: function(assertion) {
       $.ajax({
-        url: '/persona/verify',
+        url: 'persona/verify',
         type: 'POST',
         data: {
           assertion: assertion
@@ -27,7 +27,7 @@ define('model/user',
     },
     logout: function() {
       $.ajax({
-        url: '/persona/logout',
+        url: 'persona/logout',
         type: 'POST',
         success: _.bind(function() {
           this.set('id', null);

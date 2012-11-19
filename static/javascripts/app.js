@@ -15,21 +15,21 @@ define('app',
     initialize: function() {
       this.assetSources = new AssetsModel({
         data: [
-          '/assets/data/maps/seabound.json'
+          'assets/data/maps/seabound.json'
         ],
         images: [
-          '/assets/images/floor.png',
-          '/assets/images/items.png',
-          '/assets/images/walls.png',
-          '/assets/images/teal-sub.png',
-          '/assets/images/yellow-sub.png',
-          '/assets/images/red-rocket.png',
-          '/assets/images/blue-rocket.png',
-          '/assets/images/font-yellow.png',
-          '/assets/images/font-white.png',
-          '/assets/images/highlight.png',
-          '/assets/images/logo.png',
-          '/assets/images/test.png'
+          'assets/images/floor.png',
+          'assets/images/items.png',
+          'assets/images/walls.png',
+          'assets/images/teal-sub.png',
+          'assets/images/yellow-sub.png',
+          'assets/images/red-rocket.png',
+          'assets/images/blue-rocket.png',
+          'assets/images/font-yellow.png',
+          'assets/images/font-white.png',
+          'assets/images/highlight.png',
+          'assets/images/logo.png',
+          'assets/images/test.png'
         ]
       });
 
@@ -47,7 +47,6 @@ define('app',
     login: function() {
       navigator.id.request({
         siteName: 'The Solstice Submarine: CTF',
-        siteLogo: '/assets/images/logo-small.png',
         oncancel: function() {
           history.back();
         }

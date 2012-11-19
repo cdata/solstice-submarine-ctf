@@ -4,7 +4,7 @@ define('game/sprite',
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        url: '/assets/images/test.png',
+        url: 'assets/images/test.png',
         width: 80,
         height: 80
       });

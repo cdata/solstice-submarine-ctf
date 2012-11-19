@@ -1,15 +1,15 @@
 requirejs.config({
-  baseUrl: '/javascripts',
+  baseUrl: 'javascripts',
   //urlArgs: 'bust=' + (new Date()).getTime(),
   paths: {
-    'jquery': '/javascripts/support/jquery',
-    'underscore': '/javascripts/support/lodash',
-    'backbone': '/javascripts/support/backbone',
-    'three': '/javascripts/support/three',
-    'stats': '/javascripts/support/stats',
-    'tween': '/javascripts/support/tween',
-    'q': '/javascripts/support/q',
-    'handlebars': '/javascripts/support/handlebars',
+    'jquery': 'support/jquery',
+    'underscore': 'support/lodash',
+    'backbone': 'support/backbone',
+    'three': 'support/three',
+    'stats': 'support/stats',
+    'tween': 'support/tween',
+    'q': 'support/q',
+    'handlebars': 'support/handlebars',
     'persona': 'https://login.persona.org/include'
   },
   shim: {

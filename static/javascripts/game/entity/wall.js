@@ -5,7 +5,7 @@ define('game/entity/wall',
     initialize: function(options) {
       options = _.defaults(options || {}, {
         name: 'Wall',
-        url: '/assets/images/walls.png',
+        url: 'assets/images/walls.png',
         neighbors: {
           top: 0,
           left: 0,

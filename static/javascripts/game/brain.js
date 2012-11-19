@@ -4,7 +4,7 @@ define('game/brain',
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        worldUrl: '/assets/data/maps/seabound.json',
+        worldUrl: 'assets/data/maps/seabound.json',
         scene: new Node()
       });
 

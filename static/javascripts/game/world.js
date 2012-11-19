@@ -5,7 +5,7 @@ define('game/world',
     initialize: function(options) {
       options = _.defaults(options || {}, {
         name: 'World',
-        url: '/assets/data/seabound.json'
+        url: 'assets/data/seabound.json'
       });
 
       Entity.prototype.initialize.call(this, options);
@@ -39,7 +39,7 @@ define('game/world',
         if (type !== World.tile.WALL) {
           tile = this.floor.append(new Graphic({
             name: 'Sand',
-            url: '/assets/images/floor.png',
+            url: 'assets/images/floor.png',
             position: position
           }));
         }

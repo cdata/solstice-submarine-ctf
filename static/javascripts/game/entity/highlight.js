@@ -4,7 +4,7 @@ define('game/entity/highlight',
   return Graphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        url: '/assets/images/highlight.png'
+        url: 'assets/images/highlight.png'
       });
       Graphic.prototype.initialize.call(this, options);
     },

@@ -8,7 +8,7 @@ define('game/graphic',
         width: 20,
         height: 20,
         frame: 0,
-        url: '/assets/images/test.png',
+        url: 'assets/images/test.png',
         spriteScale: 4
       });
 

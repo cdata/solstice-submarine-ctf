@@ -5,7 +5,7 @@ define('game/entity/hero',
     initialize: function(options) {
       options = _.defaults(options || {}, {
         name: 'Hero',
-        url: '/assets/images/yellow-sub.png',
+        url: 'assets/images/yellow-sub.png',
         frameInterval: 700
       });
 

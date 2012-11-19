@@ -56,14 +56,14 @@ ul, ol, li, div, section {
   padding: 0;
   width: 16px;
   height: 16px;
-  background-image: url(/assets/images/font-white.png);
+  background-image: url(../assets/images/font-white.png);
   background-size: 1232px 16px;
   vertical-align: middle;
 }
 
 a:hover > .game-text > span,
 a.game-text:hover > span {
-  background-image: url(/assets/images/font-yellow.png);
+  background-image: url(../assets/images/font-yellow.png);
 }
 
 #Loader {
@@ -131,7 +131,7 @@ section:not(#Game):not(#Loader) {
   position: relative;
   margin: 0 auto;
   padding: 40px 0;
-  background: url(/assets/images/logo.png) no-repeat;
+  background: url(../assets/images/logo.png) no-repeat;
   background-position: center center;
   background-size: 100%;
   width: 224px;

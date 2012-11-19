@@ -5,7 +5,7 @@ define('game/entity/grass',
     initialize: function(options) {
       options = _.defaults(options || {}, {
         name: 'Grass',
-        url: '/assets/images/floor.png',
+        url: 'assets/images/floor.png',
         frameInterval: 1000
       });
 

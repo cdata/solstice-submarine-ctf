@@ -21,9 +21,9 @@ define('game/engine',
       this.stop();
       this.stats.$domElement.remove();
 
-      delete this.stats;
-      delete this.boundNextFrame;
-      delete this.clock;
+      this.stats = null;
+      this.boundNextFrame = null;
+      this.clock = null;
     },
     start: function() {
       this.running = true;
