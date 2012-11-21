@@ -47,9 +47,16 @@ define('game/entity/hero',
 
       movement = movement.then(_.bind(function() {
         var result = q.defer();
-        this.tween = new TWEEN.Tween(this.position)
+        var positionProxy = this.position.clone();
+        this.tween = new TWEEN.Tween(positionProxy)
           .to({ x: destination.x, y: destination.y }, Math.abs(this.position.distanceTo(destination)) * 250)
-          .onUpdate(_.bind(this.redraw, this))
+          //.onUpdate(_.bind(this.redraw, this))
+          .onUpdate(_.bind(function() {
+            this.redraw();
+            this.position.x = positionProxy.x;
+            this.position.y = positionProxy.y;
+            this.redraw();
+          }, this))
           .onComplete(function() {
             result.resolve();
           })

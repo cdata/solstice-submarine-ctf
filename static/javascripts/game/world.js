@@ -28,6 +28,9 @@ define('game/world',
       this.highlights = this.append(new Entity({
         name: 'Highlights'
       }));
+      this.waypoints = this.append(new Entity({
+        name: 'Waypoints'
+      }));
       this.characters = this.append(new Entity({
         name: 'Characters'
       }));
@@ -349,7 +352,8 @@ define('game/world',
       HERO_BETA: 16,
       NEMESIS_ALPHA: 32,
       NEMESIS_BETA: 64,
-      HIGHLIGHT: 128
+      HIGHLIGHT: 128,
+      WAYPOINT: 256
     }
   });
 

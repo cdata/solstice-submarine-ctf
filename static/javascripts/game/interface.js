@@ -16,9 +16,9 @@ define('game/interface',
 
       this.world.heroAlpha.on('click', this.selectHero, this);
       this.world.heroBeta.on('click', this.selectHero, this);
-      this.world.on('click:highlight', this.selectMovePosition, this);
+      this.world.on('click:highlight', this.selectWaypointPosition, this);
 
-      this.enableInteraction();
+      this.disableInteraction();
     },
     dispose: function() {
       this.world.dispose();
@@ -30,17 +30,22 @@ define('game/interface',
     },
     disableInteraction: function() {
       this.interactive = false;
+      this.clearSelection();
     },
     selectHero: function(hero) {
+      if (!this.interactive) {
+        return;
+      }
+
       this.select(hero);
       this.world.highlight(hero.position, 4);
     },
-    selectMovePosition: function(position) {
-      var hero = this.selected[0];
+    selectWaypointPosition: function(position) {
+      /*var hero = this.selected[0];
       var path = this.world.getPath(hero.position, position);
 
       hero.walkPath(path);
-      this.world.clearHighlight();
+      this.clearSelection();*/
     },
     clearSelection: function() {
       var selected;
@@ -50,6 +55,7 @@ define('game/interface',
           selected.blur();
         }
       }
+      this.world.clearHighlight();
     },
     select: function(entity) {
       this.clearSelection();

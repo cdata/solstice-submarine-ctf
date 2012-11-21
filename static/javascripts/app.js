@@ -9,7 +9,6 @@ define('app',
       'play-solo': 'launchSoloGame',
       'choose-mode': 'chooseMode',
       'start': 'start',
-      'login': 'login',
       'logout': 'logout'
     },
     initialize: function() {
@@ -29,7 +28,8 @@ define('app',
           'assets/images/font-white.png',
           'assets/images/highlight.png',
           'assets/images/logo.png',
-          'assets/images/test.png'
+          'assets/images/test.png',
+          'assets/images/waypoint.png'
         ]
       });
 
@@ -86,7 +86,8 @@ define('app',
     chooseMode: function() {
       if (this.verifyLoaded()) {
         this.setCurrentView(new ChooseModeView({
-          model: this.user
+          model: this.user,
+          app: this
         }));
       }
     },
@@ -96,7 +97,9 @@ define('app',
           this.navigate('logout', { trigger: true });
         }
         try {
-          this.setCurrentView(new GameView()).play();
+          this.setCurrentView(new GameView({
+            app: this
+          })).play();
         } catch(e) {
           console.error(e.stack || e.message || e.toString());
         }
@@ -105,7 +108,9 @@ define('app',
     launchSoloGame: function() {
       if (this.verifyLoaded()) {
         try {
-          this.setCurrentView(new GameView()).play();
+          this.setCurrentView(new GameView({
+            app: this
+          })).play();
         } catch(e) {
           console.error(e.stack || e.message || e.toString());
         }
