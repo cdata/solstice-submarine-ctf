@@ -22,8 +22,8 @@ define('view/game/ui',
       this.model.on('change', this.invalidate, this);
     },
     dispose: function() {
-      this.state.off();
-      this.state = null;
+      this.model.off();
+      this.model = null;
     },
     render: function() {
       this.$el.html(templates.ui());

@@ -1,6 +1,6 @@
 define('game/renderer',
-       ['game/object', 'game/node', 'game/entity', 'game/graphic', 'three', 'underscore', 'jquery', 'backbone'],
-       function(GameObject, Node, Entity, Graphic, THREE, _, $, Backbone) {
+       ['game/object', 'game/node', 'game/entity', 'game/graphic', 'game/vector2', 'game/rectangle', 'underscore', 'jquery', 'backbone'],
+       function(GameObject, Node, Entity, Graphic, Vector2, Rectangle, _, $, Backbone) {
 
   var Renderer = GameObject.extend({
     initialize: function(options) {
@@ -36,7 +36,7 @@ define('game/renderer',
       this.redrawRectangles = null;
       this.translations = [];
       this.rotations = [];
-      this.translationOrigin = new THREE.Vector2();
+      this.translationOrigin = new Vector2();
       this.rotationOrigin = 0;
       this.clickX = -1;
       this.clickY = -1;
@@ -149,11 +149,9 @@ define('game/renderer',
         var w2 = w / 2;
         var h2 = h / 2;
         var r = entity.rotation;
-        var drawRect = new THREE.Rectangle();
+        var drawRect = new Rectangle(-w2, -h2, -w2 + w, -h2 + h);
 
-        drawRect.set(-w2, -h2, -w2 + w, -h2 + h);
-        
-        this.pushTranslation(new THREE.Vector2(w2, h2));
+        this.pushTranslation(new Vector2(w2, h2));
         r && this.pushRotation(r);
 
         if (entity instanceof Graphic && (!this.rendered || this.shouldRedraw(drawRect))) {
@@ -193,7 +191,7 @@ define('game/renderer',
             y = iter.position.y * this.graphicRatio * this.tileSize;
           }
 
-          this.pushTranslation(new THREE.Vector2(x, y));
+          this.pushTranslation(new Vector2(x, y));
 
           this.draw(iter);
           this.drawScene(iter.firstChild);
@@ -278,13 +276,13 @@ define('game/renderer',
       if (translation) {
         this.context.save();
         this.context.translate(translation.x, translation.y);
-        this.translationOrigin.add(this.translationOrigin, translation);
+        this.translationOrigin.add(translation);
         this.translations.push(translation);
       }
     },
     popTranslation: function() {
       var translation = this.translations.pop();
-      this.translationOrigin.sub(this.translationOrigin, translation);
+      this.translationOrigin.subtract(translation);
       this.context.restore();
       return translation;
     },
@@ -305,8 +303,8 @@ define('game/renderer',
     pushRedrawRectangle: function(rect) {
       if (rect) {
         var iter = rect;
-        var top = rect.getTop() * this.graphicRatio * this.tileSize;
-        var left = rect.getLeft() * this.graphicRatio * this.tileSize;
+        var top = rect.top * this.graphicRatio * this.tileSize;
+        var left = rect.left * this.graphicRatio * this.tileSize;
         var right = left + this.graphicRatio * rect.getWidth();
         var bottom = top + this.graphicRatio * rect.getHeight();
 
@@ -316,7 +314,7 @@ define('game/renderer',
 
         while (iter.next) {
           if (iter.next.intersects(rect)) {
-            rect.addRectangle(iter.next);
+            rect.add(iter.next);
             iter.next = iter.next.next;
           } else {
             iter = iter.next;
@@ -327,11 +325,11 @@ define('game/renderer',
       }
     },
     adjusted: function(rect) {
-      var adjusted = new THREE.Rectangle();
-      adjusted.set(rect.getLeft() + this.translationOrigin.x,
-               rect.getTop() + this.translationOrigin.y,
-               rect.getRight() + this.translationOrigin.x,
-               rect.getBottom() + this.translationOrigin.y);
+      var adjusted = new Rectangle();
+      adjusted.set(rect.left + this.translationOrigin.x,
+               rect.top + this.translationOrigin.y,
+               rect.right + this.translationOrigin.x,
+               rect.bottom + this.translationOrigin.y);
       return adjusted;
     },
     shouldRedraw: function(rect) {

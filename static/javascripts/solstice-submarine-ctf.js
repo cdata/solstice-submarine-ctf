@@ -1,16 +1,16 @@
 requirejs.config({
   baseUrl: 'javascripts',
-  urlArgs: 'bust=' + (new Date()).getTime(),
+  //urlArgs: 'bust=' + (new Date()).getTime(),
   paths: {
     'jquery': 'support/jquery',
     'underscore': 'support/lodash',
     'backbone': 'support/backbone',
-    'three': 'support/three',
     'stats': 'support/stats',
     'tween': 'support/tween',
     'q': 'support/q',
     'handlebars': 'support/handlebars',
-    'persona': 'https://login.persona.org/include'
+    'persona': 'https://login.persona.org/include',
+    'io': 'https://socket.solsticesub.com/socket.io/socket.io'
   },
   shim: {
     'backbone': {
@@ -23,9 +23,6 @@ requirejs.config({
     'stats': {
       exports: 'Stats'
     },
-    'three': {
-      exports: 'THREE'
-    },
     'tween': {
       exports: 'TWEEN'
     },
@@ -37,6 +34,9 @@ requirejs.config({
       exportsFn: function() {
         return Handlebars.templates;
       }
+    },
+    'io': {
+      exports: 'io'
     }
   }
 });

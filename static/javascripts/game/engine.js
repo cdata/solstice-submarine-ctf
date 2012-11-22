@@ -1,6 +1,6 @@
 define('game/engine', 
-       ['three', 'tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/polyfill'], 
-       function(THREE, TWEEN, Stats, Backbone, $, _, GameObject) {
+       ['tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/clock', 'game/polyfill'], 
+       function(TWEEN, Stats, Backbone, $, _, GameObject, Clock) {
   var Engine = GameObject.extend({
     initialize: function() {
       this.stats = new Stats();
@@ -14,7 +14,7 @@ define('game/engine',
       this.stats.$domElement.prependTo($('body'));
 
       this.boundNextFrame = _.bind(this.nextFrame, this);
-      this.clock = new THREE.Clock(false);
+      this.clock = new Clock(false);
       this.stop();
     },
     dispose: function() {

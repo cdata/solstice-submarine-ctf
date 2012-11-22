@@ -1,6 +1,6 @@
 define('game/assets', 
-       ['underscore', 'three', 'game/object'],
-       function(_, THREE, GameObject) {
+       ['underscore', 'game/object'],
+       function(_, GameObject) {
   var Assets = GameObject.extend({
     initialize: function() {
       this.assets = {};
@@ -10,12 +10,6 @@ define('game/assets',
     },
     registerAsset: function(url, asset) {
       this.assets[url] = asset;
-    },
-    getTexture: function(url) {
-      var image = this.getImage(url);
-      var texture = new THREE.Texture(image);
-      texture.needsUpdate = true;
-      return texture;
     },
     getData: function(url) {
       return this.cloneData(this.assets[url]);

@@ -1,18 +1,18 @@
 define('game/graphic/animated',
-       ['three', 'underscore', 'game/graphic'],
-       function(THREE, _, Graphic) {
+       ['underscore', 'game/graphic', 'game/vector2', 'game/clock'],
+       function(_, Graphic, Vector2, Clock) {
   return Graphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
         frameInterval: 8
       });
       Graphic.prototype.initialize.call(this, options);
-      this.clock = new THREE.Clock();
+      this.clock = new Clock();
       this.frameInterval = options.frameInterval;
       this.frameTime = 0;
       this.frame = 0;
       this.animations = {
-        default: new THREE.Vector2(0, 24)
+        default: new Vector2(0, 24)
       };
       this.currentAnimation = 'default';
     },
@@ -51,7 +51,7 @@ define('game/graphic/animated',
       this.redraw();
     },
     defineFrameAnimation: function(id, startFrame, endFrame) {
-      this.animations[id] = new THREE.Vector2(startFrame, endFrame);
+      this.animations[id] = new Vector2(startFrame, endFrame);
     }
   });
 });

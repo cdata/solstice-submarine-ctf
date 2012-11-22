@@ -1,6 +1,6 @@
 define('game/graphic', 
-       ['underscore', 'game/entity', 'game/sprite'],
-       function(_, Entity, Sprite) {
+       ['underscore', 'game/entity', 'game/sprite', 'game/rectangle'],
+       function(_, Entity, Sprite, Rectangle) {
   var Graphic = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -35,11 +35,10 @@ define('game/graphic',
       this.sprite = null;
     },
     redraw: function() {
-      var drawRect = new THREE.Rectangle();
-      drawRect.set(this.position.x, 
-                   this.position.y,
-                   this.position.x + this.width,
-                   this.position.y + this.height);
+      var drawRect = new Rectangle(this.position.x, 
+                                   this.position.y,
+                                   this.position.x + this.width,
+                                   this.position.y + this.height);
 
       this.trigger('draw', drawRect);
     }

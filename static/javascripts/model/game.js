@@ -1,10 +1,12 @@
 define('model/game',
        ['backbone'],
        function(Backbone) {
-  return Backbone.extend({
+  return Backbone.Model.extend({
     defaults: {
-      heroScore: 0,
-      nemesisScore: 0
+      connected: false,
+      yourScore: 0,
+      opponentScore: 0,
+      turn: null
     }
   });
 });

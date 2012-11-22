@@ -1,6 +1,6 @@
 define('game/world', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight'], 
-       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/vector2'], 
+       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight, Vector2) {
   var World = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -148,7 +148,7 @@ define('game/world',
       this.trigger('click:highlight', tile.position);
     },
     indexToPosition: function(index) {
-      var position = new THREE.Vector2();
+      var position = new Vector2();
       position.x = (index % this.width);
       position.y = Math.floor((index - position.x) / this.width);
       return position;
@@ -231,7 +231,7 @@ define('game/world',
         position.x += interval.x;
         position.y += interval.y;
 
-        cost += this.is(new THREE.Vector2(Math.round(position.x), Math.round(position.y)),
+        cost += this.is(new Vector2(Math.round(position.x), Math.round(position.y)),
                         World.tile.WALL) ? 1 : 0;
       }
 

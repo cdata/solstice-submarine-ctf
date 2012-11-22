@@ -1,6 +1,6 @@
 define('game/sprite',
-       ['underscore', 'three', 'game/object', 'game/assets'],
-       function(_, THREE, GameObject, assets) {
+       ['underscore', 'game/rectangle', 'game/object', 'game/assets'],
+       function(_, Rectangle, GameObject, assets) {
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -17,7 +17,7 @@ define('game/sprite',
       this.unitWidth = Math.floor(this.imageWidth / this.cellWidth);
       this.unitHeight = Math.floor(this.imageHeight / this.cellHeight);
 
-      this.clipRect = new THREE.Rectangle();
+      this.clipRect = new Rectangle();
 
       this.maxIndex = this.unitWidth * this.unitHeight - 1;
     },

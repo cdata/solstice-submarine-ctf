@@ -3,8 +3,8 @@ define('model/game/turn',
        function(Backbone) {
   return Backbone.Model.extend({
     defaults: {
-      moveAlpha: null,
-      moveBeta: null
+      moveA: null,
+      moveB: null
     }
   });
 });

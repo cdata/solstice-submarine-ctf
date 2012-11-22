@@ -1,6 +1,6 @@
 define('game/entity/hero',
-       ['underscore', 'q', 'game/graphic/animated', 'tween'],
-       function(_, q, AnimatedGraphic, TWEEN) {
+       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2'],
+       function(_, q, AnimatedGraphic, TWEEN, Vector2) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -24,7 +24,7 @@ define('game/entity/hero',
     },
     moveTo: function(destination) {
       var movement = q.resolve();
-      var unit = new THREE.Vector2(1, 0);
+      var unit = new Vector2(1, 0);
       var destUnit = destination.clone().subSelf(this.position).normalize();
       var rotation = (Math.acos(unit.dot(destUnit) / (unit.length() * destUnit.length())));
 
@@ -82,8 +82,8 @@ define('game/entity/hero',
           lastWaypoint = waypoints[waypoints.length - 1];
           previousWaypoint = waypoints[waypoints.length -2] || start;
 
-          lastNormal = lastWaypoint.clone().subSelf(previousWaypoint).normalize();
-          normal = path[index].clone().subSelf(lastWaypoint).normalize();
+          lastNormal = lastWaypoint.clone().subtract(previousWaypoint).normalize();
+          normal = path[index].clone().subtract(lastWaypoint).normalize();
 
           if (lastNormal.equals(normal)) {
             lastWaypoint.x += normal.x;

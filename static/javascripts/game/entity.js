@@ -1,13 +1,13 @@
 define('game/entity',
-       ['underscore', 'game/node', 'three'], 
-       function(_, Node, THREE) {
+       ['underscore', 'game/node', 'game/vector2'], 
+       function(_, Node, Vector2) {
   return Node.extend({
     initialize: function(options) {
       Node.prototype.initialize.apply(this, arguments);
 
       options = _.defaults(options || {}, {
         name: 'Anonymous',
-        position: new THREE.Vector2(),
+        position: new Vector2(),
         rotation: 0
       });
 
@@ -20,10 +20,10 @@ define('game/entity',
       this.position = null;
     },
     onChildDraw: function(rect) {
-      rect.set(rect.getLeft() + this.position.x,
-               rect.getTop() + this.position.y,
-               rect.getRight() + this.position.x,
-               rect.getBottom() + this.position.y);
+      rect.set(rect.left + this.position.x,
+               rect.top + this.position.y,
+               rect.right + this.position.x,
+               rect.bottom + this.position.y);
 
       Node.prototype.onChildDraw.call(this, rect);
     },
