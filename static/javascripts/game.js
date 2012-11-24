@@ -8,6 +8,7 @@ define('game',
       });
       this.solo = options.solo;
       this.model = new GameModel();
+      this.ui = options.ui;
     },
     dispose: function() {
       this.renderer.dispose();
@@ -24,12 +25,14 @@ define('game',
       if (this.solo) {
         this.client = new SoloClient({
           renderer: this.renderer,
-          model: this.model
+          model: this.model,
+          ui: this.ui
         });
       } else {
         this.client = new Client({
           renderer: this.renderer,
-          model: this.model
+          model: this.model,
+          ui: this.ui
         });
       }
 

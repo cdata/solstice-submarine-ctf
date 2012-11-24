@@ -3,8 +3,10 @@ define('view/game',
        function(Backbone, templates, Game, UIView) {
   return Backbone.View.extend({
     initialize: function(options) {
-      this.game = new Game();
       this.ui = new UIView();
+      this.game = new Game({
+        ui: this.ui
+      });
       this.app = options.app;
     },
     delegateEvents: function() {

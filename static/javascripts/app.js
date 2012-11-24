@@ -29,6 +29,7 @@ define('app',
           'assets/images/highlight.png',
           'assets/images/logo.png',
           'assets/images/test.png',
+          'assets/images/fog.png',
           'assets/images/waypoint.png'
         ]
       });

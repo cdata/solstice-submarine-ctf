@@ -1,6 +1,6 @@
 define('game/entity/hero',
-       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2'],
-       function(_, q, AnimatedGraphic, TWEEN, Vector2) {
+       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint'],
+       function(_, q, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -14,6 +14,11 @@ define('game/entity/hero',
       this.defineFrameAnimation('idle-blur', 0, 1);
       this.defineFrameAnimation('idle-focus', 2, 3);
 
+      this.model = new MoveModel();
+      this.waypointTiles = [];
+
+      this.model.on('change:points', this.updateWaypointTiles, this);
+
       this.blur();
     },
     blur: function() {
@@ -25,11 +30,12 @@ define('game/entity/hero',
     moveTo: function(destination) {
       var movement = q.resolve();
       var unit = new Vector2(1, 0);
-      var destUnit = destination.clone().subSelf(this.position).normalize();
+      var destUnit = destination.clone().subtract(this.position).normalize();
       var rotation = (Math.acos(unit.dot(destUnit) / (unit.length() * destUnit.length())));
 
-      if (destUnit.y === -1)
+      if (destUnit.y === -1) {
         rotation *= -1;
+      }
 
       if (rotation !== this.rotation) {
         movement = movement.then(_.bind(function() {
@@ -103,6 +109,36 @@ define('game/entity/hero',
       }
 
       return moves;
+    },
+    clearWaypointTiles: function() {
+      var iter;
+      while (iter = this.waypointTiles.pop()) {
+        iter.redraw();
+        iter.parent.remove(iter);
+        iter.dispose();
+      }
+    },
+    updateWaypointTiles: function() {
+      var points = this.model.get('points');
+      var last = this.position;
+      var waypointTile;
+      var point;
+      var index;
+
+      this.clearWaypointTiles();
+
+      for (index = 0, point = points[index]; index < points.length; point = points[++index]) {
+        waypointTile = new Waypoint({
+          position: point
+        });
+        this.parent.parent.waypoints.append(waypointTile);
+        this.waypointTiles.push(waypointTile);
+        waypointTile.redraw();
+
+        waypointTile.invalidateDirection(last, points[index + 1]);
+
+        last = point;
+      }
     }
   });
 });

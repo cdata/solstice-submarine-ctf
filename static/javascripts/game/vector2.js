@@ -53,7 +53,7 @@ define('game/vector2',
       return Math.sqrt(dx * dx + dy * dy);
     },
     equals: function(other) {
-      return this.x === other.x && this.y === other.y;
+      return !!other && this.x === other.x && this.y === other.y;
     },
     clone: function() {
       return new Vector2(this.x, this.y);

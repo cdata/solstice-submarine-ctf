@@ -1,6 +1,6 @@
 define('game/world', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/vector2'], 
-       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight, Vector2) {
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/entity/fog', 'game/vector2', 'game/entity/waypoint'], 
+       function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight, Fog, Vector2, Waypoint) {
   var World = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -34,10 +34,17 @@ define('game/world',
       this.characters = this.append(new Entity({
         name: 'Characters'
       }));
+      this.fogOfWar = this.append(new Entity({
+        name: 'FogOfWar'
+      }));
 
       _.each(this.tiles, function(type, index) {
         var position = this.indexToPosition(index);
         var tile;
+
+        /*this.fogOfWar.append(new Fog({
+          position: position.clone()
+        }));*/
 
         if (type !== World.tile.WALL) {
           tile = this.floor.append(new Graphic({
@@ -144,6 +151,21 @@ define('game/world',
         this.highlights.remove(this.highlights.firstChild);
       }
     },
+    drawWaypointPath: function(start, points) {
+      var last = start;
+      var point;
+      var index;
+
+      for (index = 0, point = points[index]; index < points.length; point = points[++index]) {
+        this.waypoints.append(new Waypoint({
+          position: point.clone()
+        })).invalidateDirection(last, points[index + 1]);
+        last = point;
+      }
+    },
+    revealFog: function(pointOne, pointTwo) {
+
+    },
     handleHighlightClick: function(tile) {
       this.trigger('click:highlight', tile.position);
     },
@@ -222,7 +244,7 @@ define('game/world',
       return result;
     },
     getCost: function(from, to) {
-      var interval = to.clone().subSelf(from).normalize();
+      var interval = to.clone().subtract(from).normalize();
       var position = from.clone();
       var cost = 0;
 
@@ -341,6 +363,10 @@ define('game/world',
       }
 
       return list;
+    },
+    companionOf: function(hero) {
+      // TODO: Accomodate for nemesis..
+      return hero === this.heroAlpha ? this.heroBeta : this.heroAlpha;
     }
   }, {
     tile: {
@@ -353,7 +379,8 @@ define('game/world',
       NEMESIS_ALPHA: 32,
       NEMESIS_BETA: 64,
       HIGHLIGHT: 128,
-      WAYPOINT: 256
+      WAYPOINT: 256,
+      FOG: 512
     }
   });
 

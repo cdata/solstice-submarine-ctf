@@ -3,7 +3,7 @@ define('model/game/move',
        function(_, Backbone) {
   return Backbone.Model.extend({
     defaults: {
-      points: null,
+      points: [],
       shielded: false
     },
     validate: function(attrs) {

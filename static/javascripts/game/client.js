@@ -8,9 +8,11 @@ define('game/client',
       });
       this.model = options.model;
       this.renderer = options.renderer;
+      this.ui = options.ui;
       this.interface = new Interface({
         scene: this.renderer.sceneRoot,
-        model: this.model
+        model: this.model,
+        ui: this.ui
       });
       this.connect();
     },

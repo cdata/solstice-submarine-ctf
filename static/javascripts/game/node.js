@@ -12,6 +12,14 @@ define('game/node',
     dispose: function() {
       this.clearChildren();
     },
+    appendAll: function(nodes) {
+      var index;
+      var node;
+
+      for (index = 0, node = nodes[index]; index < nodes.length; node = nodes[++index]) {
+        this.append(node);
+      }
+    },
     append: function(node) {
       return this.insertAfter(node, this.lastChild);
     },
@@ -20,13 +28,13 @@ define('game/node',
     },
     insertAfter: function(node, sibling) {
       return this.link(node,
-                sibling || this.lastChild,
-                sibling && sibling.nextSibling);
+                       sibling || this.lastChild,
+                       sibling && sibling.nextSibling);
     },
     insertBefore: function(node, sibling) {
       return this.link(node,
-                sibling && sibling.previousSibling,
-                sibling || this.firstChild);
+                       sibling && sibling.previousSibling,
+                       sibling || this.firstChild);
     },
     remove: function(node) {
       return this.unlink(node);
@@ -70,7 +78,7 @@ define('game/node',
       var next = node.nextSibling;
 
       if (previous) {
-        previous.nextSibilng = next;
+        previous.nextSibling = next;
       } else {
         this.firstChild = next;
       }
