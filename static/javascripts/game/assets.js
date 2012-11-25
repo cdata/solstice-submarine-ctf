@@ -1,6 +1,6 @@
 define('game/assets', 
-       ['underscore', 'game/object'],
-       function(_, GameObject) {
+       ['underscore', 'jquery', 'game/object'],
+       function(_, $, GameObject) {
   var Assets = GameObject.extend({
     initialize: function() {
       this.assets = {};
@@ -18,20 +18,12 @@ define('game/assets',
       return this.cloneImage(this.assets[url]);
     },
     cloneImage: function(image) {
+      // Clone image data makes mobile devices cry. Oh well..
       return image;
-
-      var canvas = document.createElement('canvas');
-      var context = canvas.getContext('2d');
-
-      canvas.width = image.width;
-      canvas.height = image.height;
-
-      context.drawImage(image, 0, 0);
-
-      return canvas;
     },
     cloneData: function(data) {
-      return _.clone(data);
+      // Send it out to jQuery's deep extend..
+      return $.extend(true, {}, data);
     }
   });
 

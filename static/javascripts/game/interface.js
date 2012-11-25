@@ -67,7 +67,6 @@ define('game/interface',
       }, this));
     },
     dispose: function() {
-      this.world.dispose();
       this.world = null;
       this.scene = null;
     },

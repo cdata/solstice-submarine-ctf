@@ -3,25 +3,16 @@ if (typeof define !== 'function') {
 }
 
 define('model/game/outcome',
-       ['underscore', 'backbone', 'game/vector2'],
-       function(_, Backbone, Vector2) {
-  return Backbone.Model.extend({
+       ['underscore', 'backbone', 'game/vector2', 'model/game/move'],
+       function(_, Backbone, Vector2, Move) {
+  var Outcome = Backbone.Model.extend({
     defaults: {
-      unit: 'subA',
-      points: null,
-      dies: false,
-      attacks: null,
-      scoreDelta: 0,
-      shielded: false
-    },
-    addPointFromMove: function(move) {
-      var points = this.get('points');
-      var movePoints = move.get('points');
-      // TODO: Validation?
-      points.push(movePoints[points.lenth]);
-    },
-    getCurrentDirection: function() {
-      //var result 
+      unit: Move.unit.SUB_A,
+      type: function() {
+        return Outcome.type.MOVE;
+      },
+      points: [],
+      scoreDelta: 0
     },
     get: function(attribute) {
       if (attribute === 'points') {
@@ -31,5 +22,14 @@ define('model/game/outcome',
       }
       return Backbone.Model.prototype.get.apply(this, arguments);
     }
+  }, {
+    type: {
+      MOVE: 'move',
+      MOVE_SHIELDED: 'move-shielded',
+      DIE: 'die',
+      RELOCATE: 'relocate'
+    }
   });
+
+  return Outcome;
 });

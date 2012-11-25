@@ -24,6 +24,8 @@ define('game/client',
       this.renderer = null;
       this.interface.dispose();
       this.interface = null;
+      this.ui = null;
+      this.model = null;
     },
     connect: function() {
       this.connection = io.connect('https://socket.solsticesub.com');

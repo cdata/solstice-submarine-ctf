@@ -15,9 +15,13 @@ define('game',
       this.engine.dispose();
       this.client.dispose();
 
+      this.model.off(null, null, this);
+
       this.renderer = null;
       this.engine = null;
       this.client = null;
+      this.ui = null;
+      this.model = null;
     },
     start: function() {
       this.renderer = new Renderer();

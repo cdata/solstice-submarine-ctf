@@ -20,7 +20,8 @@ Solstice Submarine: CTF is nearing completion of basic game play. Here are some 
   - Viewport scales responsively to accomodate for both pixel density and screen size.
   - Renderer only redraws regions of the scene graph that have actually changed.
   - Singleplayer is structured identically to multiplayer, thanks to a client class stubbed out with AI logic.
-  - Pathing, fog of war, sprite animation and other features all written from scratch.
+  - Picking, pathing, fog of war, sprite animation, scene graph and other engine features all written from scratch.
+  - Game maps are generated from an interpreted JSON configuration.
 
 ## Supporting Technologies
 

@@ -1,8 +1,11 @@
 define('model/game/move',
        ['underscore', 'backbone'],
        function(_, Backbone) {
-  return Backbone.Model.extend({
+  var Move = Backbone.Model.extend({
     defaults: {
+      unit: function() {
+        return Move.unit.SUB_A;
+      },
       points: [],
       shielded: false
     },
@@ -31,8 +34,17 @@ define('model/game/move',
       }
 
       if (invalid) {
-        return "Invalid move settings.";
+        return 'Invalid move settings.';
       }
     }
+  }, {
+    unit: {
+      SUB_A: 'subA',
+      SUB_B: 'subB',
+      RKT_A: 'rktA',
+      RKT_B: 'rktB'
+    }
   });
+
+  return Move;
 });

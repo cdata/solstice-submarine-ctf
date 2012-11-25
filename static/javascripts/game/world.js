@@ -105,11 +105,21 @@ define('game/world',
       }, this);
     },
     dispose: function() {
-      Entity.prototype.dispose.apply(this, arguments);
-      this.tiles = null;
+      this.heroAlpha.off(null, null, this);
+      this.heroBeta.off(null, null, this);
+
       this.floor = null;
       this.walls = null;
       this.items = null;
+      this.highlights = null;
+      this.waypoints = null;
+      this.characters = null;
+      this.fogOfWar = null;
+
+      this.heroAlpha = null;
+      this.heroBeta = null;
+
+      Entity.prototype.dispose.apply(this, arguments);
     },
     updateFog: function() {
       var index = 0;
