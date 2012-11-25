@@ -86,32 +86,40 @@ define('game/entity/fog',
         } else {
           this.sprite.goTo(0);
         }
-        /*if ((topLeft & topRight & bottomLeft & bottomRight & 512) === 0) {
-          this.sprite.goTo(8);
-        } else if ((topLeft & topRight & bottomLeft & 512) === 0) {
-          this.sprite.goTo(9);
-          this.rotation = -Math.PI / 2;
-        } else if ((topLeft & topRight & bottomRight & 512) === 0) {
-          this.sprite.goTo(9);
-        } else if ((bottomLeft & bottomRight & topLeft & 512) === 0) {
-          this.sprite.goTo(9);
-          this.rotation = Math.PI;
-        } else if ((bottomLeft & bottomRight & topRight & 512) === 0) {
-          this.sprite.goTo(9);
-          this.rotation = Math.PI / 2;
-        } else {
-          this.sprite.goTo(0);
-        }*/
       } else if ((top & left & right & 512) === 512) {
-        this.sprite.goTo(1);
+        if (!(topLeft & 512)) {
+          this.sprite.goTo(13);
+        } else if (!(topRight & 512)) {
+          this.sprite.goTo(12);
+        } else {
+          this.sprite.goTo(1);
+        }
         this.rotation = Math.PI / 2;
       } else if ((bottom & left & right & 512) === 512) {
-        this.sprite.goTo(1);
+        if (!(bottomRight & 512)) {
+          this.sprite.goTo(13);
+        } else if (!(bottomLeft & 512)) {
+          this.sprite.goTo(12);
+        } else {
+          this.sprite.goTo(1);
+        }
         this.rotation = -Math.PI / 2;
       } else if ((bottom & left & top & 512) === 512) {
-        this.sprite.goTo(1);
+        if (!(bottomLeft & 512)) {
+          this.sprite.goTo(13);
+        } else if (!(topLeft & 512)) {
+          this.sprite.goTo(12);
+        } else {
+          this.sprite.goTo(1);
+        }
       } else if ((bottom & right & top & 512) === 512) {
-        this.sprite.goTo(1);
+        if (!(topRight & 512)) {
+          this.sprite.goTo(13);
+        } else if (!(bottomRight & 512)) {
+          this.sprite.goTo(12);
+        } else {
+          this.sprite.goTo(1);
+        }
         this.rotation = Math.PI;
       } else if ((bottom & top & 512) === 512) {
         this.sprite.goTo(2);
@@ -119,15 +127,31 @@ define('game/entity/fog',
         this.sprite.goTo(2);
         this.rotation = Math.PI / 2;
       } else if ((left & top & 512) === 512) {
-        this.sprite.goTo(6);
+        if (!(topLeft & 512)) {
+          this.sprite.goTo(11);
+        } else {
+          this.sprite.goTo(6);
+        }
         this.rotation = Math.PI / 2;
       } else if ((left & bottom & 512) === 512) {
-        this.sprite.goTo(6);
+        if (!(bottomLeft & 512)) {
+          this.sprite.goTo(11);
+        } else {
+          this.sprite.goTo(6);
+        }
       } else if ((right & top & 512) === 512) {
-        this.sprite.goTo(6);
+        if (!(topRight & 512)) {
+          this.sprite.goTo(11);
+        } else {
+          this.sprite.goTo(6);
+        }
         this.rotation = Math.PI;
       } else if ((right & bottom & 512) === 512) {
-        this.sprite.goTo(6);
+        if (!(bottomRight & 512)) {
+          this.sprite.goTo(11);
+        } else {
+          this.sprite.goTo(6);
+        }
         this.rotation = -Math.PI / 2;
       } else if ((right & 512) === 512) {
         this.sprite.goTo(3);

@@ -3,10 +3,11 @@ if (typeof define !== 'function') {
 }
 
 define('model/game/outcome',
-       ['backbone'],
-       function(Backbone) {
+       ['underscore', 'backbone', 'game/vector2'],
+       function(_, Backbone, Vector2) {
   return Backbone.Model.extend({
     defaults: {
+      unit: 'subA',
       points: null,
       dies: false,
       attacks: null,
@@ -21,6 +22,14 @@ define('model/game/outcome',
     },
     getCurrentDirection: function() {
       //var result 
+    },
+    get: function(attribute) {
+      if (attribute === 'points') {
+        return _.map(Backbone.Model.prototype.get.apply(this, arguments), function(point) {
+          return new Vector2(point.x, point.y);
+        });
+      }
+      return Backbone.Model.prototype.get.apply(this, arguments);
     }
   });
 });

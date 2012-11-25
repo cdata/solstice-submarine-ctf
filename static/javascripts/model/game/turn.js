@@ -4,7 +4,14 @@ define('model/game/turn',
   return Backbone.Model.extend({
     defaults: {
       moveA: null,
-      moveB: null
+      moveB: null,
+      team: null
+    },
+    toJSON: function() {
+      return {
+        moveA: this.get('moveA') ? this.get('moveA').toJSON() : null,
+        moveB: this.get('moveB') ? this.get('moveB').toJSON() : null
+      }
     }
   });
 });
