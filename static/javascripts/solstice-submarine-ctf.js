@@ -31,9 +31,7 @@ requirejs.config({
     },
     'handlebars/templates': {
       deps: ['handlebars'],
-      exportsFn: function() {
-        return Handlebars.templates;
-      }
+      exports: 'Handlebars.templates'
     },
     'io': {
       exports: 'io'

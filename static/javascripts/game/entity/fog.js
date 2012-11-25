@@ -10,6 +10,7 @@ define('game/entity/fog',
       Graphic.prototype.initialize.call(this, options);
     },
     invalidateNeighbors: function(neighbors) {
+      // Beware: clusterfuckery ahead..
       var neighbor;
 
       for (neighbor in neighbors) {
