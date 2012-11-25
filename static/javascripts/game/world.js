@@ -63,17 +63,18 @@ define('game/world',
               tile.append(new Grass());
             }
             break;
-          case World.tile.YELLOW_FORK:
-          case World.tile.RED_FORK:
+          case World.tile.SUB_FORK:
+          case World.tile.RKT_FORK:
             this.items.append(new Fork({
               color: type === 2 ? 'yellow' : 'red',
               position: position.clone()
             }))
             break;
-          case World.tile.HERO_ALPHA:
-          case World.tile.HERO_BETA:
+          case World.tile.SUB_A:
+          case World.tile.SUB_B:
             tile = this.characters.append(new Hero({
-              color: type === 8 ? 'alpha' : 'beta',
+              color: type === 8 ? World.color.YELLOW : World.color.TEAL,
+              url: type === 8 ? 'assets/images/yellow-sub.png' : 'assets/images/teal-sub.png',
               name: 'Hero' + (type === 8 ? 'A' : 'B'),
               position: position.clone()
             }));
@@ -86,8 +87,8 @@ define('game/world',
               this.heroBeta = tile;
             }
             break;
-          case World.tile.NEMESIS_ALPHA:
-          case World.tile.NEMESIS_BETA:
+          case World.tile.RKT_A:
+          case World.tile.RKT_B:
             this.characters.append(new Nemesis({
               color: type === 32 ? 'alpha' : 'beta',
               position: position.clone()
@@ -195,7 +196,7 @@ define('game/world',
         }
       }
     },
-    placeHighlightTile: function(position, distance) {
+    placeHighlightTile: function(position, distance, color) {
       var tile;
       var neighbors;
 
@@ -205,7 +206,8 @@ define('game/world',
 
       if (!this.is(position, World.tile.HIGHLIGHT)) {
         tile = new Highlight({
-          position: position.clone()
+          position: position.clone(),
+          color: color
         });
 
         tile.on('click', this.handleHighlightClick, this);
@@ -217,15 +219,15 @@ define('game/world',
       if (distance > 0) {
         neighbors = this.neighborPositions(position);
         while (neighbors.length) {
-          this.placeHighlightTile(neighbors.pop(), distance - 1);
+          this.placeHighlightTile(neighbors.pop(), distance - 1, color);
         }
       }
     },
-    highlight: function(position, distance) {
+    highlight: function(position, distance, color) {
       var iter;
 
       this.clearHighlight();
-      this.placeHighlightTile(position, distance);
+      this.placeHighlightTile(position, distance, color);
 
       iter = this.highlights.firstChild;
 
@@ -473,15 +475,19 @@ define('game/world',
     tile: {
       SAND: 0,
       WALL: 1,
-      YELLOW_FORK: 2,
-      RED_FORK: 4,
-      HERO_ALPHA: 8,
-      HERO_BETA: 16,
-      NEMESIS_ALPHA: 32,
-      NEMESIS_BETA: 64,
+      SUB_FORK: 2,
+      RKT_FORK: 4,
+      SUB_A: 8,
+      SUB_B: 16,
+      RKT_A: 32,
+      RKT_B: 64,
       HIGHLIGHT: 128,
       WAYPOINT: 256,
       FOG: 512
+    },
+    color: {
+      YELLOW: 0,
+      TEAL: 6
     }
   });
 

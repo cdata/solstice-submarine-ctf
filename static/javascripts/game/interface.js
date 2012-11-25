@@ -133,7 +133,7 @@ define('game/interface',
       }
     },
     highlightPaths: function(hero) {
-      this.world.highlight(hero.position, hero.model.get('shielded') ? 2 : 4);
+      this.world.highlight(hero.position, hero.model.get('shielded') ? 2 : 4, hero.color);
     },
     selectWaypointPosition: function(position) {
       var hero = this.selected[0];

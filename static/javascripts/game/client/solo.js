@@ -9,6 +9,7 @@ define('game/client/solo',
         off: _.bind(this.proxyOff, this)
       }
     },
+    disconnect: function() {},
     proxyEmit: function(event, data, callback) {
       var args = Array.prototype.slice.call(arguments, 1);
       switch (event) {
@@ -42,6 +43,9 @@ define('game/client/solo',
           this.onOutcome(outcomes.toJSON());
         }, this));
       }, this));
+    },
+    getOpponentMoves: function() {
+
     }
   });
 });

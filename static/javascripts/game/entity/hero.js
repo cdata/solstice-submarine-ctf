@@ -7,7 +7,8 @@ define('game/entity/hero',
         name: 'Hero',
         url: 'assets/images/yellow-sub.png',
         frameInterval: 700,
-        revealDistance: 5
+        revealDistance: 5,
+        color: 0
       });
 
       AnimatedGraphic.prototype.initialize.call(this, options);
@@ -16,6 +17,7 @@ define('game/entity/hero',
       this.defineFrameAnimation('idle-focus', 2, 3);
 
       this.model = new MoveModel();
+      this.color = options.color;
       this.waypointTiles = [];
 
       this.model.on('change:points', this.updateWaypointTiles, this);
