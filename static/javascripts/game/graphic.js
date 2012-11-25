@@ -1,6 +1,6 @@
 define('game/graphic', 
-       ['underscore', 'game/entity', 'game/sprite', 'game/rectangle'],
-       function(_, Entity, Sprite, Rectangle) {
+       ['underscore', 'game/entity', 'game/sprite', 'game/rectangle', 'game/circle'],
+       function(_, Entity, Sprite, Rectangle, Circle) {
   var Graphic = Entity.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -9,7 +9,10 @@ define('game/graphic',
         height: 20,
         frame: 0,
         url: 'assets/images/test.png',
-        spriteScale: 4
+        spriteScale: 4,
+        alwaysVisible: true,
+        revealDistance: 3,
+        visible: true
       });
 
       Entity.prototype.initialize.call(this, options);
@@ -17,12 +20,14 @@ define('game/graphic',
       this.width = options.width;
       this.height = options.height;
       this.frame = options.frame;
+      this.alwaysVisible = options.alwaysVisible;
+      this.revealDistance = options.revealDistance;
       this.spriteScale = options.spriteScale;
       this.sprite = new Sprite({
         url: options.url, 
         width: this.width * this.spriteScale, 
         height: this.height * this.spriteScale
-      })
+      });
 
       this.sprite.goTo(this.frame);
     },
@@ -41,6 +46,12 @@ define('game/graphic',
                                    this.position.y + this.height);
 
       this.trigger('draw', drawRect);
+    },
+    reveal: function() {
+      var position = this.position.clone();
+      //position.x = position.x + 1 / 18;
+      //position.y = position.y + 1 / 18;
+      this.trigger('reveal', this.name, new Circle(this.revealDistance, position));
     }
   });
 

@@ -15,6 +15,7 @@ define('game/world',
       this.tiles = data.tiles;
       this.width = data.width;
       this.height = data.height;
+      this.foglessPositions = {};
 
       this.floor = this.append(new Entity({
         name: 'Floor'
@@ -42,9 +43,11 @@ define('game/world',
         var position = this.indexToPosition(index);
         var tile;
 
-        /*this.fogOfWar.append(new Fog({
+        this.fogOfWar.append(new Fog({
           position: position.clone()
-        }));*/
+        }));
+        
+        this.or(position, World.tile.FOG);
 
         if (type !== World.tile.WALL) {
           tile = this.floor.append(new Graphic({
@@ -71,8 +74,11 @@ define('game/world',
           case World.tile.HERO_BETA:
             tile = this.characters.append(new Hero({
               color: type === 8 ? 'alpha' : 'beta',
+              name: 'Hero' + (type === 8 ? 'A' : 'B'),
               position: position.clone()
             }));
+
+            tile.on('reveal', this.setFoglessPosition, this);
             
             if (type === 8) {
               this.heroAlpha = tile;
@@ -103,6 +109,91 @@ define('game/world',
       this.floor = null;
       this.walls = null;
       this.items = null;
+    },
+    updateFog: function() {
+      var index = 0;
+      var iter;
+      var position;
+      var neighbors;
+      var secondNeighbors;
+      var circle;
+      var hasFog;
+      var name;
+
+      while (index < this.tiles.length) {
+        position = this.indexToPosition(index);
+        hasFog = true;
+
+        for (name in this.foglessPositions) {
+          circle = this.foglessPositions[name];
+          if (position.distanceTo(circle.position) < circle.radius &&
+              this.lineOfSight(circle.position, position)) {
+            hasFog = false;
+          }
+        }
+
+        if (hasFog) {
+          this.or(position, World.tile.FOG);
+        } else if (this.is(position, World.tile.FOG)){
+          this.xor(position, World.tile.FOG);
+        }
+
+        index++;
+      }
+
+      iter = this.fogOfWar.firstChild;
+
+      do {
+        hasFog = this.is(iter.position, World.tile.FOG);
+
+        iter.invalidateNeighbors(this.inclusiveNeighbors(this.positionToIndex(iter.position)));
+
+        if (hasFog !== iter.visible) {
+          iter.visible = hasFog;
+          iter.redraw();
+        }
+      } while (iter = iter.nextSibling);
+    },
+    setFoglessPosition: function(name, circle) {
+      this.foglessPositions[name] = circle;
+      this.updateFog();
+    },
+    lineOfSight: function(start, finish) {
+      var iter = start.clone();
+      var interval = finish.clone().subtract(start).normalize();
+      var rounded = iter.clone().round();
+
+      while (!rounded.equals(finish)) {
+        if (this.is(rounded, World.tile.WALL))
+          return false;
+
+        iter.add(interval);
+        rounded = iter.clone().round();
+      }
+      return true;
+    },
+    printMap: function() {
+      var row = ['    '];
+      var axis = '    ';
+      for (var index = 0; index < this.width; index++) {
+        row.push('    '.substr(0, 4 - index.toString().length) + index);
+        axis += '-----';
+      }
+      console.log(row.join(' '));
+      console.log(axis);
+      row = [];
+      for (index = 0; index < this.tiles.length; index++) {
+        if (index % this.width === 0) {
+          row.push(Math.floor(index / this.width) + ' |');
+        }
+        row.push(this.tiles[index]);
+        if (row.length - 1 === this.width) {
+          console.log(_.map(row, function(tile) {
+            return '    '.substr(0, 4 - tile.toString().length) + tile
+          }).join(' '));
+          row = [];
+        }
+      }
     },
     placeHighlightTile: function(position, distance) {
       var tile;
@@ -162,9 +253,6 @@ define('game/world',
         })).invalidateDirection(last, points[index + 1]);
         last = point;
       }
-    },
-    revealFog: function(pointOne, pointTwo) {
-
     },
     handleHighlightClick: function(tile) {
       this.trigger('click:highlight', tile.position);
@@ -240,6 +328,22 @@ define('game/world',
       position.x = position.x + 2;
       result.right = this.at(position);
       position.x = position.x - 1;
+
+      return result;
+    },
+    inclusiveNeighbors: function(index) {
+      var position = this.indexToPosition(index);
+      var result = this.neighbors(index);
+      
+      position.x = position.x - 1;
+      position.y = position.y - 1;
+      result.topLeft = this.at(position);
+      position.x = position.x + 2;
+      result.topRight = this.at(position);
+      position.y = position.y + 2;
+      result.bottomRight = this.at(position);
+      position.x = position.x - 2;
+      result.bottomLeft = this.at(position);
 
       return result;
     },
@@ -352,9 +456,6 @@ define('game/world',
       }
       
       if (next) {
-        //window.app.currentView.game.renderer.context.fillStyle = '#0000ff';
-        //window.app.currentView.game.renderer.context.fillRect(
-            //next.x * 40 + 15, next.y * 40 + 15, 10, 10);
         list.push(next);
         
         if (nextWeight > 0) {

@@ -7,7 +7,7 @@ define('view/game/ui',
     events: {
       'click .exit': 'onClickExit',
       'click .mode': 'onClickMode',
-      'click .endTurn': 'onClickEndTurn'
+      'click .end-turn': 'onClickEndTurn'
     },
     initialize: function() {
       this.model = new Backbone.Model({

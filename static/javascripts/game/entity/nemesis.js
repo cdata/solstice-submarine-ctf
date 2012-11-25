@@ -4,7 +4,9 @@ define('game/entity/nemesis',
   return Hero.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        url: 'assets/images/red-rocket.png'
+        url: 'assets/images/red-rocket.png',
+        name: 'Nemesis',
+        alwaysVisible: false
       });
 
       Hero.prototype.initialize.call(this, options);

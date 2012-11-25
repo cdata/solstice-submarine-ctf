@@ -318,7 +318,7 @@ body > section:not(#Loader) {
     background-size: 616px 8px;
   }
 
-  section:not(#Loader) {
+  body > section:not(#Loader) {
     display: block;
     position: relative;
     width: 360px;
@@ -341,6 +341,58 @@ body > section:not(#Loader) {
     padding: 20px 0;
   }
 
+
+
+  #Controls > .input .score {
+    top: 8px;
+    width: 120px;
+    height: 100%;
+  }
+
+  #Controls > .input .score > div {
+    padding-bottom: 8px;
+  }
+
+  #Controls > .input .button {
+    top: 8px;
+    background-size: 100px 100px;
+  }
+
+  #Controls > .input .exit.button {
+    left: 8px;
+    width: 24px;
+    height: 24px;
+    background-position: -66px 0;
+  }
+
+  #Controls > .input .mode.button {
+    left: 66px;
+    width: 48px;
+    height: 24px;
+    background-position: 0 -72px;
+  }
+
+  #Controls > .input .mode.button.toggle {
+    width: 48px;
+    height: 24px;
+    background-position: 0 -48px;
+  }
+
+  #Controls > .input .mode.button.disabled {
+    background-position: -48px -48px;
+  }
+
+  #Controls > .input .end-turn.button {
+    left: 146px;
+    width: 66px;
+    height: 24px;
+  }
+
+  #Controls > .input .end-turn.button.disabled {
+    background-position: 0 -24px;
+  }
+
+
   #Credits {
     top: 5px;
   }
@@ -358,7 +410,7 @@ body > section:not(#Loader) {
     background-size: 924px 12px;
   }
 
-  section:not(#Loader) {
+  body > section:not(#Loader) {
     display: block;
     position: relative;
     width: 540px;
@@ -379,6 +431,55 @@ body > section:not(#Loader) {
 
   #Choose-Mode header {
     padding: 30px 0;
+  }
+
+  #Controls > .input .score {
+    top: 12px;
+    width: 180px;
+    height: 100%;
+  }
+
+  #Controls > .input .score > div {
+    padding-bottom: 12px;
+  }
+
+  #Controls > .input .button {
+    top: 12px;
+    background-size: 150px 150px;
+  }
+
+  #Controls > .input .exit.button {
+    left: 12px;
+    width: 36px;
+    height: 36px;
+    background-position: -99px 0;
+  }
+
+  #Controls > .input .mode.button {
+    left: 99px;
+    width: 72px;
+    height: 36px;
+    background-position: 0 -108px;
+  }
+
+  #Controls > .input .mode.button.toggle {
+    width: 72px;
+    height: 36px;
+    background-position: 0 -72px;
+  }
+
+  #Controls > .input .mode.button.disabled {
+    background-position: -72px -72px;
+  }
+
+  #Controls > .input .end-turn.button {
+    left: 219px;
+    width: 99px;
+    height: 36px;
+  }
+
+  #Controls > .input .end-turn.button.disabled {
+    background-position: 0 -36px;
   }
 
   #Credits {

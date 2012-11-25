@@ -10,6 +10,11 @@ define('game/vector2',
       this.x = 0;
       this.y = 0;
     },
+    round: function() {
+      this.x = Math.round(this.x);
+      this.y = Math.round(this.y);
+      return this;
+    },
     set: function(x, y) {
       this.x = x || this.x;
       this.y = y || this.y;

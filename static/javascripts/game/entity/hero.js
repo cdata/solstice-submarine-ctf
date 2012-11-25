@@ -6,7 +6,8 @@ define('game/entity/hero',
       options = _.defaults(options || {}, {
         name: 'Hero',
         url: 'assets/images/yellow-sub.png',
-        frameInterval: 700
+        frameInterval: 700,
+        revealDistance: 5
       });
 
       AnimatedGraphic.prototype.initialize.call(this, options);
@@ -26,6 +27,16 @@ define('game/entity/hero',
     },
     focus: function() {
       this.useFrameAnimation('idle-focus');
+    },
+    checkForPositionChange: function() {
+      var flatPosition = new Vector2(Math.floor(this.position.x), Math.floor(this.position.y));
+
+      if (this.oldPosition && this.oldPosition.equals(flatPosition)) {
+        return;
+      }
+
+      this.oldPosition = flatPosition;
+      this.reveal();
     },
     moveTo: function(destination) {
       var movement = q.resolve();
@@ -61,11 +72,13 @@ define('game/entity/hero',
             this.redraw();
             this.position.x = positionProxy.x;
             this.position.y = positionProxy.y;
+            this.checkForPositionChange();
             this.redraw();
           }, this))
-          .onComplete(function() {
+          .onComplete(_.bind(function() {
+            this.checkForPositionChange();
             result.resolve();
-          })
+          }, this))
           .start();
         return result.promise;
       }, this));

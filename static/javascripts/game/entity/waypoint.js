@@ -24,6 +24,7 @@ define('game/entity/waypoint',
         this.sprite.goTo(2);
       } else if (lastUnit.y === 1 && nextUnit.x === 1) {
         this.sprite.goTo(0);
+        this.rotation = -Math.PI / 2;
       } else if (lastUnit.y === 1 && nextUnit.x === -1) {
         this.sprite.goTo(0);
         this.rotation = Math.PI;

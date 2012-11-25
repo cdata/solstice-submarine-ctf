@@ -15,33 +15,33 @@ define('game/entity/highlight',
       var right = neighbors.right;
       var bottom = neighbors.bottom;
 
-      if ((top & left & right & bottom) === 128) {
+      if ((top & left & right & bottom & 128) === 128) {
         this.sprite.goTo(0);
-      } else if ((top & left & right) === 128) {
+      } else if ((top & left & right & 128) === 128) {
         this.sprite.goTo(4);
         this.rotation = Math.PI / 2;
-      } else if ((bottom & left & right) === 128) {
+      } else if ((bottom & left & right & 128) === 128) {
         this.sprite.goTo(4);
         this.rotation = -Math.PI / 2;
-      } else if ((bottom & left & top) === 128) {
+      } else if ((bottom & left & top & 128) === 128) {
         this.sprite.goTo(4);
-      } else if ((bottom & right & top) === 128) {
+      } else if ((bottom & right & top & 128) === 128) {
         this.sprite.goTo(4);
         this.rotation = Math.PI;
-      } else if ((bottom & top) === 128) {
+      } else if ((bottom & top & 128) === 128) {
         this.sprite.goTo(5);
         this.rotation = Math.PI / 2;
-      } else if ((left & right) === 128) {
+      } else if ((left & right & 128) === 128) {
         this.sprite.goTo(5);
-      } else if ((left & top) === 128) {
+      } else if ((left & top & 128) === 128) {
         this.sprite.goTo(3);
         this.rotation = Math.PI / 2;
-      } else if ((left & bottom) === 128) {
+      } else if ((left & bottom & 128) === 128) {
         this.sprite.goTo(3);
-      } else if ((right & top) === 128) {
+      } else if ((right & top & 128) === 128) {
         this.sprite.goTo(3);
         this.rotation = Math.PI;
-      } else if ((right & bottom) === 128) {
+      } else if ((right & bottom & 128) === 128) {
         this.sprite.goTo(3);
         this.rotation = -Math.PI / 2;
       } else if ((right & 128) === 128) {

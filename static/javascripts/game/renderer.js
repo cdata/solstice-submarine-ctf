@@ -34,6 +34,7 @@ define('game/renderer',
       this.context = this.canvas.getContext('2d');
       this.sceneRoot = new Node();
       this.redrawRectangles = null;
+      this.revealedLocations = {};
       this.translations = [];
       this.rotations = [];
       this.translationOrigin = new Vector2();
@@ -52,6 +53,7 @@ define('game/renderer',
       this.invalidateRatios();
 
       this.sceneRoot.on('draw', this.pushRedrawRectangle, this);
+      this.sceneRoot.on('reveal', this.setRevealedLocation, this);
 
       this.$root.prepend(this.$canvas);
     },
@@ -154,7 +156,7 @@ define('game/renderer',
         this.pushTranslation(new Vector2(w2, h2));
         r && this.pushRotation(r);
 
-        if (entity instanceof Graphic && (!this.rendered || this.shouldRedraw(drawRect))) {
+        if (entity instanceof Graphic && this.shouldRedraw(drawRect, entity)) {
           this.context.drawImage(
             entity.sprite.image,
             entity.sprite.clipRect.getX(),
@@ -324,6 +326,9 @@ define('game/renderer',
         this.redrawRectangles = rect;
       }
     },
+    setRevealedLocation: function(name, circle) {
+      this.revealedLocations[name] = circle;
+    },
     adjusted: function(rect) {
       var adjusted = new Rectangle();
       adjusted.set(rect.left + this.translationOrigin.x,
@@ -332,20 +337,48 @@ define('game/renderer',
                rect.bottom + this.translationOrigin.y);
       return adjusted;
     },
-    shouldRedraw: function(rect) {
+    shouldRedraw: function(rect, entity) {
       var iter;
+      var center;
+      var name;
+      var circle;
+      var reveal;
 
-      if (!this.rendered) {
+      if (entity.visible === false) {
+        return false;
+      }
+
+      if (!this.rendered && entity.alwaysVisible === true) {
         return true;
+      }
+
+      rect = this.adjusted(rect);
+
+      if (entity.alwaysVisible === false) {
+        center = new Vector2(rect.getX(), rect.getY());
+        center.divide(this.tileSize * this.graphicRatio);
+
+        reveal = false;
+
+        for (name in this.revealedLocations) {
+          circle = this.revealedLocations[name];
+          if (center.distanceTo(circle.position) < circle.radius) {
+            reveal = true;
+            break;
+          }
+        }
+
+        if (!reveal) {
+          return false;
+        }
       }
 
       if (!this.redrawRectangles) {
         return false;
       }
-
+     
       iter = this.redrawRectangles;
-      rect = this.adjusted(rect);
-
+      
       do {
         if (rect.intersects(iter)) {
           return true;

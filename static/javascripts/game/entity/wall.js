@@ -35,35 +35,35 @@ define('game/entity/wall',
         this.sprite.goTo(0);
       }
 
-      if (top & left & right & bottom === 1) {
+      if ((top & left & right & bottom & 1) === 1) {
         this.sprite.goTo(13);
-      } else if (top & left & right) {
+      } else if ((top & left & right & 1) === 1) {
         this.sprite.goTo(12);
-      } else if (bottom & left & right) {
+      } else if ((bottom & left & right & 1) === 1) {
         this.sprite.goTo(11);
-      } else if (bottom & left & top) {
+      } else if ((bottom & left & top & 1) === 1) {
         this.sprite.goTo(16);
-      } else if (bottom & right & top) {
+      } else if ((bottom & right & top & 1) === 1) {
         this.sprite.goTo(15);
-      } else if (bottom & top) {
+      } else if ((bottom & top & 1) === 1) {
         this.sprite.goTo(10);
-      } else if (left & right) {
+      } else if ((left & right & 1) === 1) {
         this.sprite.goTo(6);
-      } else if (left & top) {
+      } else if ((left & top & 1) === 1) {
         this.sprite.goTo(9);
-      } else if (left & bottom) {
+      } else if ((left & bottom & 1) === 1) {
         this.sprite.goTo(7);
-      } else if (right & top) {
+      } else if ((right & top & 1) === 1) {
         this.sprite.goTo(8);
-      } else if (right & bottom) {
+      } else if ((right & bottom & 1) === 1) {
         this.sprite.goTo(5);
-      } else if (right & 1) {
+      } else if ((right & 1) === 1) {
         this.sprite.goTo(1);
-      } else if (left & 1) {
+      } else if ((left & 1) === 1) {
         this.sprite.goTo(2);
-      } else if (top & 1) {
+      } else if ((top & 1) === 1) {
         this.sprite.goTo(3);
-      } else if (bottom & 1) {
+      } else if ((bottom & 1) === 1) {
         this.sprite.goTo(4);
       } else {
         this.sprite.goTo(0);

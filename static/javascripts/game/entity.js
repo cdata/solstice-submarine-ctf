@@ -27,6 +27,10 @@ define('game/entity',
 
       Node.prototype.onChildDraw.call(this, rect);
     },
+    onChildReveal: function(name, circle) {
+      circle.position.add(this.position);
+      Node.prototype.onChildReveal.call(this, name, circle);
+    },
     toString: function() {
       return '[' + this.name + ' Entity, x ' + this.position.x + ', y ' + this.position.y + ', r ' + this.rotation + ']';
     }

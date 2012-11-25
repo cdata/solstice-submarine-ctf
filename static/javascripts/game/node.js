@@ -66,6 +66,7 @@ define('game/node',
       }
 
       node.on('draw', this.onChildDraw, this);
+      node.on('reveal', this.onChildReveal, this);
 
       return node;
     },
@@ -94,11 +95,15 @@ define('game/node',
       node.parent = null;
 
       node.off('draw', this.onNodeDraw, this);
+      node.off('reveal', this.onChildReveal, this);
 
       return node;
     },
     onChildDraw: function(rect) {
       this.trigger('draw', rect);
+    },
+    onChildReveal: function(name, position) {
+      this.trigger('reveal', name, position);
     },
     getChildren: function() {
       var children = [];

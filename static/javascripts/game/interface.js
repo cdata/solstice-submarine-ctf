@@ -19,9 +19,24 @@ define('game/interface',
       this.world.heroBeta.on('click', this.selectHero, this);
       this.world.on('click:highlight', this.selectWaypointPosition, this);
       this.ui.on('click:mode', this.toggleMode, this);
+      this.ui.on('click:endTurn', this.endTurn, this);
+
+      this.ui.enableEndTurn();
 
       //this.disableInteraction();
       this.enableInteraction();
+    },
+    endTurn: function() {
+      var heroAlpha = this.world.heroAlpha;
+      var heroBeta = this.world.heroBeta;
+
+      this.clearSelection();
+
+      heroAlpha.walkPath(heroAlpha.model.get('points'));
+      heroBeta.walkPath(heroBeta.model.get('points'));
+
+      heroAlpha.model.set('points', []);
+      heroBeta.model.set('points', []);
     },
     dispose: function() {
       this.world.dispose();
@@ -30,6 +45,8 @@ define('game/interface',
     },
     enableInteraction: function() {
       this.interactive = true;
+      this.world.heroAlpha.reveal();
+      this.world.heroBeta.reveal();
     },
     disableInteraction: function() {
       this.interactive = false;
@@ -54,7 +71,7 @@ define('game/interface',
 
       if (this.selected[0] === hero) {
         hero.model.set('points', []);
-        return
+        return;
       } else {
         this.select(hero);
         this.highlightPaths(hero);
@@ -70,6 +87,7 @@ define('game/interface',
 
       if (!position.equals(companionWaypoints[companionWaypoints.length - 1])) {
         hero.model.set('points', this.world.getPath(hero.position, position));
+        this.clearSelection();
       }
     },
     clearSelection: function() {

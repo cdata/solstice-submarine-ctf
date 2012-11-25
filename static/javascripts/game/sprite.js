@@ -16,6 +16,7 @@ define('game/sprite',
       this.cellHeight = options.height;
       this.unitWidth = Math.floor(this.imageWidth / this.cellWidth);
       this.unitHeight = Math.floor(this.imageHeight / this.cellHeight);
+      this.currentIndex = 0;
 
       this.clipRect = new Rectangle();
 
@@ -30,6 +31,7 @@ define('game/sprite',
         var x = (index % this.unitWidth) * this.cellWidth;
         var y = Math.floor(index / this.unitWidth) * this.cellHeight;
         this.clipRect.set(x, y, x + this.cellWidth, y + this.cellHeight);
+        this.currentIndex = index;
       }
     }
   });
