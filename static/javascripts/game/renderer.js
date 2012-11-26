@@ -376,9 +376,9 @@ define('game/renderer',
       if (!this.redrawRectangles) {
         return false;
       }
-     
+
       iter = this.redrawRectangles;
-      
+
       do {
         if (rect.intersects(iter)) {
           return true;

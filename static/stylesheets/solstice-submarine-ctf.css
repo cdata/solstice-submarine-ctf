@@ -63,8 +63,12 @@ ul, ol, li, div, section {
   vertical-align: middle;
 }
 
-a:hover > .game-text > span,
-a.game-text:hover > span {
+a.disabled:hover {
+  cursor: default;
+}
+
+a:hover:not(.disabled) > .game-text > span,
+a.game-text:hover:not(.disabled) > span {
   background-image: url(../assets/images/font-yellow.png);
 }
 
@@ -143,10 +147,11 @@ body > section:not(#Loader) {
   display: block;
   position: relative;
   text-align: center;
+  padding-top: 40px;
 }
 
 #Start nav li {
-  padding: 8px 0;
+  padding: 16px 0;
 }
 
 #Choose-Mode {
@@ -165,6 +170,7 @@ body > section:not(#Loader) {
 #Choose-Mode nav {
   display: block;
   position: relative;
+  padding-top: 64px;
 }
 
 #Choose-Mode li {
@@ -175,9 +181,18 @@ body > section:not(#Loader) {
   display: inline-block;
   position: relative;
   padding: 8px;
-  margin: 0 auto 8px;
+  margin: 0 auto 16px;
   border: 2px solid #6fb0d6;
   background: #346794;
+}
+
+#Choose-Mode a > span:first-child {
+  margin-bottom: 8px;
+}
+
+#Choose-Mode a.disabled {
+  background: #444;
+  border-color: #888;
 }
 
 #Choose-Mode footer {
@@ -334,15 +349,26 @@ body > section:not(#Loader) {
     height: 42px;
   }
 
+  #Start nav {
+    padding-top: 20px;
+  }
+
   #Start nav li {
-    padding: 4px 0;
+    padding: 8px 0;
   }
 
   #Choose-Mode header {
     padding: 20px 0;
   }
 
+  #Choose-Mode nav {
+    padding-top: 32px;
+  }
 
+  #Choose-Mode a {
+    margin: 0 auto 8px;
+    border-width: 1px;
+  }
 
   #Controls > .input .score {
     top: 8px;
@@ -430,12 +456,24 @@ body > section:not(#Loader) {
     height: 63px;
   }
 
+  #Start nav {
+    padding-top: 30px;
+  }
+
   #Start nav li {
-    padding: 6px 0;
+    padding: 12px 0;
   }
 
   #Choose-Mode header {
     padding: 30px 0;
+  }
+
+  #Choose-Mode nav {
+    padding-top: 48px;
+  }
+
+  #Choose-Mode a {
+    margin: 0 auto 12px;
   }
 
   #Controls > .input .score {
@@ -505,7 +543,104 @@ body > section:not(#Loader) {
 }
 
 @media (min-width: 1600px) {
+  .game-text > span {
+    width: 24px;
+    height: 24px;
+    background-size: 1848px 24px;
+  }
 
+  body > section:not(#Loader) {
+    display: block;
+    position: relative;
+    width: 1080px;
+    height: 660px;
+    margin: 0 auto;
+    background-color: #222;
+  }
+
+  #Start header {
+    padding: 60px 0;
+    width: 336px;
+    height: 126px;
+  }
+
+  #Start nav {
+    padding-top: 60px;
+  }
+
+  #Start nav li {
+    padding: 24px 0;
+  }
+
+  #Choose-Mode header {
+    padding: 60px 0;
+  }
+
+  #Choose-Mode nav {
+    padding-top: 96px;
+  }
+
+  #Choose-Mode a {
+    margin: 0 auto 16px;
+    border-width: 3px;
+  }
+
+  #Controls > .input .score {
+    top: 24px;
+    width: 360px;
+  }
+
+  #Controls > .output {
+    padding: 48px;
+  }
+
+  #Controls > .input .score > div {
+    padding-bottom: 24px;
+  }
+
+  #Controls > .input .button {
+    top: 24px;
+    background-size: 300px 300px;
+  }
+
+  #Controls > .input .exit.button {
+    left: 24px;
+    width: 72px;
+    height: 72px;
+    background-position: -198px 0;
+  }
+
+  #Controls > .input .mode.button {
+    left: 198px;
+    width: 144px;
+    height: 72px;
+    background-position: 0 -216px;
+  }
+
+  #Controls > .input .mode.button.toggle {
+    width: 144px;
+    height: 72px;
+    background-position: 0 -144px;
+  }
+
+  #Controls > .input .mode.button.disabled {
+    background-position: -144px -144px;
+  }
+
+  #Controls > .input .end-turn.button {
+    left: 438px;
+    width: 198px;
+    height: 72px;
+  }
+
+  #Controls > .input .end-turn.button.disabled {
+    background-position: 0 -72px;
+  }
+
+
+  #Credits {
+    top: 15px;
+  }
 }
 
 

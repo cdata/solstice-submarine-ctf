@@ -3,13 +3,14 @@
 </header>
 <nav>
   <ul>
-    <li><a href="#{{#id}}play-online{{/id}}{{^id}}login{{/id}}">
+    <!--<li><a href="#{{#id}}play-online{{/id}}{{^id}}login{{/id}}">-->
+    <li><a class="disabled">
       <span class="game-text">Online Matchup</span>
       {{#id}}
         <span class="game-text">({{this}})</span>
       {{/id}}
       {{^id}}
-        <span class="game-text">(Requires Login)</span>
+        <span class="game-text">(Coming soon)</span>
       {{/id}}
     </a></li>
     <li><a href="#play-solo">
