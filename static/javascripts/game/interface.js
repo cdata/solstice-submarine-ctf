@@ -1,6 +1,6 @@
 define('game/interface',
-       ['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn'],
-       function(_, q, World, GameObject, Node, TurnModel) {
+       ['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn', 'model/game/outcome'],
+       function(_, q, World, GameObject, Node, TurnModel, Outcome) {
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -34,37 +34,50 @@ define('game/interface',
 
       this.model.set('turn', this.turn);
       this.disableInteraction();
-
-      /*heroAlpha.walkPath(heroAlpha.model.get('points'));
-      heroBeta.walkPath(heroBeta.model.get('points'));
-
-      heroAlpha.model.set('points', []);
-      heroBeta.model.set('points', []);*/
     },
-    performOutcomes: function(outcomes) {
-      var subA = this.world.heroAlpha;
-      var subB = this.world.heroBeta;
-      var outcomesArePerformed = [];
+    performOutcomes: function(outcomeList) {
 
-      subA.model.set('points', []);
-      subB.model.set('points', []);
-
-      console.log(outcomes);
-
-      outcomes.each(function(outcome) {
-        if (outcome.get('unit') === 'subA') {
-          outcomesArePerformed.push(subA.walkPath(outcome.get('points')));
-        }
-
-        if (outcome.get('unit') === 'subB') {
-          outcomesArePerformed.push(subB.walkPath(outcome.get('points')));
-        }
+      var subAOutcomes = outcomeList[0];
+      var subBOutcomes = outcomeList[1];
+      var rktAOutcomes = outcomeList[2];
+      var rktBOutcomes = outcomeList[3];
+      var stepCount = subAOutcomes.length;
+      var outcomesResolve = q.resolve();
+      var queueStep = _.bind(function(step) {
+        outcomesResolve = outcomesResolve.then(_.bind(function() {
+          return this.performOutcomeStepForEach([subAOutcomes.at(step),
+                                                 subBOutcomes.at(step),
+                                                 rktAOutcomes.at(step),
+                                                 rktBOutcomes.at(step)]);
+        }, this));
       }, this);
+      var index;
 
-      return q.all(outcomesArePerformed).then(_.bind(function() {
+      if (subAOutcomes.length !== stepCount || subBOutcomes.length !== stepCount || rktAOutcomes.length !== stepCount || rktBOutcomes.length !== stepCount)
+        debugger;
+
+      for (index = 0; index < stepCount; index++) {
+        queueStep(index);
+      }
+
+      return outcomesResolve.then(_.bind(function() {
         this.ui.hideMessage();
         this.enableInteraction();
       }, this));
+    },
+    performOutcomeStepForEach: function(steps) {
+      var resolutions = [];
+
+      _.each(steps, function(step) {
+        var unit = this.world[step.get('unit')];
+        var stepType = step.get('type');
+
+        if (stepType === Outcome.type.MOVE || stepType === Outcome.type.MOVE_SHIELDED) {
+          resolutions.push(unit.walkPath(step.get('points')));
+        }
+      }, this);
+
+      return q.all(resolutions);
     },
     dispose: function() {
       this.world = null;
@@ -84,6 +97,8 @@ define('game/interface',
     },
     disableInteraction: function() {
       this.interactive = false;
+      this.world.heroAlpha.model.set('points', []);
+      this.world.heroBeta.model.set('points', []);
       this.clearSelection();
     },
     updateTurn: function() {

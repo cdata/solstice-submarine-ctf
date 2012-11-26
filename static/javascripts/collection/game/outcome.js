@@ -8,6 +8,11 @@ define('collection/game/outcome',
         return this.at(this.length - 1);
       } catch(e) {}
     },
+    getTotalMoves: function() {
+      return this.reduce(function(positions, model) {
+        return positions + model.get('points').length;
+      }, 0);
+    },
     getLastRecordedPosition: function() {
       var index = this.length - 1;
       var position;
@@ -21,6 +26,28 @@ define('collection/game/outcome',
       }
 
       return position;
+    },
+    unitDiedAtSomePoint: function() {
+      var index = this.length;
+      var model;
+
+      while (model = this.at(--index)) {
+        if (model.get('type') === Outcome.type.DIE) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    unitIsWaiting: function() {
+      var lastOutcome = this.last();
+      return lastOutcome && lastOutcome.get('type') === Outcome.type.WAIT;
+    },
+    unitIsDead: function() {
+      return this.unitDiedAtSomePoint();
+    },
+    unitIsAlive: function() {
+      return !this.unitIsDead();
     }
   });
 });

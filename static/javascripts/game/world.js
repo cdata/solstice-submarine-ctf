@@ -1,5 +1,5 @@
-define('game/world', 
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/entity/fog', 'game/vector2', 'game/entity/waypoint'], 
+define('game/world',
+       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/entity/fog', 'game/vector2', 'game/entity/waypoint'],
        function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight, Fog, Vector2, Waypoint) {
   var World = Entity.extend({
     initialize: function(options) {
@@ -46,7 +46,7 @@ define('game/world',
         this.fogOfWar.append(new Fog({
           position: position.clone()
         }));
-        
+
         this.or(position, World.tile.FOG);
 
         if (type !== World.tile.WALL) {
@@ -75,24 +75,31 @@ define('game/world',
             tile = this.characters.append(new Hero({
               color: type === 8 ? World.color.YELLOW : World.color.TEAL,
               url: type === 8 ? 'assets/images/yellow-sub.png' : 'assets/images/teal-sub.png',
-              name: 'Hero' + (type === 8 ? 'A' : 'B'),
+              name: 'sub' + (type === 8 ? 'A' : 'B'),
               position: position.clone()
             }));
 
             tile.on('reveal', this.setFoglessPosition, this);
-            
+
             if (type === 8) {
-              this.heroAlpha = tile;
+              this.subA = this.heroAlpha = tile;
             } else {
-              this.heroBeta = tile;
+              this.subB = this.heroBeta = tile;
             }
             break;
           case World.tile.RKT_A:
           case World.tile.RKT_B:
-            this.characters.append(new Nemesis({
+            tile = this.characters.append(new Nemesis({
+              name: 'rkt' + (type === 32 ? 'A' : 'B'),
               color: type === 32 ? 'alpha' : 'beta',
               position: position.clone()
             }));
+
+            if (type == 32) {
+              this.rktA = tile;
+            } else {
+              this.rktB = tile;
+            }
             break;
           case World.tile.WALL:
             this.walls.append(new Wall({
@@ -100,7 +107,6 @@ define('game/world',
               position: position
             }));
             break;
-          
         }
       }, this);
     },
@@ -118,6 +124,10 @@ define('game/world',
 
       this.heroAlpha = null;
       this.heroBeta = null;
+      this.subA = null;
+      this.subB = null;
+      this.rktA = null;
+      this.rktB = null;
 
       Entity.prototype.dispose.apply(this, arguments);
     },

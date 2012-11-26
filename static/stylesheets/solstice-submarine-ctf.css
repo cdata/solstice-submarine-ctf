@@ -350,6 +350,10 @@ body > section:not(#Loader) {
     height: 100%;
   }
 
+  #Controls > .output {
+    padding: 16px;
+  }
+
   #Controls > .input .score > div {
     padding-bottom: 8px;
   }
@@ -438,6 +442,10 @@ body > section:not(#Loader) {
     top: 12px;
     width: 180px;
     height: 100%;
+  }
+
+  #Controls > .output {
+    padding: 24px;
   }
 
   #Controls > .input .score > div {

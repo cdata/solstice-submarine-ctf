@@ -3,11 +3,12 @@ define('model/game/move',
        function(_, Backbone) {
   var Move = Backbone.Model.extend({
     defaults: {
-      unit: function() {
-        return Move.unit.SUB_A;
-      },
+      unit: 'subA',
       points: [],
       shielded: false
+    },
+    getLastPosition: function() {
+      return this.get('points')[this.get('points').length];
     },
     validate: function(attrs) {
       var points = attrs.points;

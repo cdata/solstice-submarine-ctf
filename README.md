@@ -23,6 +23,26 @@ Solstice Submarine: CTF is nearing completion of basic game play. Here are some 
   - Picking, pathing, fog of war, sprite animation, scene graph and other engine features all written from scratch.
   - Game maps are generated from an interpreted JSON configuration.
 
+## Running Locally
+
+Currently the only server dependency is [Node.js][21]. After you have installed Node.js, clone this repository and run the following command in the repository root:
+
+```sh
+npm install
+```
+
+If you are hacking on the code, you might also want to install grunt.js and run:
+
+```sh
+grunt watch
+```
+
+Which will automatically handle compiling JavaScript and templates. To start the server, run:
+
+```sh
+node ./lib/server.js
+```
+
 ## Supporting Technologies
 
 This project wouldn't be possible without the following supporting code, assets, tools and frameworks:
@@ -68,3 +88,4 @@ I would like to make a special call out to Three.js. I ended up not using Three.
 [18]: http://en.wikipedia.org/wiki/Phantom_Hourglass#Gameplay "Wikipedia: Phantom Hourglass Gameplay"
 [19]: http://donnaalmendrala.name/ "Donna Alamendrala: Cartoonist Extraordinaire"
 [20]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/logo.png "Solstice Submarine: Capture the Fork"
+[21]: http://nodejs.org/ "Node.js"

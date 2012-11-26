@@ -8,9 +8,7 @@ define('model/game/outcome',
   var Outcome = Backbone.Model.extend({
     defaults: {
       unit: Move.unit.SUB_A,
-      type: function() {
-        return Outcome.type.MOVE;
-      },
+      type: 'move',
       points: [],
       scoreDelta: 0
     },
@@ -26,8 +24,13 @@ define('model/game/outcome',
     type: {
       MOVE: 'move',
       MOVE_SHIELDED: 'move-shielded',
+      WAIT: 'wait',
+      ATTACK: 'attack',
       DIE: 'die',
-      RELOCATE: 'relocate'
+      RESPAWN: 'respawn',
+      PICKUP_FORK: 'pickup-fork',
+      RETURN_FORK: 'return-fork',
+      CAPTURE_FORK: 'capture-fork'
     }
   });
 

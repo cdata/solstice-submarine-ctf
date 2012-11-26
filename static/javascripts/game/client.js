@@ -52,10 +52,12 @@ define('game/client',
     onResolvingOutcome: function() {
       this.ui.showMessage('Resolving outcome..');
     },
-    onOutcome: function(outcomes) {
-      outcomes = new OutcomeCollection(outcomes);
+    onOutcome: function(outcomeList) {
+      outcomeList = _.map(JSON.parse(outcomeList), function(outcomes) {
+        return new OutcomeCollection(outcomes);
+      });
       this.ui.showMessage('Performing moves..');
-      this.interface.performOutcomes(outcomes);
+      this.interface.performOutcomes(outcomeList);
     },
     onConnected: function() {
       console.log('Connected!');

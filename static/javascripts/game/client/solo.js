@@ -1,6 +1,6 @@
 define('game/client/solo',
-       ['underscore', 'game/client', 'collection/game/outcome', 'game/arbiter'],
-       function(_, Client, OutcomeCollection, Arbiter) {
+       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets'],
+       function(_, Client, OutcomeCollection, Move, Arbiter, Assets) {
   return Client.extend({
     connect: function() {
       this.connection = {
@@ -30,30 +30,35 @@ define('game/client/solo',
     disconnect: function() {},
     handleTurn: function(data, callback) {
       var turn = JSON.parse(data);
-      var outcomes = new OutcomeCollection();
-
-      outcomes.add({
-        unit: 'subA',
-        points: turn.moveA.points,
-        shielded: turn.moveA.shielded
-      });
-
-      outcomes.add({
-        unit: 'subB',
-        points: turn.moveB.points,
-        shielded: turn.moveB.shielded
-      });
+      var outcomeList = Arbiter.resolve([
+        new Move(turn.moveA), new Move(turn.moveB),
+        this.getOpponentMove(Move.unit.RKT_A),
+        this.getOpponentMove(Move.unit.RKT_B)
+      ], null, Assets.getData('assets/data/map/seabound.json'));
 
       _.defer(_.bind(function() {
         callback();
         _.defer(_.bind(function() {
-          this.onOutcome(outcomes.toJSON());
-        }, this));
+          this.onOutcome(JSON.stringify(outcomeList)); }, this));
       }, this));
     },
-    getOpponentMoves: function() {
+    getOpponentMove: function(unit) {
       var world = this.interface.world;
+      var entity = world[unit];
+      var newPosition = entity.position.clone();
 
+      if (newPosition.x % 2 === 0) {
+        newPosition.x = newPosition.x + 1;
+      } else {
+        newPosition.x = newPosition.x - 1;
+      }
+
+      return new Move({
+        unit: unit,
+        points: [
+          newPosition
+        ]
+      });
     }
   });
 });

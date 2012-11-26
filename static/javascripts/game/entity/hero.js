@@ -16,7 +16,10 @@ define('game/entity/hero',
       this.defineFrameAnimation('idle-blur', 0, 1);
       this.defineFrameAnimation('idle-focus', 2, 3);
 
-      this.model = new MoveModel();
+      this.model = new MoveModel({
+        unit: this.name
+      });
+
       this.color = options.color;
       this.waypointTiles = [];
 
