@@ -26,9 +26,8 @@ define('game/entity/fog',
       var topRight = neighbors.topRight;
       var bottomLeft = neighbors.bottomLeft;
       var bottomRight = neighbors.bottomRight;
-      var index = this.currentIndex;
+      var index = this.sprite.currentIndex;
 
-      this.sprite.goTo(0);
       this.rotation = 0;
 
       if ((top & left & right & bottom & 512) === 512) {
@@ -51,6 +50,7 @@ define('game/entity/fog',
                    !(bottomLeft & 512) &&
                    !(bottomRight & 512)) {
           this.sprite.goTo(9);
+          this.rotation = Math.PI / 2;
         } else if (!(topLeft & 512) &&
                    !(bottomRight & 512)) {
           this.sprite.goTo(10);
@@ -166,12 +166,10 @@ define('game/entity/fog',
       } else if ((bottom & 512) === 512) {
         this.sprite.goTo(3);
       } else {
-        
-
         this.sprite.goTo(4);
       }
 
-      if (this.currentIndex !== index) {
+      if (this.sprite.currentIndex !== index) {
         this.redraw();
       }
     }

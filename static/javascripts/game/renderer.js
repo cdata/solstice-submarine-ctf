@@ -30,7 +30,7 @@ define('game/renderer',
 
       this.pressedKeys = 0;
       this.rendered = false;
-      
+
       this.context = this.canvas.getContext('2d');
       this.sceneRoot = new Node();
       this.redrawRectangles = null;
@@ -354,7 +354,7 @@ define('game/renderer',
 
       rect = this.adjusted(rect);
 
-      if (entity.alwaysVisible === false) {
+      /*if (entity.alwaysVisible === false) {
         center = new Vector2(rect.getX(), rect.getY());
         center.divide(this.tileSize * this.graphicRatio);
 
@@ -371,7 +371,7 @@ define('game/renderer',
         if (!reveal) {
           return false;
         }
-      }
+      }*/
 
       if (!this.redrawRectangles) {
         return false;

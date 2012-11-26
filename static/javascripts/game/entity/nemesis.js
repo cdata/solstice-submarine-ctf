@@ -10,6 +10,9 @@ define('game/entity/nemesis',
       });
 
       Hero.prototype.initialize.call(this, options);
+    },
+    checkForPositionChange: function() {
+      // Noop.
     }
   });
 });
