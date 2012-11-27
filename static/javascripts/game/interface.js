@@ -74,6 +74,12 @@ define('game/interface',
 
         if (stepType === Outcome.type.MOVE || stepType === Outcome.type.MOVE_SHIELDED) {
           resolutions.push(unit.walkPath(step.get('points')));
+        } else if (stepType === Outcome.type.ATTACK) {
+          resolutions.push(unit.fireLaser(step.get('points')[0]));
+        }
+
+        if (stepType === Outcome.type.ATTACK) {
+          console.log(unit, 'attacks', step.get('points')[0]);
         }
       }, this);
 
@@ -103,13 +109,13 @@ define('game/interface',
     },
     updateTurn: function() {
       if (this.world.heroAlpha.model.get('points').length) {
-        this.turn.set('moveA', this.world.heroAlpha.model);
+        this.turn.set('moveA', this.world.heroAlpha.getCurrentMove());
       } else {
         this.turn.set('moveA', null);
       }
 
       if (this.world.heroBeta.model.get('points').length) {
-        this.turn.set('moveB', this.world.heroBeta.model);
+        this.turn.set('moveB', this.world.heroBeta.getCurrentMove());
       } else {
         this.turn.set('moveB', null);
       }

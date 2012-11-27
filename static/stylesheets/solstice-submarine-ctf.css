@@ -170,7 +170,7 @@ body > section:not(#Loader) {
 #Choose-Mode nav {
   display: block;
   position: relative;
-  padding-top: 64px;
+  padding-top: 96px;
 }
 
 #Choose-Mode li {
@@ -362,7 +362,7 @@ body > section:not(#Loader) {
   }
 
   #Choose-Mode nav {
-    padding-top: 32px;
+    padding-top: 48px;
   }
 
   #Choose-Mode a {
@@ -469,7 +469,7 @@ body > section:not(#Loader) {
   }
 
   #Choose-Mode nav {
-    padding-top: 48px;
+    padding-top: 72px;
   }
 
   #Choose-Mode a {
@@ -577,7 +577,7 @@ body > section:not(#Loader) {
   }
 
   #Choose-Mode nav {
-    padding-top: 96px;
+    padding-top: 144px;
   }
 
   #Choose-Mode a {

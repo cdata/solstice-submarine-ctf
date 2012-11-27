@@ -34,7 +34,7 @@ define('game/client/solo',
         new Move(turn.moveA), new Move(turn.moveB),
         this.getOpponentMove(Move.unit.RKT_A),
         this.getOpponentMove(Move.unit.RKT_B)
-      ], null, Assets.getData('assets/data/map/seabound.json'));
+      ], null, Assets.getData('assets/data/maps/seabound.json'));
 
       _.defer(_.bind(function() {
         callback();
@@ -43,6 +43,7 @@ define('game/client/solo',
       }, this));
     },
     getOpponentMove: function(unit) {
+      // Badass AI yo..
       var world = this.interface.world;
       var entity = world[unit];
       var newPosition = entity.position.clone();
@@ -55,6 +56,7 @@ define('game/client/solo',
 
       return new Move({
         unit: unit,
+        start: entity.position.clone(),
         points: [
           newPosition
         ]

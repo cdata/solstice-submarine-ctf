@@ -1,6 +1,6 @@
 define('game/entity/hero',
-       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint'],
-       function(_, q, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint) {
+       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint', 'game/entity/laser'],
+       function(_, q, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint, Laser) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -22,10 +22,15 @@ define('game/entity/hero',
 
       this.color = options.color;
       this.waypointTiles = [];
+      this.laserTiles = [];
 
       this.model.on('change:points', this.updateWaypointTiles, this);
 
       this.blur();
+    },
+    getCurrentMove: function() {
+      this.model.set('start', this.position.clone());
+      return this.model;
     },
     blur: function() {
       this.useFrameAnimation('idle-blur');
@@ -127,6 +132,45 @@ define('game/entity/hero',
       }
 
       return moves;
+    },
+    clearLaser: function() {
+      var iter;
+
+      while (iter = this.laserTiles.pop()) {
+        iter.redraw();
+        iter.parent.remove(iter);
+        iter.dispose();
+      }
+    },
+    fireLaser: function(at) {
+      var direction = at.clone().subtract(this.position).normalize();
+      var point = this.position.clone();
+      var first = true;
+      var result = q.defer();
+      var laserTile;
+
+      this.clearLaser();
+
+      while (!point.equals(at)) {
+        point.add(direction);
+        laserTile = new Laser({
+          position: point.clone(),
+          direction: direction,
+          segment: first ? 0 : (point.equals(at) ? 2 : 1)
+        });
+        this.parent.parent.lasers.append(laserTile);
+        this.laserTiles.push(laserTile);
+
+        laserTile.redraw();
+        first = false;
+      }
+
+      _.delay(_.bind(function() {
+        this.clearLaser();
+        result.resolve();
+      }, this), 1000)
+
+      return result.promise;
     },
     clearWaypointTiles: function() {
       var iter;

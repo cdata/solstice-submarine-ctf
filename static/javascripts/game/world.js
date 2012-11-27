@@ -35,6 +35,9 @@ define('game/world',
       this.characters = this.append(new Entity({
         name: 'Characters'
       }));
+      this.lasers = this.append(new Entity({
+        name: 'Lasers'
+      }));
       this.fogOfWar = this.append(new Entity({
         name: 'FogOfWar'
       }));
@@ -235,7 +238,7 @@ define('game/world',
         this.highlights.append(tile).redraw();
         this.or(position, World.tile.HIGHLIGHT);
       }
-      
+
       if (distance > 0) {
         neighbors = this.neighborPositions(position);
         while (neighbors.length) {
@@ -257,23 +260,11 @@ define('game/world',
     },
     clearHighlight: function() {
       while (this.highlights.firstChild) {
-        this.xor(this.highlights.firstChild.position, 
+        this.xor(this.highlights.firstChild.position,
                  World.tile.HIGHLIGHT);
         this.highlights.firstChild.redraw();
         this.highlights.firstChild.off('click', this.handleHighlightClick, this);
         this.highlights.remove(this.highlights.firstChild);
-      }
-    },
-    drawWaypointPath: function(start, points) {
-      var last = start;
-      var point;
-      var index;
-
-      for (index = 0, point = points[index]; index < points.length; point = points[++index]) {
-        this.waypoints.append(new Waypoint({
-          position: point.clone()
-        })).invalidateDirection(last, points[index + 1]);
-        last = point;
       }
     },
     handleHighlightClick: function(tile) {
@@ -472,14 +463,14 @@ define('game/world',
         weight = this.getCost(neighborPosition, to) + this.getNextStepCost(neighborPosition, to, exclude);
 
         if (!next || weight < nextWeight) {
-          next = neighborPosition; 
+          next = neighborPosition;
           nextWeight = weight;
         }
       }
-      
+
       if (next) {
         list.push(next);
-        
+
         if (nextWeight > 0) {
           list = this.getPath(next, to, list, exclude);
         }

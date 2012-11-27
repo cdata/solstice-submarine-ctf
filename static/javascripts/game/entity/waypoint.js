@@ -10,12 +10,11 @@ define('game/entity/waypoint',
     },
     dispose: function() {
       this.redraw();
-      console.log('Dispose');
       Graphic.prototype.dispose.apply(this, arguments);
     },
     invalidateDirection: function(last, next) {
       var lastUnit = this.position.clone().subtract(last);
-      var nextUnit = next ? next.clone().subtract(this.position) : new Vector2(0, 0);
+      var nextUnit = next ? next.clone().subtract(this.position) : new Vector2();
 
       if (Math.abs(lastUnit.x) === 1 && Math.abs(nextUnit.x) === 1) {
         this.sprite.goTo(2);
@@ -43,7 +42,7 @@ define('game/entity/waypoint',
         this.sprite.goTo(0);
         this.rotation = Math.PI / 2;
       }
-      
+
       if (nextUnit.x === 0 && nextUnit.y === 0) {
         if (lastUnit.x === -1) {
           this.rotation = Math.PI;

@@ -9,8 +9,11 @@ define('model/game/outcome',
     defaults: {
       unit: Move.unit.SUB_A,
       type: 'move',
+      target: null,
+      start: null,
       points: [],
-      scoreDelta: 0
+      scoreDelta: 0,
+      interrupted: false
     },
     get: function(attribute) {
       if (attribute === 'points') {
@@ -26,6 +29,7 @@ define('model/game/outcome',
       MOVE_SHIELDED: 'move-shielded',
       WAIT: 'wait',
       ATTACK: 'attack',
+      DEFEND: 'defend',
       DIE: 'die',
       RESPAWN: 'respawn',
       PICKUP_FORK: 'pickup-fork',

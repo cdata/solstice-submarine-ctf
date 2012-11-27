@@ -18,6 +18,7 @@ define('app',
         ],
         images: [
           'assets/images/floor.png',
+          'assets/images/laser.png',
           'assets/images/items.png',
           'assets/images/walls.png',
           'assets/images/teal-sub.png',
