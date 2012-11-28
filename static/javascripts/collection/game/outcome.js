@@ -9,9 +9,17 @@ define('collection/game/outcome',
     getUnitType: function() {
       return this.getLastOutcome().get('unit');
     },
-    getLastOutcome: function() {
+    getLastOutcome: function(relativeOutcomes) {
+      var index;
+
+      if (relativeOutcomes) {
+        index = relativeOutcomes.length;
+      } else {
+        index = this.length;
+      }
+
       try {
-        return this.at(this.length - 1);
+        return this.at(index - 1);
       } catch(e) {}
     },
     getTotalMoves: function() {
@@ -28,10 +36,11 @@ define('collection/game/outcome',
       var model;
       var direction;
 
-      while (!position && !previousPosition && index > -1) {
+      while (!position && !previousPosition && index > 0) {
         model = this.at(--index);
 
-        if (model.get('type') !== Outcome.type.MOVE) {
+        if (model.get('type') !== Outcome.type.MOVE &&
+            model.get('type') !== Outcome.type.MOVE_SHIELDED) {
           continue;
         }
 
@@ -53,10 +62,11 @@ define('collection/game/outcome',
       var points;
       var model;
 
-      while (!position && index > -1) {
+      while (!position && index > 0) {
         model = this.at(--index);
 
-        if (model.get('type') !== Outcome.type.MOVE) {
+        if (model.get('type') !== Outcome.type.MOVE &&
+            model.get('type') !== Outcome.type.MOVE_SHIELDED) {
           continue;
         }
 

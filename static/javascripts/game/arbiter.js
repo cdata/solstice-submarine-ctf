@@ -185,6 +185,10 @@ define('game/arbiter',
           return;
         }
 
+        if (outcomes.unitIsCompanion(othersOutcomes.getUnitType())) {
+          return;
+        }
+
         if (unitHasSightOfOther(outcomes, othersOutcomes, forks, map)) {
           attacking = true;
           outcomes.push(new Outcome({
@@ -222,7 +226,7 @@ define('game/arbiter',
           return;
         }
 
-        var othersLastOutcome = othersOutcomes.getLastOutcome();
+        var othersLastOutcome = othersOutcomes.getLastOutcome(outcomes);
         var othersTarget;
 
         if (othersLastOutcome.get('type') !== Outcome.type.ATTACK) {
@@ -269,13 +273,65 @@ define('game/arbiter',
     });
   }
 
-  function respawnDeadUnits(moveList, outcomeList) {
+  function positionIsAvailable(position, outcomeList, forks, map) {
+    var available = true;
+
+    if (!position) {
+      return false;
+    }
+
+    _.each(outcomeList, function(outcomes) {
+      var blockedPosition = outcomes.getLastRecordedPosition();
+
+      if (position.equals(blockedPosition)) {
+        available = false;
+      }
+    });
+
+    if (available && forks) {
+      _.each(forks, function(fork) {
+        if (fork.get('carried')) {
+          return;
+        }
+
+        if (position.equals(fork.get('position'))) {
+          available = false;
+        }
+      });
+    }
+
+    if (available && map) {
+      var tile = map.tiles[World.prototype.positionToIndex.call({
+        width: map.width,
+        height: map.height
+      }, position)];
+
+      if (tile === World.tile.SUB_FORK ||
+          tile === World.tile.RKT_FORK ||
+          tile === World.tile.WALL) {
+        available = false;
+      }
+    }
+
+    return available;
+  }
+
+  function respawnDeadUnits(moveList, outcomeList, forks, map) {
     _.each(moveList, function(move, index) {
       var outcomes = outcomeList[index];
+      var respawnPosition;
       if (outcomes.unitDiedAtSomePoint()) {
+        while (!positionIsAvailable(respawnPosition, outcomeList, forks, map)) {
+          respawnPosition = new Vector2();
+          if (move.get('unit').substr(0, 3) === 'rkt') {
+            respawnPosition.x = map.width - 1;
+          }
+          respawnPosition.y = Math.ceil(Math.random() * (map.height - 2));
+        }
         outcomes.push(new Outcome({
           unit: move.get('unit'),
-          type: Outcome.type.RESPAWN
+          type: Outcome.type.RESPAWN,
+          position: respawnPosition
         }));
       } else {
         outcomes.push(new Outcome({
@@ -304,7 +360,7 @@ define('game/arbiter',
       restartAllInterrupted(moveList, outcomeList, forks, map);
     }
 
-    respawnDeadUnits(moveList, outcomeList);
+    respawnDeadUnits(moveList, outcomeList, forks, map);
 
     return outcomeList;
   }

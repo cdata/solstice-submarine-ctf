@@ -1,4 +1,4 @@
-define('game', 
+define('game',
        ['underscore', 'game/object', 'game/renderer', 'game/engine', 'game/client', 'game/client/solo', 'model/game'],
        function(_, GameObject, Renderer, Engine, Client, SoloClient, GameModel) {
   var Game = GameObject.extend({

@@ -10,6 +10,10 @@ define('game/entity/nemesis',
       });
 
       Hero.prototype.initialize.call(this, options);
+
+      // Boy I'm lazy..
+      this.defineFrameAnimation('die', 9, 4);
+      this.defineFrameAnimation('respawn', 4, 9);
     },
     checkForPositionChange: function() {
       // Noop.

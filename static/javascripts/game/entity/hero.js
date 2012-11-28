@@ -15,6 +15,9 @@ define('game/entity/hero',
 
       this.defineFrameAnimation('idle-blur', 0, 1);
       this.defineFrameAnimation('idle-focus', 2, 3);
+      this.defineFrameAnimation('dead', 4, 4);
+      this.defineFrameAnimation('die', 5, 10);
+      this.defineFrameAnimation('respawn', 10, 5);
 
       this.model = new MoveModel({
         unit: this.name
@@ -133,6 +136,22 @@ define('game/entity/hero',
 
       return moves;
     },
+    die: function() {
+      var result = q.defer();
+      this.useFrameAnimation('die', 150, _.bind(function() {
+        this.useFrameAnimation('dead', 100000);
+        result.resolve();
+      }, this));
+      return result.promise;
+    },
+    respawn: function() {
+      var result = q.defer();
+      this.useFrameAnimation('respawn', 150, _.bind(function() {
+        this.blur();
+        result.resolve();
+      }, this));
+      return result.promise;
+    },
     clearLaser: function() {
       var iter;
 
@@ -147,16 +166,27 @@ define('game/entity/hero',
       var point = this.position.clone();
       var first = true;
       var result = q.defer();
+      var segment;
       var laserTile;
 
       this.clearLaser();
 
       while (!point.equals(at)) {
+        segment = 1;
         point.add(direction);
+        if (point.equals(at)) {
+          if (first) {
+            segment = 3;
+          } else {
+            segment = 2;
+          }
+        } else if (first) {
+          segment = 0;
+        }
         laserTile = new Laser({
           position: point.clone(),
           direction: direction,
-          segment: first ? 0 : (point.equals(at) ? 2 : 1)
+          segment: segment
         });
         this.parent.parent.lasers.append(laserTile);
         this.laserTiles.push(laserTile);

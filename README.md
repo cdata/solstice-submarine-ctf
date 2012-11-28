@@ -13,6 +13,8 @@ When I started putting together Solstice Sub: CTF, I had a few design goals in m
 
 I quickly settled on the idea of a turn-based game, as that seemed to lend itself to the simplest multiplayer architecture. After spending some time thinking about turn-based multiplayer games that I admire, I decided that the experience should be similar to the multiplayer of one of my favorite games, ["Legend of Zelda: Phantom Hourglass."][18] I figured that gameplay would be symmetrical for the first playable version. I had a mind to add random powerups, but felt that it would be best to stick to shooting for a basic game first.
 
+[A digital copy of this year's Soltice Submarine mini-comic][22] has been included in this repository if you are interested in checking it out.
+
 ## Technical Highlights
 
 Solstice Submarine: CTF is nearing completion of basic game play. Here are some technical achievements that I am proud of:
@@ -89,3 +91,4 @@ I would like to make a special call out to Three.js. I ended up not using Three.
 [19]: http://donnaalmendrala.name/ "Donna Alamendrala: Cartoonist Extraordinaire"
 [20]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/logo.png "Solstice Submarine: Capture the Fork"
 [21]: http://nodejs.org/ "Node.js"
+[22]: https://raw.github.com/cdata/solstice-submarine-ctf/master/solstice-submarine-3-digital-comic.pdf "Solstice Submarine 3 Digital Comic"

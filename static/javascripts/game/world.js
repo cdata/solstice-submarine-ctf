@@ -68,10 +68,19 @@ define('game/world',
             break;
           case World.tile.SUB_FORK:
           case World.tile.RKT_FORK:
-            this.items.append(new Fork({
+            tile = this.items.append(new Fork({
               color: type === 2 ? 'yellow' : 'red',
+              model: type === 2 ? options.subFork : options.rktFork,
               position: position.clone()
-            }))
+            }));
+
+            tile.model.set('position', position.clone());
+
+            if (type === 2) {
+              this.subFork = tile;
+            } else {
+              this.rktFork = tile;
+            }
             break;
           case World.tile.SUB_A:
           case World.tile.SUB_B:

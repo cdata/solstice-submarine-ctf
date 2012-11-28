@@ -6,7 +6,8 @@ define('model/game',
       connected: false,
       yourScore: 0,
       opponentScore: 0,
-      turn: null
+      turn: null,
+      forks: null
     }
   });
 });

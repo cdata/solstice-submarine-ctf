@@ -29,9 +29,9 @@ define('game/entity/laser',
       } else if (direction.x === -1) {
         this.rotation = Math.PI;
       } else if (direction.y === 1) {
-        this.rotation = -Math.PI / 2;
-      } else if (direction.y === -1) {
         this.rotation = Math.PI / 2;
+      } else if (direction.y === -1) {
+        this.rotation = -Math.PI / 2;
       }
     }
   });

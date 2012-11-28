@@ -1,18 +1,28 @@
 define('game/client',
-       ['underscore', 'game/object', 'game/interface', 'io', 'collection/game/outcome'],
-       function(_, GameObject, Interface, io, OutcomeCollection) {
+       ['underscore', 'game/object', 'game/interface', 'io', 'collection/game/outcome', 'model/game/fork'],
+       function(_, GameObject, Interface, io, OutcomeCollection, ForkModel) {
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
 
       });
       this.model = options.model;
+      this.model.set('forks', [
+        new ForkModel({
+          team: 'sub'
+        }),
+        new ForkModel({
+          team: 'rkt'
+        })
+      ]);
       this.renderer = options.renderer;
       this.ui = options.ui;
       this.interface = new Interface({
         scene: this.renderer.sceneRoot,
         model: this.model,
-        ui: this.ui
+        ui: this.ui,
+        subFork: this.subFork,
+        rktFork: this.rktFork
       });
       this.model.on('change:turn', this.submitTurn, this);
       this.connect();
@@ -35,7 +45,7 @@ define('game/client',
       this.connection.on('outcome', _.bind(this.onOutcome, this));
     },
     submitTurn: function() {
-      var turn = this.model.get('turn');
+      var turn = this.model;
 
       if (!turn) {
         return;

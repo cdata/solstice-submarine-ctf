@@ -1,21 +1,24 @@
 define('game/interface',
-       ['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn', 'model/game/outcome'],
-       function(_, q, World, GameObject, Node, TurnModel, Outcome) {
+       ['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn', 'model/game/outcome', 'game/vector2'],
+       function(_, q, World, GameObject, Node, TurnModel, Outcome, Vector2) {
   return GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
         worldUrl: 'assets/data/maps/seabound.json',
         scene: new Node()
       });
+      this.model = options.model;
+      this.subFork = this.model.get('forks')[0];
+      this.rktFork = this.model.get('forks')[1];
 
       this.ui = options.ui;
       this.scene = options.scene;
       this.world = this.scene.append(new World({
-        url: options.worldUrl
+        url: options.worldUrl,
+        subFork: this.subFork,
+        rktFork: this.rktFork
       }));
       this.selected = [];
-      this.model = options.model;
-
       this.world.heroAlpha.on('click', this.selectHero, this);
       this.world.heroBeta.on('click', this.selectHero, this);
       this.world.heroAlpha.model.on('change:points', this.updateTurn, this);
@@ -31,12 +34,10 @@ define('game/interface',
       var heroBeta = this.world.heroBeta;
 
       this.clearSelection();
-
       this.model.set('turn', this.turn);
       this.disableInteraction();
     },
     performOutcomes: function(outcomeList) {
-
       var subAOutcomes = outcomeList[0];
       var subBOutcomes = outcomeList[1];
       var rktAOutcomes = outcomeList[2];
@@ -76,18 +77,32 @@ define('game/interface',
           resolutions.push(unit.walkPath(step.get('points')));
         } else if (stepType === Outcome.type.ATTACK) {
           resolutions.push(unit.fireLaser(step.get('points')[0]));
+        } else if (stepType === Outcome.type.DIE) {
+          resolutions.push(unit.die());
+        } else if (stepType === Outcome.type.RESPAWN) {
+          unit.position = new Vector2().copy(step.get('position'));
+          unit.reveal();
+          resolutions.push(unit.respawn());
         }
 
-        if (stepType === Outcome.type.ATTACK) {
-          console.log(unit, 'attacks', step.get('points')[0]);
-        }
       }, this);
 
       return q.all(resolutions);
     },
     dispose: function() {
+      this.world.heroAlpha.off(null, null, this);
+      this.world.heroBeta.off(null, null, this);
+      this.world.heroAlpha.model.off(null, null, this);
+      this.world.heroBeta.model.off(null, null, this);
+      this.world.off(null, null, this);
+      this.ui.off(null, null, this);
+
       this.world = null;
       this.scene = null;
+      this.ui = null;
+
+      this.subFork = null;
+      this.rktFork = null;
     },
     enableInteraction: function() {
       this.interactive = true;
