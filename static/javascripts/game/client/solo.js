@@ -1,6 +1,6 @@
 define('game/client/solo',
-       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork'],
-       function(_, Client, OutcomeCollection, Move, Arbiter, Assets, Fork) {
+       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork', 'game/world'],
+       function(_, Client, OutcomeCollection, Move, Arbiter, Assets, Fork, World) {
   return Client.extend({
     connect: function() {
       this.connection = {
@@ -31,11 +31,12 @@ define('game/client/solo',
     handleTurn: function(data, callback) {
       var game = JSON.parse(data);
       var turn = game.turn;
-      var outcomeList = Arbiter.resolve([
+      var result = Arbiter.resolve([
         new Move(turn.moveA), new Move(turn.moveB),
         this.getOpponentMove(Move.unit.RKT_A, this.interface.world),
         this.getOpponentMove(Move.unit.RKT_B, this.interface.world)
       ], [new Fork(game.forks[0]), new Fork(game.forks[1])], Assets.getData('assets/data/maps/seabound.json'));
+      var outcomeList = result;
 
       _.defer(_.bind(function() {
         callback();
@@ -49,28 +50,22 @@ define('game/client/solo',
       var entity = world[unit];
       var newPosition = entity.position.clone();
       var index;
+      var position;
+      var path;
 
-      if (unit === 'rktA') {
-        // Chase the fork!
-        //if (!entity.model
-        //var path = world.getPath(entity.position, world.subFork.position)
-      } else {
-        // Defend the base!
-      }
+      do {
+        index = Math.floor(Math.random() * world.width * world.height);
+        position = world.indexToPosition(index);
+      } while (world.is(position, World.tile.WALL));
 
-      if (newPosition.x % 2 === 0) {
-        newPosition.x = newPosition.x + 1;
-      } else {
-        newPosition.x = newPosition.x - 1;
-      }
+      path = world.getPath(entity.position, position);
+      path = path.slice(0, 4);
 
       return new Move({
         unit: unit,
         shielded: false,
         start: entity.position.clone(),
-        points: [
-          newPosition
-        ]
+        points: path
       });
     }
   });

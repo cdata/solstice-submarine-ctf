@@ -103,7 +103,7 @@ define('game/world',
           case World.tile.RKT_B:
             tile = this.characters.append(new Nemesis({
               name: 'rkt' + (type === 32 ? 'A' : 'B'),
-              color: type === 32 ? 'alpha' : 'beta',
+              color: type === 32 ? World.color.RED : World.color.BLUE,
               position: position.clone()
             }));
 
@@ -507,7 +507,9 @@ define('game/world',
     },
     color: {
       YELLOW: 0,
-      TEAL: 6
+      TEAL: 6,
+      RED: 12,
+      BLUE: 18
     }
   });
 

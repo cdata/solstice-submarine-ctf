@@ -1,6 +1,6 @@
 define('game/entity/nemesis',
-       ['underscore', 'game/entity/hero'],
-       function(_, Hero) {
+       ['underscore', 'game/entity/hero', 'model/game/move'],
+       function(_, Hero, Move) {
   return Hero.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -8,6 +8,10 @@ define('game/entity/nemesis',
         name: 'Nemesis',
         alwaysVisible: false
       });
+
+      if (options.name === 'rktB') {
+        options.url = 'assets/images/blue-rocket.png'
+      }
 
       Hero.prototype.initialize.call(this, options);
 
