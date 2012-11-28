@@ -5,6 +5,7 @@ define('model/game/move',
     defaults: {
       unit: 'subA',
       points: [],
+      start: null,
       shielded: false
     },
     getLastPosition: function() {

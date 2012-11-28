@@ -66,6 +66,8 @@ This project wouldn't be possible without the following supporting code, assets,
   - [Grunt][14]
   - [Socket.io][15]
   - [AMDefine][16]
+  - [Normalize.css][23]
+  - [HTML5 Boilerplate][24]
 
 I would like to make a special call out to Three.js. I ended up not using Three.js for this game, but I spent a while trying to come up with a good approach to a 2D / 3D hybrid engine. Three.js is a really cool library, and even though I ended up not using it, I adapted the vector, rectangle and clock classes for use in my own code base.
 
@@ -92,3 +94,5 @@ I would like to make a special call out to Three.js. I ended up not using Three.
 [20]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/logo.png "Solstice Submarine: Capture the Fork"
 [21]: http://nodejs.org/ "Node.js"
 [22]: https://raw.github.com/cdata/solstice-submarine-ctf/master/solstice-submarine-3-digital-comic.pdf "Solstice Submarine 3 Digital Comic"
+[23]: http://necolas.github.com/normalize.css/ "Normalize.css"
+[24]: http://html5boilerplate.com/ "HTML5 Boilerplate"

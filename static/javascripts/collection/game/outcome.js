@@ -24,7 +24,13 @@ define('collection/game/outcome',
     },
     getTotalMoves: function() {
       return this.reduce(function(positions, model) {
-        return positions + model.get('points').length;
+        var additional = 0;
+
+        if (model.get('type') === Outcome.type.MOVE ||
+            model.get('type') === Outcome.type.MOVE_SHIELDED) {
+          additional += model.get('points').length;
+        }
+        return positions + additional;
       }, 0);
     },
     getLastRecordedDirection: function() {

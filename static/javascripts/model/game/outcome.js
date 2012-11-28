@@ -10,7 +10,7 @@ define('model/game/outcome',
       unit: Move.unit.SUB_A,
       type: 'move',
       target: null,
-      start: null,
+      position: null,
       points: [],
       scoreDelta: 0,
       interrupted: false

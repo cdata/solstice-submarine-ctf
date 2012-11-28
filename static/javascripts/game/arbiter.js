@@ -76,7 +76,7 @@ define('game/arbiter',
     var alive = outcomes.unitIsAlive();
     var interrupted = lastOutcome && lastOutcome.get('interrupted');
 
-    return alive && hasMoreMoves && !waiting && !interrupted;
+    return alive && hasMoreMoves && !interrupted;
   }
 
   // An outcome collection is incomplete if the last outcome is not 'finished-turn'..
@@ -178,10 +178,11 @@ define('game/arbiter',
       var outcomes = outcomeList[index];
       var othersOutcomeList = _.without(outcomeList, outcomes);
       var alive = outcomes.unitIsAlive();
+      var shielded = outcomes.unitIsShielded();
       var attacking = false;
 
       _.each(othersOutcomeList, function(othersOutcomes) {
-        if (!alive || attacking) {
+        if (!alive || attacking || shielded) {
           return;
         }
 
@@ -269,7 +270,23 @@ define('game/arbiter',
   function restartAllInterrupted(moveList, outcomeList, forks, map) {
     _.each(moveList, function(move, index) {
       var outcomes = outcomeList[index];
+      var alive = outcomes.unitIsAlive();
+      var shielded;
 
+      if (canPerformMovement(move, outcomes)) {
+        shielded = outcomes.unitIsShielded();
+        outcomes.push(new Outcome({
+          type: shielded ? Outcome.type.MOVE_SHIELDED : Outcome.type.MOVE,
+          unit: outcomes.getUnitType(),
+          position: outcomes.getLastRecordedPosition()
+        }));
+      } else {
+        outcomes.push(new Outcome({
+          type: Outcome.type.WAIT,
+          unit: outcomes.getUnitType(),
+          position: outcomes.getLastRecordedPosition()
+        }));
+      }
     });
   }
 
