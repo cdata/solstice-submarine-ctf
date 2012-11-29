@@ -11,9 +11,9 @@ define('game',
       this.ui = options.ui;
     },
     dispose: function() {
+      this.client.dispose();
       this.renderer.dispose();
       this.engine.dispose();
-      this.client.dispose();
 
       this.model.off(null, null, this);
 

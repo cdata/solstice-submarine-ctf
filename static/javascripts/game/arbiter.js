@@ -267,6 +267,21 @@ define('game/arbiter',
     });
   }
 
+  function resolveForksForAll(moveList, outcomeList, forks, map) {
+    var forkOne = forks[0];
+    var forkTwo = forks[1];
+
+    _.each(moveList, function(move, index) {
+      var outcomes = outcomeList[index];
+      var unit = move.get('unit');
+      var team = unit.substr(0, 3);
+      var teamFork = team === 'sub' ? forkOne : forkTwo;
+      var otherFork = team === 'sub' ? forkTwo : forkOne;
+      var isCarryingOtherFork = otherFork.get('unit') === unit;
+
+    });
+  }
+
   function restartAllInterrupted(moveList, outcomeList, forks, map) {
     _.each(moveList, function(move, index) {
       var outcomes = outcomeList[index];
@@ -374,6 +389,7 @@ define('game/arbiter',
       }
       resolveAttacksForAll(moveList, outcomeList, forks, map);
       resolveDefenseForAll(moveList, outcomeList, forks, map);
+      resolveForksForAll(moveList, outcomeList, forks, map);
       restartAllInterrupted(moveList, outcomeList, forks, map);
     }
 

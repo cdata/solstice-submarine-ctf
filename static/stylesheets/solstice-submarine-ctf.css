@@ -72,6 +72,50 @@ a.game-text:hover:not(.disabled) > span {
   background-image: url(../assets/images/font-yellow.png);
 }
 
+#Panels {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+  background-image: url(../assets/images/title-panel.png);
+  background-repeat: no-repeat;
+  background-size: 720px 270px;
+  background-position: center 440px;
+}
+
+.solsticesub-ctf #Panels {
+  visibility: visible;
+}
+
+#Panels:before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 352px;
+  height: 440px;
+  left: 25%;
+  margin-left: -300px;
+  background-image: url(../assets/images/sub-panel.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+#Panels:after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 352px;
+  height: 440px;
+  right: 25%;
+  margin-right: -300px;
+  background-image: url(../assets/images/rocket-panel.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
 #Loader {
   display: block;
   position: fixed;
@@ -118,6 +162,14 @@ body > section:not(#Loader) {
   height: 440px;
   margin: 0 auto;
   background-color: #222;
+  border-left: 2px solid #000;
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
+  -webkit-border-radius: 0 0 8px 8px;
+  -moz-border-radius: 0 0 8px 8px;
+  -ms-border-radius: 0 0 8px 8px;
+  -o-border-radius: 0 0 8px 8px;
+  border-radius: 0 0 8px 8px;
 }
 
 #Start h1 {
@@ -303,12 +355,11 @@ body > section:not(#Loader) {
 #Credits {
   display: none;
   position: relative;
-  top: 20px;
+  top: 260px;
   text-align: center;
-  font-style: italic;
   font-size: 14px;
   font-weight: 200;
-  color: #777;
+  color: #000;
 }
 
 #Credits > span {
@@ -316,14 +367,14 @@ body > section:not(#Loader) {
 }
 
 #Credits a {
-  color: #888;
+  color: #000;
   text-decoration: none;
   font-weight: 900;
 }
 
 #Credits a:hover {
   color: #f3bc45;
-  text-shadow: 1px 1px 0 #6fb0d6;
+  text-shadow: 1px -1px 0 #6fb0d6;
 }
 
 
@@ -341,6 +392,30 @@ body > section:not(#Loader) {
     height: 220px;
     margin: 0 auto;
     background-color: #222;
+    border-width: 1px;
+
+    -webkit-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    -ms-border-radius: 0 0 4px 4px;
+    -o-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+  }
+
+  #Panels {
+    background-size: 360px 135px;
+    background-position: center 220px;
+  }
+
+  #Panels:before {
+    width: 176px;
+    height: 220px;
+    margin-left: -170px;
+  }
+
+  #Panels:after {
+    width: 176px;
+    height: 220px;
+    margin-right: -170px;
   }
 
   #Start header {
@@ -425,7 +500,7 @@ body > section:not(#Loader) {
 
 
   #Credits {
-    top: 5px;
+    top: 120px;
   }
 
   #Credits > span {
@@ -448,6 +523,29 @@ body > section:not(#Loader) {
     height: 330px;
     margin: 0 auto;
     background-color: #222;
+
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius: 0 0 6px 6px;
+    -ms-border-radius: 0 0 6px 6px;
+    -o-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+  }
+
+  #Panels {
+    background-size: 540px auto;
+    background-position: center 330px;
+  }
+
+  #Panels:before {
+    width: 264px;
+    height: 330px;
+    margin-left: -265px;
+  }
+
+  #Panels:after {
+    width: 264px;
+    height: 330px;
+    margin-right: -265px;
   }
 
   #Start header {
@@ -530,7 +628,7 @@ body > section:not(#Loader) {
   }
 
   #Credits {
-    top: 10px;
+    top: 182px;
   }
 
   #Credits > span {
@@ -556,7 +654,34 @@ body > section:not(#Loader) {
     height: 660px;
     margin: 0 auto;
     background-color: #222;
+
+    border-width: 3px;
+
+    -webkit-border-radius: 0 0 10px 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    -ms-border-radius: 0 0 10px 10px;
+    -o-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
   }
+
+  #Panels {
+    background-size: 1080px 405px;
+    background-position: center 660px;
+    height: 1100px;
+  }
+
+  #Panels:before {
+    width: 528px;
+    height: 660px;
+    margin-left: -450px;
+  }
+
+  #Panels:after {
+    width: 528px;
+    height: 660px;
+    margin-right: -450px;
+  }
+
 
   #Start header {
     padding: 60px 0;
@@ -637,9 +762,8 @@ body > section:not(#Loader) {
     background-position: 0 -72px;
   }
 
-
   #Credits {
-    top: 15px;
+    top: 390px;
   }
 }
 

@@ -38,6 +38,7 @@ define('app',
       this.user = new UserModel();
       this.model = new ApplicationModel();
       this.$body = $('body').addClass('solsticesub-ctf');
+      this.$panels = $('#Panels');
 
       this.user.on('change:id', this.invalidateId, this);
 
@@ -133,7 +134,7 @@ define('app',
       if (this.currentView !== view) {
         this.removeCurrentView();
         this.$body.addClass('route-' + Backbone.history.fragment);
-        this.$body.prepend(view.render().$el);
+        this.$panels.after(view.render().$el);
         this.currentView = view;
       }
       return view;
