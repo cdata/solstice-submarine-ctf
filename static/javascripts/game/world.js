@@ -159,12 +159,8 @@ define('game/world',
         position = this.indexToPosition(index);
         hasFog = true;
 
-        for (name in this.foglessPositions) {
-          circle = this.foglessPositions[name];
-          if (position.distanceTo(circle.position) < circle.radius &&
-              this.lineOfSight(circle.position, position)) {
-            hasFog = false;
-          }
+        if (this.tileIsVisible(position)) {
+          hasFog = false;
         }
 
         if (hasFog) {
@@ -175,6 +171,9 @@ define('game/world',
 
         index++;
       }
+
+      this.rktA.visible = this.tileIsVisible(this.rktA.position);
+      this.rktB.visible = this.tileIsVisible(this.rktB.position);
 
       iter = this.fogOfWar.firstChild;
 
@@ -188,6 +187,22 @@ define('game/world',
           iter.redraw();
         }
       } while (iter = iter.nextSibling);
+    },
+    tileIsVisible: function(position) {
+      var name;
+      var circle;
+
+      position = position.clone().floor();
+
+      for (name in this.foglessPositions) {
+        circle = this.foglessPositions[name];
+        if (position.distanceTo(circle.position) < circle.radius &&
+            this.lineOfSight(circle.position, position)) {
+          return true;
+        }
+      }
+
+      return false;
     },
     setFoglessPosition: function(name, circle) {
       this.foglessPositions[name] = circle;

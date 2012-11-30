@@ -2,6 +2,8 @@
 
 Solstice Submarine: Capture the Fork is a simultaneous-turn-based CTF (capture the flag) game. You will play as one of the characters from the [Solstice Submarine][17] universe in a thrilling competition of strategy and guile. Make your best attempt to steal the fork of the other team while defending your fork from being stolen by your opponent and his clone!
 
+![Live Gameplay][26]
+
 ## Game Design Notes
 
 When I started putting together Solstice Sub: CTF, I had a few design goals in mind. I wanted to make a game that was:
@@ -104,3 +106,4 @@ I would like to make a special call out to Three.js. I ended up not using Three.
 [23]: http://necolas.github.com/normalize.css/ "Normalize.css"
 [24]: http://html5boilerplate.com/ "HTML5 Boilerplate"
 [25]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/all-sprites.png "Solstice Submarine Sprite Sheet"
+[26]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/screenshot.png "Live Gameplay"
