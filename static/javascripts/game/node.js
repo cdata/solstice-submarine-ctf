@@ -45,8 +45,12 @@ define('game/node',
         throw new Error('Invalid node operation.');
       }
 
-      if (node.parent && node.parent !== this) {
-        node.parent.remove(node);
+      if (node.parent) {
+        if (node.parent !== this) {
+          node.parent.remove(node);
+        } else {
+          return;
+        }
       }
 
       node.previousSibling = previous;

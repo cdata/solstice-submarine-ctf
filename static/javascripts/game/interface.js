@@ -68,26 +68,108 @@ define('game/interface',
     },
     performOutcomeStepForEach: function(steps) {
       var resolutions = [];
+      var rktScore = this.model.get('rktScore');
+      var subScore = this.model.get('subScore');
 
       _.each(steps, function(step) {
-        var unit = this.world[step.get('unit')];
+        var unitName = step.get('unit');
+        var unit = this.world[unitName];
+        var team = unitName.substr(0, 3);
+        var other = team === 'sub' ? 'rkt' : 'sub';
+        var teamFork = this.world[team + 'Fork'];
+        var otherFork = this.world[other + 'Fork'];
         var stepType = step.get('type');
+        var stepPosition = new Vector2().copy(step.get('position'));
+        var scoreDelta = step.get('score') || 0;
+        var fork;
 
-        if (stepType === Outcome.type.MOVE || stepType === Outcome.type.MOVE_SHIELDED) {
-          resolutions.push(unit.walkPath(step.get('points')));
-        } else if (stepType === Outcome.type.ATTACK) {
-          resolutions.push(unit.fireLaser(step.get('points')[0]));
-        } else if (stepType === Outcome.type.DIE) {
-          resolutions.push(unit.die());
-        } else if (stepType === Outcome.type.RESPAWN) {
-          unit.position = new Vector2().copy(step.get('position'));
-          unit.reveal();
-          resolutions.push(unit.respawn());
+        if (team === 'sub') {
+          subScore += scoreDelta;
+        } else {
+          rktScore += scoreDelta;
+        }
+
+        switch (stepType) {
+          case Outcome.type.MOVE:
+          case Outcome.type.MOVE_SHIELDED:
+            resolutions.push(unit.walkPath(step.get('points')));
+            break;
+          case Outcome.type.ATTACK:
+            resolutions.push(unit.fireLaser(step.get('points')[0]));
+            break;
+          case Outcome.type.DIE:
+            resolutions.push(unit.die());
+            break;
+          case Outcome.type.RESPAWN:
+            unit.position = stepPosition;
+            unit.reveal();
+            resolutions.push(unit.respawn());
+            break;
+          case Outcome.type.PICKUP_FORK:
+            if (team === 'sub') {
+              fork = this.rktFork;
+            } else {
+              fork = this.subFork;
+            }
+
+            fork.set({
+              position: null,
+              carried: true,
+              unit: unitName
+            });
+
+            unit.append(otherFork);
+            resolutions.push(q.resolve());
+            break;
+          case Outcome.type.RETURN_FORK:
+            if (team === 'sub') {
+              fork = this.subFork;
+            } else {
+              fork = this.rktFork;
+            }
+
+            fork.set({
+              carried: false,
+              unit: null,
+              position: fork.get('origin')
+            });
+            resolutions.push(q.resolve());
+            break;
+          case Outcome.type.CAPTURE_FORK:
+            this.world.items.append(teamFork);
+            this.world.items.append(otherFork);
+
+            this.subFork.set({
+              position: this.subFork.get('origin').clone(),
+              unit: null,
+              carried: false
+            });
+
+            this.rktFork.set({
+              position: this.rktFork.get('origin').clone(),
+              unit: null,
+              carried: false
+            });
+            resolutions.push(q.resolve());
+            break;
+          case Outcome.type.DROP_FORK:
+            this.world.items.append(otherFork);
+            otherFork.model.set({
+              position: stepPosition.clone(),
+              unit: null,
+              carried: false
+            });
+            break;
         }
 
       }, this);
 
-      return q.all(resolutions);
+      return q.all(resolutions).then(_.bind(function() {
+        this.model.set({
+          rktScore: rktScore,
+          subScore: subScore
+        });
+      }, this));
     },
     dispose: function() {
       this.world.heroAlpha.off(null, null, this);
@@ -175,7 +257,8 @@ define('game/interface',
       var companion = this.world.companionOf(hero);
       var companionWaypoints = companion.model.get('points');
 
-      if (!position.equals(companionWaypoints[companionWaypoints.length - 1])) {
+      if (!position.equals(companionWaypoints[companionWaypoints.length - 1]) &&
+          !position.equals(hero.position)) {
         hero.model.set('points', this.world.getPath(hero.position, position));
         this.clearSelection();
       }

@@ -1,6 +1,6 @@
 define('game/entity/fork',
-       ['underscore', 'game/graphic'],
-       function(_, Graphic) {
+       ['underscore', 'game/graphic', 'game/vector2'],
+       function(_, Graphic, Vector2) {
   return Graphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -22,14 +22,15 @@ define('game/entity/fork',
     },
     reset: function() {
       var position = this.model.get('position');
+      var carried = this.model.get('carried');
 
       if (position) {
         this.position = position;
-        if (this.color == 'yellow') {
-          this.sprite.goTo(0);
-        } else {
-          this.sprite.goTo(1);
-        }
+        this.rotation = 0;
+        this.sprite.goTo(this.color === 'yellow' ? 0 : 1);
+      } else if(carried) {
+        this.position = new Vector2();
+        this.sprite.goTo(this.color === 'yellow' ? 6 : 5);
       } else {
         this.sprite.goTo(2);
       }

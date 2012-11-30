@@ -41,6 +41,13 @@ define('game/entity/hero',
     focus: function() {
       this.useFrameAnimation('idle-focus');
     },
+    draw: function() {
+      if (this.firstChild) {
+        // Lazy fix for fork rotation..
+        this.firstChild.rotation = this.rotation;
+      }
+      AnimatedGraphic.prototype.draw.apply(this, arguments);
+    },
     checkForPositionChange: function() {
       var flatPosition = new Vector2(Math.floor(this.position.x), Math.floor(this.position.y));
 

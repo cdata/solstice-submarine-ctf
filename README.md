@@ -13,7 +13,6 @@ When I started putting together Solstice Sub: CTF, I had a few design goals in m
 
 I quickly settled on the idea of a turn-based game, as that seemed to lend itself to the simplest multiplayer architecture. After spending some time thinking about turn-based multiplayer games that I admire, I decided that the experience should be similar to the multiplayer of one of my favorite games, ["Legend of Zelda: Phantom Hourglass."][18] I figured that gameplay would be symmetrical for the first playable version. I had a mind to add random powerups, but felt that it would be best to stick to shooting for a basic game first.
 
-[A digital copy of this year's Soltice Submarine mini-comic][22] has been included in this repository if you are interested in checking it out.
 
 ## Technical Highlights
 
@@ -24,6 +23,14 @@ Solstice Submarine: CTF is nearing completion of basic game play. Here are some 
   - Singleplayer is structured identically to multiplayer, thanks to a client class stubbed out with AI logic.
   - Picking, pathing, fog of war, sprite animation, scene graph and other engine features all written from scratch.
   - Game maps are generated from an interpreted JSON configuration.
+
+## Art Direction
+
+The Solstice Submarine is a yearly comic / digital experience that [Donna Almendrala][19] and I work on together, but Donna is the true artist between the two of us. She draws and screen prints the entire comic herself, and is also responsible for the amazing artistic panels on the left, right and bottom sides of the game viewport. [A digital copy of this year's Soltice Submarine mini-comic][22] has been included in this repository courtesy of Donna.
+
+All of the sprites used in the game are original artwork by both Donna and me:
+
+![Solstice Submarine Sprite Sheet][25]
 
 ## Running Locally
 
@@ -96,3 +103,4 @@ I would like to make a special call out to Three.js. I ended up not using Three.
 [22]: https://raw.github.com/cdata/solstice-submarine-ctf/master/solstice-submarine-3-digital-comic.pdf "Solstice Submarine 3 Digital Comic"
 [23]: http://necolas.github.com/normalize.css/ "Normalize.css"
 [24]: http://html5boilerplate.com/ "HTML5 Boilerplate"
+[25]: https://raw.github.com/cdata/solstice-submarine-ctf/master/static/assets/images/all-sprites.png "Solstice Submarine Sprite Sheet"

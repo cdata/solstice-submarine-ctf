@@ -6,7 +6,8 @@ define('model/game/fork',
       team: 'sub',
       carried: false,
       unit: null,
-      position: null
+      position: null,
+      origin: null
     },
     canBePickedUp: function() {
       return !this.get('carried');

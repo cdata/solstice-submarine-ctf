@@ -127,25 +127,37 @@ define('game/arbiter',
     _.each(moveList, function(move, index) {
       var outcomes = outcomeList[index];
       var othersOutcomeList = _.without(outcomeList, outcomes);
+      var lastOutcome = outcomes.getLastOutcome();
+      var othersLastOutcome;
+      var interrupted;
+
       _.each(othersOutcomeList, function(othersOutcomes) {
         if (outcomes.unitIsCompanion(othersOutcomes.getUnitType())) {
           // Line of sight between companions is disregarded
           return;
         }
 
-        var interrupted = outcomes.unitIsInterrupted();
-        var lastOutcome;
-        var othersLastOutcome;
+        interrupted = outcomes.unitIsInterrupted();
 
-        if (!interrupted && unitHasSightOfOther(outcomes, othersOutcomes, forks, map)) {
+        if (!interrupted && (unitHasSightOfOther(outcomes, othersOutcomes, forks, map))) {
           // Interrupt both units
-          lastOutcome = outcomes.getLastOutcome();
           othersLastOutcome = othersOutcomes.getLastOutcome();
           lastOutcome.set('interrupted', true);
           othersLastOutcome.set('interrupted', true);
         }
       });
+
+      if (!interrupted && unitCanHandleFork(outcomes, forks, map)) {
+        lastOutcome.set('interrupted', true);
+      }
     });
+  }
+
+  function unitCanHandleFork(outcomes, forks, map) {
+    var details = forkDetails(outcomes, forks);
+
+    return (details.standingOverOtherFork ||
+            details.standingOverMyFork) && !details.carryingFork && details.alive;
   }
 
   function unitHasSightOfOther(outcomes, othersOutcomes, forks, map) {
@@ -197,7 +209,8 @@ define('game/arbiter',
             target: othersOutcomes.getUnitType(),
             position: outcomes.getLastRecordedPosition(),
             points: [othersOutcomes.getLastRecordedPosition()],
-            unit: move.get('unit')
+            unit: move.get('unit'),
+            score: othersOutcomes.unitIsShielded() ? 0 : 2
           }));
         }
       });
@@ -245,14 +258,16 @@ define('game/arbiter',
           outcomes.push(new Outcome({
             type: Outcome.type.DEFEND,
             position: outcomes.getLastRecordedPosition(),
-            unit: outcomes.getUnitType()
+            unit: outcomes.getUnitType(),
+            score: 1
           }));
         } else {
           dying = true;
           outcomes.push(new Outcome({
             type: Outcome.type.DIE,
             position: outcomes.getLastRecordedPosition(),
-            unit: outcomes.getUnitType()
+            unit: outcomes.getUnitType(),
+            score: -1
           }));
         }
       });
@@ -267,18 +282,139 @@ define('game/arbiter',
     });
   }
 
-  function resolveForksForAll(moveList, outcomeList, forks, map) {
-    var forkOne = forks[0];
-    var forkTwo = forks[1];
+  function forkDetails(outcomes, forks) {
+    var alive = outcomes.unitIsAlive();
+    var unit = outcomes.getUnitType();
+    var team = unit.substr(0, 3);
+    var myFork = team === 'sub' ? forks[0] : forks[1];
+    var otherFork = team === 'sub' ? forks[1] : forks[0];
+    var carrying = otherFork.unit === unit;
+    var lastPosition = outcomes.getLastRecordedPosition();
 
+    return {
+      alive: alive,
+      unit: unit,
+      team: team,
+      myFork: myFork,
+      otherFork: otherFork,
+      carrying: carrying,
+      lastPosition: lastPosition,
+      standingOverMyFork: !myFork.get('carried') && lastPosition.equals(myFork.get('position')),
+      standingOverOtherFork: !otherFork.get('carried') && lastPosition.equals(otherFork.get('position'))
+    };
+  }
+
+  function resolveForkPickupForAll(moveList, outcomeList, forks, map) {
     _.each(moveList, function(move, index) {
       var outcomes = outcomeList[index];
-      var unit = move.get('unit');
-      var team = unit.substr(0, 3);
-      var teamFork = team === 'sub' ? forkOne : forkTwo;
-      var otherFork = team === 'sub' ? forkTwo : forkOne;
-      var isCarryingOtherFork = otherFork.get('unit') === unit;
+      var details = forkDetails(outcomes, forks);
 
+      if (!details.standingOverOtherFork ||
+          details.carryingFork ||
+          !details.alive) {
+        outcomes.push({
+          type: Outcome.type.WAIT,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      } else {
+        details.otherFork.set('unit', details.unit);
+        details.otherFork.set('carried', true);
+        details.otherFork.set('position', null);
+        outcomes.push({
+          type: Outcome.type.PICKUP_FORK,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      }
+    });
+  }
+
+  function resolveForkReturnForAll(moveList, outcomeList, forks, map) {
+    _.each(moveList, function(move, index) {
+      var outcomes = outcomeList[index];
+      var details = forkDetails(outcomes, forks);
+
+      if (!details.standingOverMyFork ||
+          !details.alive ||
+          details.myFork.get('carried')) {
+        outcomes.push({
+          type: Outcome.type.WAIT,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      } else {
+        details.myFork.set('position', details.myFork.origin);
+        outcomes.push({
+          type: Outcome.type.RETURN_FORK,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      }
+    });
+  }
+
+  function resolveForkCaptureForAll(moveList, outcomeList, forks, map) {
+    _.each(moveList, function(move, index) {
+      var outcomes = outcomeList[index];
+      var details = forkDetails(outcomes, forks);
+
+      if (!details.alive ||
+          details.myFork.get('carried') ||
+          !details.otherFork.get('carried') ||
+          details.otherFork.get('unit') !== details.unit ||
+          !details.lastPosition.equals(details.myFork.get('origin'))) {
+        outcomes.push({
+          type: Outcome.type.WAIT,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      } else {
+        details.myFork.set({
+          position: details.myFork.origin,
+          carried: false,
+          unit: null
+        });
+        details.otherFork.set({
+          position: details.otherFork.origin,
+          carried: false,
+          unit: null
+        });
+        outcomes.push({
+          type: Outcome.type.CAPTURE_FORK,
+          unit: details.unit,
+          position: details.lastPosition,
+          score: 35
+        });
+      }
+    });
+  }
+
+  function resolveForkDropForAll(moveList, outcomeList, forks, map) {
+    _.each(moveList, function(move, index) {
+      var outcomes = outcomeList[index];
+      var details = forkDetails(outcomes, forks);
+
+      if (details.alive ||
+          !details.otherFork.get('carried') ||
+          details.otherFork.get('unit') !== details.unit) {
+        outcomes.push({
+          type: Outcome.type.WAIT,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      } else {
+        details.otherFork.set({
+          position: details.lastPosition,
+          carried: false,
+          unit: null
+        });
+        outcomes.push({
+          type: Outcome.type.DROP_FORK,
+          unit: details.unit,
+          position: details.lastPosition
+        });
+      }
     });
   }
 
@@ -387,9 +523,12 @@ define('game/arbiter',
         advanceAll(moveList, outcomeList, forks, map);
         interruptAnyInConflict(moveList, outcomeList, forks, map);
       }
+      resolveForkPickupForAll(moveList, outcomeList, forks, map);
+      resolveForkReturnForAll(moveList, outcomeList, forks, map);
+      resolveForkCaptureForAll(moveList, outcomeList, forks, map);
       resolveAttacksForAll(moveList, outcomeList, forks, map);
       resolveDefenseForAll(moveList, outcomeList, forks, map);
-      resolveForksForAll(moveList, outcomeList, forks, map);
+      resolveForkDropForAll(moveList, outcomeList, forks, map);
       restartAllInterrupted(moveList, outcomeList, forks, map);
     }
 

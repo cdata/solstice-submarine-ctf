@@ -71,10 +71,12 @@ define('game/world',
             tile = this.items.append(new Fork({
               color: type === 2 ? 'yellow' : 'red',
               model: type === 2 ? options.subFork : options.rktFork,
-              position: position.clone()
+              position: position.clone(),
+              origin: position.clone()
             }));
 
             tile.model.set('position', position.clone());
+            tile.model.set('origin', position.clone());
 
             if (type === 2) {
               this.subFork = tile;
@@ -356,7 +358,7 @@ define('game/world',
     inclusiveNeighbors: function(index) {
       var position = this.indexToPosition(index);
       var result = this.neighbors(index);
-      
+
       position.x = position.x - 1;
       position.y = position.y - 1;
       result.topLeft = this.at(position);
@@ -398,7 +400,7 @@ define('game/world',
 
       neighborPositions = this.neighborPositions(from);
       nextWeight = 1000;
-      
+
       while (neighborPosition = neighborPositions.pop()) {
         if (this.is(neighborPosition, World.tile.WALL)) {
           continue;
@@ -418,7 +420,7 @@ define('game/world',
         weight = this.getCost(neighborPosition, to);
 
         if (!next || weight < nextWeight) {
-          next = neighborPosition; 
+          next = neighborPosition;
           nextWeight = weight;
         }
       }
@@ -441,7 +443,7 @@ define('game/world',
 
       neighborPositions = this.neighborPositions(from);
       nextWeight = 1000;
-      
+
       list = list || [];
       exclude = exclude || [from];
 

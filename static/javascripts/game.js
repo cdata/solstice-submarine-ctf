@@ -8,6 +8,7 @@ define('game',
       });
       this.solo = options.solo;
       this.model = new GameModel();
+      this.model.on('change:subScore change:rktScore', this.updateScore, this);
       this.ui = options.ui;
     },
     dispose: function() {
@@ -22,6 +23,9 @@ define('game',
       this.client = null;
       this.ui = null;
       this.model = null;
+    },
+    updateScore: function() {
+      this.ui.setScore(this.model.get('subScore'), this.model.get('rktScore'));
     },
     start: function() {
       this.renderer = new Renderer();

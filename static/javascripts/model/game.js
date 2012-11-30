@@ -4,8 +4,8 @@ define('model/game',
   return Backbone.Model.extend({
     defaults: {
       connected: false,
-      yourScore: 0,
-      opponentScore: 0,
+      subScore: 0,
+      rktScore: 0,
       turn: null,
       forks: null
     }
