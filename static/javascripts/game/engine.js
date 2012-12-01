@@ -1,5 +1,5 @@
-define('game/engine', 
-       ['tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/clock', 'game/polyfill'], 
+define('game/engine',
+       ['tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/clock', 'game/polyfill'],
        function(TWEEN, Stats, Backbone, $, _, GameObject, Clock) {
   var Engine = GameObject.extend({
     initialize: function() {
@@ -11,7 +11,7 @@ define('game/engine',
         'left': '0px',
         'zIndex': 10000
       });
-      this.stats.$domElement.prependTo($('body'));
+      //this.stats.$domElement.prependTo($('body'));
 
       this.boundNextFrame = _.bind(this.nextFrame, this);
       this.clock = new Clock(false);

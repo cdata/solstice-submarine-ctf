@@ -1,6 +1,6 @@
 define('game/client/solo',
-       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork', 'game/world'],
-       function(_, Client, OutcomeCollection, Move, Arbiter, Assets, Fork, World) {
+       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork', 'game/world', 'game/vector2'],
+       function(_, Client, OutcomeCollection, Move, Arbiter, Assets, Fork, World, Vector2) {
   return Client.extend({
     connect: function() {
       this.connection = {
@@ -31,11 +31,12 @@ define('game/client/solo',
     handleTurn: function(data, callback) {
       var game = JSON.parse(data);
       var turn = game.turn;
+      var forks = [new Fork(game.forks[0]), new Fork(game.forks[1])];
       var result = Arbiter.resolve([
         new Move(turn.moveA), new Move(turn.moveB),
-        this.getOpponentMove(Move.unit.RKT_A, this.interface.world),
-        this.getOpponentMove(Move.unit.RKT_B, this.interface.world)
-      ], [new Fork(game.forks[0]), new Fork(game.forks[1])], Assets.getData('assets/data/maps/seabound.json'));
+        this.getOpponentMove(Move.unit.RKT_A, forks, this.interface.world),
+        this.getOpponentMove(Move.unit.RKT_B, forks, this.interface.world)
+      ], forks, Assets.getData('assets/data/maps/seabound.json'));
       var outcomeList = result;
 
       _.defer(_.bind(function() {
@@ -44,19 +45,40 @@ define('game/client/solo',
           this.onOutcome(JSON.stringify(outcomeList)); }, this));
       }, this));
     },
-    getOpponentMove: function(unit, world) {
+    getOpponentMove: function(unit, forks, world) {
       // Badass AI yo..
       var world = this.interface.world;
       var entity = world[unit];
       var newPosition = entity.position.clone();
+      var otherFork = forks[0];
+      var myFork = forks[1];
+      var carrier;
+      var chance;
       var index;
       var position;
       var path;
 
-      do {
-        index = Math.floor(Math.random() * world.width * world.height);
-        position = world.indexToPosition(index);
-      } while (world.is(position, World.tile.WALL));
+      if (unit === 'rktA') {
+        chance = 0.15;
+      } else {
+        chance = 0.85;
+      }
+
+      if (Math.random() < chance) {
+        do {
+          index = Math.floor(Math.random() * world.width * world.height);
+          position = world.indexToPosition(index);
+        } while (world.is(position, World.tile.WALL));
+      } else {
+        if (!otherFork.get('carried')) {
+          position = new Vector2().copy(otherFork.get('position'));
+        } else if (!myFork.get('carried')) {
+          position = new Vector2().copy(myFork.get('position'));
+        } else {
+          carrier = world[myFork.get('unit')];
+          position = carrier.position.clone();
+        }
+      }
 
       path = world.getPath(entity.position, position);
       path = path.slice(0, 4);
