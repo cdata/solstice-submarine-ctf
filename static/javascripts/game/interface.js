@@ -90,9 +90,11 @@ define('game/interface',
         }
 
         switch (stepType) {
-          case Outcome.type.MOVE:
           case Outcome.type.MOVE_SHIELDED:
-            resolutions.push(unit.walkPath(step.get('points')));
+          case Outcome.type.MOVE:
+            resolutions.push(unit.walkPath(step.get('points')).then(function() {
+              // Noop..
+            }));
             break;
           case Outcome.type.ATTACK:
             if (team === 'rkt') {
@@ -134,6 +136,7 @@ define('game/interface',
               unit: unitName
             });
 
+            unit.shield.visible = false;
             unit.append(otherFork);
             resolutions.push(q.resolve());
             break;
@@ -245,6 +248,8 @@ define('game/interface',
       var toggled = this.ui.model.get('modeToggled');
       var points = hero.model.get('points');
 
+      hero.shield.visible = toggled;
+
       if (points.length > 2 && toggled) {
         hero.model.set('points', points.slice(0, 2));
       }
@@ -291,10 +296,28 @@ define('game/interface',
       this.world.clearHighlight();
     },
     select: function(entity) {
+      var name = entity.name;
+      var team = name.substr(0, 3);
+      var fork;
+
+      if (team === 'sub') {
+        fork = this.rktFork;
+      } else {
+        fork = this.subFork;
+      }
+
       this.clearSelection();
-      this.ui.enableMode();
-      this.ui.model.set('modeToggled', entity.model.get('shielded'));
+
+      if (fork.get('carried') && fork.get('unit') === name) {
+        entity.model.set('shielded', false);
+        this.ui.disableModeForFork();
+      } else {
+        this.ui.enableMode();
+        this.ui.model.set('modeToggled', entity.model.get('shielded'));
+      }
+
       this.selected.push(entity);
+
       if (entity.focus) {
         entity.focus();
       }

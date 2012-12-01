@@ -336,8 +336,8 @@ body > section:not(#Loader) {
   background-position: -96px -96px;
 }
 
-#Controls > .input .mode.button.disabled.flag {
-  background-position: -96px -192px;
+#Controls > .input .mode.button.disabled.fork {
+  background-position: -96px -144px;
 }
 
 #Controls > .input .end-turn.button {
@@ -492,8 +492,8 @@ body > section:not(#Loader) {
     background-position: -48px -48px;
   }
 
-  #Controls > .input .mode.button.disabled.flag {
-    background-position: -48px -96px;
+  #Controls > .input .mode.button.disabled.fork {
+    background-position: -48px -72px;
   }
 
   #Controls > .input .end-turn.button {
@@ -626,8 +626,8 @@ body > section:not(#Loader) {
     background-position: -72px -72px;
   }
 
-  #Controls > .input .mode.button.disabled.flag {
-    background-position: -72px -144px;
+  #Controls > .input .mode.button.disabled.fork {
+    background-position: -72px -108px;
   }
 
   #Controls > .input .end-turn.button {
@@ -765,8 +765,8 @@ body > section:not(#Loader) {
     background-position: -144px -144px;
   }
 
-  #Controls > .input .mode.button.disabled.flag {
-    background-position: -144px -288px;
+  #Controls > .input .mode.button.disabled.fork {
+    background-position: -144px -216px;
   }
 
   #Controls > .input .end-turn.button {

@@ -1,6 +1,6 @@
 define('game/entity/hero',
-       ['underscore', 'q', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint', 'game/entity/laser'],
-       function(_, q, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint, Laser) {
+       ['underscore', 'q', 'game/graphic', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint', 'game/entity/laser'],
+       function(_, q, Graphic, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint, Laser) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
@@ -18,6 +18,13 @@ define('game/entity/hero',
       this.defineFrameAnimation('dead', 4, 4);
       this.defineFrameAnimation('die', 5, 10);
       this.defineFrameAnimation('respawn', 10, 5);
+
+      this.shield = this.append(new Graphic({
+        name: 'Shield',
+        url: 'assets/images/laser.png'
+      }));
+      this.shield.sprite.goTo(10);
+      this.shield.visible = false;
 
       this.model = new MoveModel({
         unit: this.name
@@ -42,9 +49,12 @@ define('game/entity/hero',
       this.useFrameAnimation('idle-focus');
     },
     draw: function() {
-      if (this.firstChild) {
-        // Lazy fix for fork rotation..
-        this.firstChild.rotation = this.rotation;
+      var iter = this.firstChild;
+      if (iter) {
+        // Lazy fix for child rotation..
+        do {
+          iter.rotation = this.rotation;
+        } while (iter = iter.nextSibling);
       }
       AnimatedGraphic.prototype.draw.apply(this, arguments);
     },

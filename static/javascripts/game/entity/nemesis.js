@@ -20,6 +20,18 @@ define('game/entity/nemesis',
       this.defineFrameAnimation('die', 9, 4);
       this.defineFrameAnimation('respawn', 4, 9);
     },
+    draw: function() {
+      var iter = this.firstChild;
+      if (iter) {
+        // Lazy fix for fork rotation..
+        do {
+          if (iter.name !== 'Shield') {
+            iter.visible = this.visible;
+          }
+        } while (iter = iter.nextSibling);
+      }
+      Hero.prototype.draw.apply(this, arguments);
+    },
     checkForPositionChange: function() {
       // Noop.
     }

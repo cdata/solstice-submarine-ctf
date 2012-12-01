@@ -13,6 +13,7 @@ define('view/game/ui',
       this.model = new Backbone.Model({
         modeToggled: false,
         modeEnabled: false,
+        modeDisabledForFork: false,
         endTurnEnabled: false,
         subScore: 0,
         rktScore: 0,
@@ -44,6 +45,7 @@ define('view/game/ui',
       this.$rktScore.text(this.model.get('rktScore'))
                     .gameText();
       this.$modeButton.toggleClass('disabled', !this.model.get('modeEnabled'));
+      this.$modeButton.toggleClass('fork', this.model.get('modeDisabledForFork'));
       this.$modeButton.toggleClass('toggle', this.model.get('modeEnabled') && this.model.get('modeToggled'));
       this.$endTurnButton.toggleClass('disabled', !this.model.get('endTurnEnabled'));
 
@@ -55,8 +57,14 @@ define('view/game/ui',
     disableMode: function() {
       this.model.set('modeEnabled', false);
       this.model.set('modeToggled', false);
+      this.model.set('modeDisabledForFork', false);
+    },
+    disableModeForFork: function() {
+      this.disableMode();
+      this.model.set('modeDisabledForFork', true);
     },
     enableMode: function() {
+      this.model.set('modeDisabledForFork', false);
       this.model.set('modeEnabled', true);
     },
     disableEndTurn: function () {
