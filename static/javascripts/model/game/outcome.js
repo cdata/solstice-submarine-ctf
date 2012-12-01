@@ -32,6 +32,7 @@ define('model/game/outcome',
       DEFEND: 'defend',
       DIE: 'die',
       RESPAWN: 'respawn',
+      DROP_FORK: 'drop-fork',
       PICKUP_FORK: 'pickup-fork',
       RETURN_FORK: 'return-fork',
       CAPTURE_FORK: 'capture-fork'

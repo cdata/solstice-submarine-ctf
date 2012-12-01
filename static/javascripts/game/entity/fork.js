@@ -6,8 +6,10 @@ define('game/entity/fork',
       options = _.defaults(options || {}, {
         name: 'Fork',
         url: 'assets/images/items.png',
-        color: 'yellow'
+        color: 'yellow',
+        revealDistance: 2
       });
+      options.name = options.color === 'yellow' ? 'subFork' : 'rktFork';
       Graphic.prototype.initialize.call(this, options);
 
       this.color = options.color;
@@ -28,9 +30,11 @@ define('game/entity/fork',
         this.position = position;
         this.rotation = 0;
         this.sprite.goTo(this.color === 'yellow' ? 0 : 1);
+        this.reveal();
       } else if(carried) {
         this.position = new Vector2();
         this.sprite.goTo(this.color === 'yellow' ? 6 : 5);
+        this.conceal();
       } else {
         this.sprite.goTo(2);
       }

@@ -288,7 +288,7 @@ define('game/arbiter',
     var team = unit.substr(0, 3);
     var myFork = team === 'sub' ? forks[0] : forks[1];
     var otherFork = team === 'sub' ? forks[1] : forks[0];
-    var carrying = otherFork.unit === unit;
+    var carrying = otherFork.get('carried') && otherFork.get('unit') === unit;
     var lastPosition = outcomes.getLastRecordedPosition();
 
     return {
@@ -395,9 +395,7 @@ define('game/arbiter',
       var outcomes = outcomeList[index];
       var details = forkDetails(outcomes, forks);
 
-      if (details.alive ||
-          !details.otherFork.get('carried') ||
-          details.otherFork.get('unit') !== details.unit) {
+      if (details.alive || !details.carrying) {
         outcomes.push({
           type: Outcome.type.WAIT,
           unit: details.unit,

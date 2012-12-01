@@ -78,6 +78,9 @@ define('game/world',
             tile.model.set('position', position.clone());
             tile.model.set('origin', position.clone());
 
+            tile.on('reveal', this.setFoglessPosition, this);
+            tile.on('conceal', this.unsetFoglessPosition, this);
+
             if (type === 2) {
               this.subFork = tile;
             } else {
@@ -94,6 +97,7 @@ define('game/world',
             }));
 
             tile.on('reveal', this.setFoglessPosition, this);
+            tile.on('conceal', this.unsetFoglessPosition, this);
 
             if (type === 8) {
               this.subA = this.heroAlpha = tile;
@@ -109,6 +113,9 @@ define('game/world',
               position: position.clone()
             }));
 
+            tile.on('reveal', this.setFoglessPosition, this);
+            tile.on('conceal', this.unsetFoglessPosition, this);
+
             if (type == 32) {
               this.rktA = tile;
             } else {
@@ -123,6 +130,9 @@ define('game/world',
             break;
         }
       }, this);
+
+      this.subFork.reveal();
+      this.rktFork.reveal();
     },
     dispose: function() {
       this.heroAlpha.off(null, null, this);
@@ -191,13 +201,18 @@ define('game/world',
     tileIsVisible: function(position) {
       var name;
       var circle;
+      var distance;
 
       position = position.clone().floor();
 
       for (name in this.foglessPositions) {
         circle = this.foglessPositions[name];
-        if (position.distanceTo(circle.position) < circle.radius &&
-            this.lineOfSight(circle.position, position)) {
+        if (!circle) {
+          continue;
+        }
+        distance = position.distanceTo(circle.position);
+        if (distance < circle.radius &&
+            (distance < 4 || this.lineOfSight(circle.position, position))) {
           return true;
         }
       }
@@ -206,6 +221,10 @@ define('game/world',
     },
     setFoglessPosition: function(name, circle) {
       this.foglessPositions[name] = circle;
+      this.updateFog();
+    },
+    unsetFoglessPosition: function(name) {
+      this.foglessPositions[name] = null;
       this.updateFog();
     },
     lineOfSight: function(start, finish) {

@@ -7,7 +7,7 @@ define('game/entity/hero',
         name: 'Hero',
         url: 'assets/images/yellow-sub.png',
         frameInterval: 700,
-        revealDistance: 5,
+        revealDistance: 9,
         color: 0
       });
 

@@ -40,7 +40,7 @@ define('game/graphic',
       this.sprite = null;
     },
     redraw: function() {
-      var drawRect = new Rectangle(this.position.x, 
+      var drawRect = new Rectangle(this.position.x,
                                    this.position.y,
                                    this.position.x + this.width,
                                    this.position.y + this.height);
@@ -49,9 +49,10 @@ define('game/graphic',
     },
     reveal: function() {
       var position = this.position.clone();
-      //position.x = position.x + 1 / 18;
-      //position.y = position.y + 1 / 18;
       this.trigger('reveal', this.name, new Circle(this.revealDistance, position));
+    },
+    conceal: function() {
+      this.trigger('conceal', this.name);
     }
   });
 

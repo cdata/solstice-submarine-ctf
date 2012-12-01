@@ -95,15 +95,31 @@ define('game/interface',
             resolutions.push(unit.walkPath(step.get('points')));
             break;
           case Outcome.type.ATTACK:
-            resolutions.push(unit.fireLaser(step.get('points')[0]));
+            if (team === 'rkt') {
+              unit.reveal();
+            }
+            resolutions.push(unit.fireLaser(step.get('points')[0]).then(function() {
+              if (team === 'rkt') {
+                unit.conceal();
+              }
+            }));
             break;
           case Outcome.type.DIE:
-            resolutions.push(unit.die());
+            unit.reveal();
+            resolutions.push(unit.die().then(function() {
+              if (team === 'rkt') {
+                unit.conceal();
+              }
+            }));
             break;
           case Outcome.type.RESPAWN:
             unit.position = stepPosition;
             unit.reveal();
-            resolutions.push(unit.respawn());
+            resolutions.push(unit.respawn().then(function() {
+              if (team === 'rkt') {
+                unit.conceal();
+              }
+            }));
             break;
           case Outcome.type.PICKUP_FORK:
             if (team === 'sub') {

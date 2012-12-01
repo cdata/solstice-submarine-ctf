@@ -6,7 +6,8 @@ define('game/entity/nemesis',
       options = _.defaults(options || {}, {
         url: 'assets/images/red-rocket.png',
         name: 'Nemesis',
-        alwaysVisible: false
+        alwaysVisible: false,
+        revealDistance: 2
       });
 
       if (options.name === 'rktB') {
