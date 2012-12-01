@@ -12,12 +12,9 @@ define('game/text',
 
       for (index = 0; index < text.length; index++) {
         letter = $('<span>' + text.charAt(index) + '</span>');
-        letter.css('backgroundPosition', ((text.toUpperCase().charCodeAt(index) - 32) * -100) + '% 0px');
-        //letter.css('backgroundPosition', 100 / 1232 / 16 + '% 0px');
+        letter.css('backgroundPosition', ((text.toUpperCase().charCodeAt(index) - 32) * 100 / 76 + '% 0px'));
         $el.append(letter);
       }
-
-      
     });
   };
 });
