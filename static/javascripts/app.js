@@ -1,6 +1,6 @@
 define('app',
-       ['backbone', 'jquery', 'underscore', 'view/start', 'view/choosemode', 'view/game', 'view/loader', 'model/assets', 'model/application', 'model/user', 'game/assets'],
-       function(Backbone, $, _, StartView, ChooseModeView, GameView, LoaderView, AssetsModel, ApplicationModel, UserModel, assets) {
+       ['backbone', 'jquery', 'underscore', 'view/start', 'view/tutorial', 'view/choosemode', 'view/game', 'view/loader', 'model/assets', 'model/application', 'model/user', 'game/assets'],
+       function(Backbone, $, _, StartView, TutorialView, ChooseModeView, GameView, LoaderView, AssetsModel, ApplicationModel, UserModel, assets) {
   var App = Backbone.Router.extend({
     routes: {
       '': 'index',
@@ -8,6 +8,7 @@ define('app',
       'play-online': 'launchOnlineGame',
       'play-solo': 'launchSoloGame',
       'choose-mode': 'chooseMode',
+      'tutorial': 'tutorial',
       'start': 'start',
       'logout': 'logout'
     },
@@ -84,6 +85,11 @@ define('app',
     start: function() {
       if (this.verifyLoaded()) {
         this.setCurrentView(new StartView());
+      }
+    },
+    tutorial: function() {
+      if (this.verifyLoaded()) {
+        this.setCurrentView(new TutorialView({ app: this }));
       }
     },
     chooseMode: function() {
