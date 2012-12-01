@@ -62,8 +62,38 @@ define('game/interface',
       }
 
       return outcomesResolve.then(_.bind(function() {
-        this.ui.hideMessage();
-        this.enableInteraction();
+        var rktScore = this.model.get('rktScore');
+        var subScore = this.model.get('subScore');
+        var subWin = false;
+        var rktWin = false;
+        var tie = false;
+
+        this.ui.setScore(subScore, rktScore);
+
+        if (subScore >= 100 && rktScore >= 100) {
+          if (subScore > rktScore) {
+            subWin = true;
+          } else if (rktScore > subScore) {
+            rktWin = true;
+          } else {
+            tie = true;
+          }
+        } else if (subScore >= 100) {
+          subWin = true;
+        } else if (rktScore >= 100) {
+          rktWin = true;
+        }
+
+        if (subWin) {
+          this.ui.showMessage('Submarines win!');
+        } else if (rktWin) {
+          this.ui.showMessage('Rockets win!');
+        } else if (tie) {
+          this.ui.showMessage('It is a draw!');
+        } else {
+          this.ui.hideMessage();
+          this.enableInteraction();
+        }
       }, this));
     },
     performOutcomeStepForEach: function(steps) {

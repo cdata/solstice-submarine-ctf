@@ -157,7 +157,10 @@ define('game/arbiter',
     var details = forkDetails(outcomes, forks);
 
     return (details.standingOverOtherFork ||
-            details.standingOverMyFork) && !details.carryingFork && details.alive;
+            (details.standingOverMyFork &&
+             (details.carrying ||
+              !details.lastPosition.equals(details.myFork.get('origin'))))) &&
+           details.alive;
   }
 
   function unitHasSightOfOther(outcomes, othersOutcomes, forks, map) {
@@ -337,18 +340,21 @@ define('game/arbiter',
 
       if (!details.standingOverMyFork ||
           !details.alive ||
-          details.myFork.get('carried')) {
+          details.myFork.get('carried') ||
+          details.lastPosition.equals(details.myFork.get('origin'))) {
         outcomes.push({
           type: Outcome.type.WAIT,
           unit: details.unit,
           position: details.lastPosition
         });
       } else {
+        console.log('Returning fork...');
         details.myFork.set('position', details.myFork.origin);
         outcomes.push({
           type: Outcome.type.RETURN_FORK,
           unit: details.unit,
-          position: details.lastPosition
+          position: details.lastPosition,
+          score: 4
         });
       }
     });

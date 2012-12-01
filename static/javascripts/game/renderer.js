@@ -314,15 +314,6 @@ define('game/renderer',
 
         rect.next = this.redrawRectangles;
 
-        while (iter.next) {
-          if (iter.next.intersects(rect)) {
-            rect.add(iter.next);
-            iter.next = iter.next.next;
-          } else {
-            iter = iter.next;
-          }
-        }
-
         this.redrawRectangles = rect;
       }
     },
