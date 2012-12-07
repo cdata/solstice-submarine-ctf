@@ -1,5 +1,8 @@
-define('game/text',
-       ['jquery'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['jquery'],
        function($) {
   $.fn.gameText = function() {
     this.filter('.game-text').each(function(index, element) {

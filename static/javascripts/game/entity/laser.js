@@ -1,5 +1,4 @@
-define('game/entity/laser',
-       ['underscore', 'game/graphic/animated', 'game/vector2', 'game/sprite'],
+define(['underscore', 'game/graphic/animated', 'game/vector2', 'game/sprite'],
        function(_, AnimatedGraphic, Vector2, Sprite) {
   return AnimatedGraphic.extend({
     initialize: function(options) {

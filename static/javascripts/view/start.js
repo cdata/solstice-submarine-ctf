@@ -1,5 +1,4 @@
-define('view/start',
-       ['underscore', 'backbone', 'handlebars/templates', 'game/text'],
+define(['underscore', 'backbone', 'handlebars/templates', 'game/text'],
        function(_, Backbone, templates) {
   return Backbone.View.extend({
     render: function() {

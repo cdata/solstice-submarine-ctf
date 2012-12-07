@@ -1,5 +1,8 @@
-define('game/circle',
-       ['underscore', 'game/object', 'game/vector2'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/object', 'game/vector2'],
        function(_, GameObject, Vector2) {
   return GameObject.extend({
     initialize: function(radius, position) {

@@ -1,5 +1,8 @@
-define('game/loader',
-       ['game/object', 'q', 'underscore', 'backbone', 'jquery'], 
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/object', 'q', 'underscore', 'backbone', 'jquery'], 
        function(GameObject, q, _, Backbone, $) {
   var Loader = GameObject.extend({
     initialize: function() {

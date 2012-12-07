@@ -1,5 +1,8 @@
-define('game/node',
-       ['game/object', 'backbone', 'underscore'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/object', 'backbone', 'underscore'],
        function(GameObject, Backbone, _) {
   var Node = GameObject.extend({
     initialize: function() {

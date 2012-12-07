@@ -1,5 +1,8 @@
-define('game/client',
-       ['underscore', 'game/object', 'game/interface', 'io', 'collection/game/outcome', 'model/game/fork'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/outcome', 'model/game/fork'],
        function(_, GameObject, Interface, io, OutcomeCollection, ForkModel) {
   return GameObject.extend({
     initialize: function(options) {
@@ -24,6 +27,8 @@ define('game/client',
         subFork: this.subFork,
         rktFork: this.rktFork
       });
+      this.interface.disableInteraction();
+      this.ui.showMessage('Connecting to server..');
       this.model.on('change:turn', this.submitTurn, this);
       this.connect();
     },
@@ -38,11 +43,15 @@ define('game/client',
       this.model = null;
     },
     connect: function() {
-      this.connection = io.connect('https://socket.solsticesub.com');
+      //this.connection = io.connect('https://socket.solsticesub.com');
+      this.connection = io.connect('http://localhost:9001');
       this.connection.on('connect', _.bind(this.onConnected, this));
       this.connection.on('disconnect', _.bind(this.onDisconnected, this));
       this.connection.on('message', _.bind(this.onMessage, this));
       this.connection.on('outcome', _.bind(this.onOutcome, this));
+      this.connection.on('start', _.bind(this.onStart, this));
+      this.model.set('connected', true);
+      this.ui.showMessage('Waiting for opponent to connect..');
     },
     submitTurn: function() {
       var turn = this.model;
@@ -73,11 +82,17 @@ define('game/client',
       console.log('Connected!');
       this.model.set('connected', true);
     },
+
     onDisconnected: function() {
       this.model.set('connected', false);
     },
     onMessage: function(message) {
       console.log('Message:', message);
+    },
+    onStart: function(team) {
+      this.model.set('team', team);
+      //this.ui.hideMessage();
+      //this.interface.enableInteraction();
     }
   });
 });

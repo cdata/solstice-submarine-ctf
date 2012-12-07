@@ -1,5 +1,8 @@
-define('game/rectangle',
-       ['game/object'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/object'],
        function(GameObject) {
   return GameObject.extend({
     initialize: function(left, top, right, bottom) {

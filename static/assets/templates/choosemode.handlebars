@@ -3,14 +3,13 @@
 </header>
 <nav>
   <ul>
-    <!--<li><a href="#{{#id}}play-online{{/id}}{{^id}}login{{/id}}">-->
-    <li><a class="disabled">
+    <li><a href="#{{#id}}play-online{{/id}}{{^id}}login{{/id}}">
       <span class="game-text">Online Matchup</span>
       {{#id}}
         <span class="game-text">({{this}})</span>
       {{/id}}
       {{^id}}
-        <span class="game-text">(Coming soon)</span>
+        <span class="game-text">(Requires login)</span>
       {{/id}}
     </a></li>
     <li><a href="#play-solo">
@@ -21,6 +20,6 @@
 </nav>
 {{#id}}
   <footer>
-    <span class="game-text">Not {{this}}? </span><a href="#logout" class="game-text">Logout.</a>
+    <span class="game-text">Not {{this}}? </span><a href="#logout"><span class="game-text">Logout</span></a>
   </footer>
 {{/id}}

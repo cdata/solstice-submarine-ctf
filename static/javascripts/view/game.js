@@ -1,11 +1,11 @@
-define('view/game',
-       ['backbone', 'handlebars/templates', 'game', 'view/game/ui'],
+define(['backbone', 'handlebars/templates', 'game', 'view/game/ui'],
        function(Backbone, templates, Game, UIView) {
   return Backbone.View.extend({
     initialize: function(options) {
       this.ui = new UIView();
       this.game = new Game({
-        ui: this.ui
+        ui: this.ui,
+        online: options.online
       });
       this.app = options.app;
     },

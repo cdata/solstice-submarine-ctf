@@ -1,5 +1,4 @@
-define('view/choosemode',
-       ['backbone', 'handlebars/templates', 'jquery', 'game/text'],
+define(['backbone', 'handlebars/templates', 'jquery', 'game/text'],
        function(Backbone, templates, $) {
   return Backbone.View.extend({
     tagName: 'section',

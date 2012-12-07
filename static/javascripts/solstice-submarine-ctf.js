@@ -42,5 +42,9 @@ requirejs.config({
 require(['app'], function(App) {
   // TODO: ?
   window.app = new App();
-  
+
+  $(window).on('unload', function() {
+    window.app.dispose();
+    window.app = null;
+  });
 });

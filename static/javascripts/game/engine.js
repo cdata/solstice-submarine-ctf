@@ -1,5 +1,8 @@
-define('game/engine',
-       ['tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/clock', 'game/polyfill'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['tween', 'stats', 'backbone', 'jquery', 'underscore', 'game/object', 'game/clock', 'game/polyfill'],
        function(TWEEN, Stats, Backbone, $, _, GameObject, Clock) {
   var Engine = GameObject.extend({
     initialize: function() {

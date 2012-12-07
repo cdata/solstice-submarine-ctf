@@ -1,5 +1,4 @@
-define('model/user',
-       ['backbone', 'underscore', 'jquery', 'persona'],
+define(['backbone', 'underscore', 'jquery', 'persona'],
        function(Backbone, _, $) {
   return Backbone.Model.extend({
     defaults: {

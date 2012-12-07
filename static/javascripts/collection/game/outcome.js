@@ -1,3 +1,7 @@
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
 define('collection/game/outcome',
        ['backbone', 'model/game/outcome', 'game/vector2'],
        function(Backbone, Outcome, Vector2) {

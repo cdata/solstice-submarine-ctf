@@ -1,4 +1,8 @@
-define('game/polyfill', ['underscore'], function(_) {
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore'], function(_) {
 
   // Adapted from http://paulirish.com/2011/requestanimationframe-for-smart-animating/
   window.requestAnimFrame = (function() {

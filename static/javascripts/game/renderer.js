@@ -1,5 +1,8 @@
-define('game/renderer',
-       ['game/object', 'game/node', 'game/entity', 'game/graphic', 'game/vector2', 'game/rectangle', 'underscore', 'jquery', 'backbone'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/object', 'game/node', 'game/entity', 'game/graphic', 'game/vector2', 'game/rectangle', 'underscore', 'jquery', 'backbone'],
        function(GameObject, Node, Entity, Graphic, Vector2, Rectangle, _, $, Backbone) {
 
   var Renderer = GameObject.extend({

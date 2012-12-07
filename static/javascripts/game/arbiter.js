@@ -2,8 +2,7 @@ if (typeof define !== 'function') {
   var define = require('amdefine')(module)
 }
 
-define('game/arbiter',
-       ['underscore', 'model/game/outcome', 'collection/game/outcome', 'game/vector2', 'game/world'],
+define(['underscore', 'model/game/outcome', 'collection/game/outcome', 'game/vector2', 'game/world'],
        function(_, Outcome, OutcomeCollection, Vector2, World) {
 
   // Utility. Returns direction given a move from one pos to another.

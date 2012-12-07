@@ -1,5 +1,4 @@
-define('view/game/ui',
-       ['backbone', 'handlebars/templates', 'game/text'],
+define(['backbone', 'handlebars/templates', 'game/text'],
        function(Backbone, templates) {
   return Backbone.View.extend({
     tagName: 'section',

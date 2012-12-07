@@ -2,8 +2,7 @@ if (typeof define !== 'function') {
   var define = require('amdefine')(module)
 }
 
-define('model/game/outcome',
-       ['underscore', 'backbone', 'game/vector2', 'model/game/move'],
+define(['underscore', 'backbone', 'game/vector2', 'model/game/move'],
        function(_, Backbone, Vector2, Move) {
   var Outcome = Backbone.Model.extend({
     defaults: {

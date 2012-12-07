@@ -1,5 +1,8 @@
-define('game/sprite',
-       ['underscore', 'game/rectangle', 'game/object', 'game/assets'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/rectangle', 'game/object', 'game/assets'],
        function(_, Rectangle, GameObject, assets) {
   return GameObject.extend({
     initialize: function(options) {

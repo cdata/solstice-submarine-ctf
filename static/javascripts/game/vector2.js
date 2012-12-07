@@ -1,5 +1,8 @@
-define('game/vector2',
-       ['game/object'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/object'],
        function(GameObject) {
   var Vector2 = GameObject.extend({
     initialize: function(x, y) {

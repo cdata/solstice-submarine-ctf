@@ -1,5 +1,8 @@
-define('game/entity',
-       ['underscore', 'game/node', 'game/vector2'], 
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/node', 'game/vector2'], 
        function(_, Node, Vector2) {
   return Node.extend({
     initialize: function(options) {

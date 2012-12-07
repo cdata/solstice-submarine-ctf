@@ -332,8 +332,8 @@ body > section:not(#Loader) {
   background: #346794;
 }
 
-#Choose-Mode a > span:first-child {
-  margin-bottom: 8px;
+#Choose-Mode a > span+span {
+  margin-top: 8px;
 }
 
 #Choose-Mode a.disabled {

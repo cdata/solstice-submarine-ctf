@@ -1,5 +1,8 @@
-define('game/world',
-       ['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/entity/fog', 'game/vector2', 'game/entity/waypoint'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity/wall', 'game/entity/fork', 'game/entity/hero', 'game/entity/nemesis', 'game/entity/grass', 'game/entity/highlight', 'game/entity/fog', 'game/vector2', 'game/entity/waypoint'],
        function(_, Entity, Graphic, assets, Wall, Fork, Hero, Nemesis, Grass, Highlight, Fog, Vector2, Waypoint) {
   var World = Entity.extend({
     initialize: function(options) {
@@ -16,6 +19,8 @@ define('game/world',
       this.width = data.width;
       this.height = data.height;
       this.foglessPositions = {};
+      this.subForkModel = options.subFork;
+      this.rktForkModel = options.rktFork;
 
       this.floor = this.append(new Entity({
         name: 'Floor'
@@ -42,8 +47,36 @@ define('game/world',
         name: 'FogOfWar'
       }));
 
+    },
+    dispose: function() {
+      this.heroAlpha.off(null, null, this);
+      this.heroBeta.off(null, null, this);
+
+      this.subForkModel = null;
+      this.rktForkModel = null;
+
+      this.floor = null;
+      this.walls = null;
+      this.items = null;
+      this.highlights = null;
+      this.waypoints = null;
+      this.characters = null;
+      this.fogOfWar = null;
+
+      this.heroAlpha = null;
+      this.heroBeta = null;
+      this.subA = null;
+      this.subB = null;
+      this.rktA = null;
+      this.rktB = null;
+
+      Entity.prototype.dispose.apply(this, arguments);
+    },
+    setTeam: function(team) {
+      this.team = team;
       _.each(this.tiles, function(type, index) {
         var position = this.indexToPosition(index);
+        var EntityClass;
         var tile;
 
         this.fogOfWar.append(new Fog({
@@ -70,7 +103,7 @@ define('game/world',
           case World.tile.RKT_FORK:
             tile = this.items.append(new Fork({
               color: type === 2 ? 'yellow' : 'red',
-              model: type === 2 ? options.subFork : options.rktFork,
+              model: type === 2 ? this.subForkModel : this.rktForkModel,
               position: position.clone(),
               origin: position.clone()
             }));
@@ -89,10 +122,12 @@ define('game/world',
             break;
           case World.tile.SUB_A:
           case World.tile.SUB_B:
-            tile = this.characters.append(new Hero({
+            EntityClass = team === 'sub' ? Hero : Nemesis;
+
+            tile = this.characters.append(new EntityClass({
+              name: 'sub' + (type === 8 ? 'A' : 'B'),
               color: type === 8 ? World.color.YELLOW : World.color.TEAL,
               url: type === 8 ? 'assets/images/yellow-sub.png' : 'assets/images/teal-sub.png',
-              name: 'sub' + (type === 8 ? 'A' : 'B'),
               position: position.clone()
             }));
 
@@ -100,16 +135,27 @@ define('game/world',
             tile.on('conceal', this.unsetFoglessPosition, this);
 
             if (type === 8) {
-              this.subA = this.heroAlpha = tile;
+              this.subA = tile;
             } else {
-              this.subB = this.heroBeta = tile;
+              this.subB = tile;
+            }
+
+            if (team === 'sub') {
+              if (type === 8) {
+                this.heroAlpha = tile;
+              } else {
+                this.heroBeta = tile;
+              }
             }
             break;
           case World.tile.RKT_A:
           case World.tile.RKT_B:
-            tile = this.characters.append(new Nemesis({
+            EntityClass = team === 'rkt' ? Hero : Nemesis;
+
+            tile = this.characters.append(new EntityClass({
               name: 'rkt' + (type === 32 ? 'A' : 'B'),
-              color: type === 32 ? World.color.RED : World.color.BLUE,
+              color: type === 32 ? World.color.YELLOW : World.color.TEAL,
+              url: type === 32 ? 'assets/images/red-rocket.png' : 'assets/images/blue-rocket.png',
               position: position.clone()
             }));
 
@@ -120,6 +166,14 @@ define('game/world',
               this.rktA = tile;
             } else {
               this.rktB = tile;
+            }
+
+            if (team === 'rkt') {
+              if (type === 32) {
+                this.heroAlpha = tile;
+              } else {
+                this.heroBeta = tile;
+              }
             }
             break;
           case World.tile.WALL:
@@ -133,27 +187,7 @@ define('game/world',
 
       this.subFork.reveal();
       this.rktFork.reveal();
-    },
-    dispose: function() {
-      this.heroAlpha.off(null, null, this);
-      this.heroBeta.off(null, null, this);
 
-      this.floor = null;
-      this.walls = null;
-      this.items = null;
-      this.highlights = null;
-      this.waypoints = null;
-      this.characters = null;
-      this.fogOfWar = null;
-
-      this.heroAlpha = null;
-      this.heroBeta = null;
-      this.subA = null;
-      this.subB = null;
-      this.rktA = null;
-      this.rktB = null;
-
-      Entity.prototype.dispose.apply(this, arguments);
     },
     updateFog: function() {
       var index = 0;
@@ -182,8 +216,13 @@ define('game/world',
         index++;
       }
 
-      this.rktA.visible = this.tileIsVisible(this.rktA.position);
-      this.rktB.visible = this.tileIsVisible(this.rktB.position);
+      if (this.team === 'sub') {
+        this.rktA.visible = this.tileIsVisible(this.rktA.position);
+        this.rktB.visible = this.tileIsVisible(this.rktB.position);
+      } else {
+        this.subA.visible = this.tileIsVisible(this.subA.position);
+        this.subB.visible = this.tileIsVisible(this.subB.position);
+      }
 
       iter = this.fogOfWar.firstChild;
 

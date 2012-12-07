@@ -1,5 +1,8 @@
-define('game/entity/fog',
-       ['game/graphic'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['game/graphic'],
        function(Graphic) {
   return Graphic.extend({
     initialize: function(options) {

@@ -1,5 +1,8 @@
-define('game/graphic/animated',
-       ['underscore', 'game/graphic', 'game/vector2', 'game/clock'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/graphic', 'game/vector2', 'game/clock'],
        function(_, Graphic, Vector2, Clock) {
   return Graphic.extend({
     initialize: function(options) {

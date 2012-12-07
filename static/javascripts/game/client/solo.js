@@ -1,5 +1,4 @@
-define('game/client/solo',
-       ['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork', 'game/world', 'game/vector2'],
+define(['underscore', 'game/client', 'collection/game/outcome', 'model/game/move', 'game/arbiter', 'game/assets', 'model/game/fork', 'game/world', 'game/vector2'],
        function(_, Client, OutcomeCollection, Move, Arbiter, Assets, Fork, World, Vector2) {
   return Client.extend({
     connect: function() {
@@ -9,6 +8,7 @@ define('game/client/solo',
         removeAllListeners: _.bind(this.proxyOff, this),
         disconnect: _.bind(this.proxyDisconnect, this)
       };
+      this.onStart('rkt');
     },
     dispose: function() {
       Client.prototype.dispose.apply(this, arguments);
@@ -33,9 +33,17 @@ define('game/client/solo',
       var turn = game.turn;
       var forks = [new Fork(game.forks[0]), new Fork(game.forks[1])];
       var result = Arbiter.resolve([
-        new Move(turn.moveA), new Move(turn.moveB),
-        this.getOpponentMove(Move.unit.RKT_A, forks, this.interface.world),
-        this.getOpponentMove(Move.unit.RKT_B, forks, this.interface.world)
+        game.team === 'sub' ? new Move(turn.moveA) :
+                              this.getOpponentMove(Move.unit.SUB_A, forks, this.interface.world),
+
+        game.team === 'sub' ? new Move(turn.moveB) :
+                              this.getOpponentMove(Move.unit.SUB_B, forks, this.interface.world),
+
+        game.team === 'rkt' ? new Move(turn.moveA) :
+                              this.getOpponentMove(Move.unit.RKT_A, forks, this.interface.world),
+
+        game.team === 'rkt' ? new Move(turn.moveB) :
+                              this.getOpponentMove(Move.unit.RKT_B, forks, this.interface.world)
       ], forks, Assets.getData('assets/data/maps/seabound.json'));
       var outcomeList = result;
 
@@ -50,15 +58,15 @@ define('game/client/solo',
       var world = this.interface.world;
       var entity = world[unit];
       var newPosition = entity.position.clone();
-      var otherFork = forks[0];
-      var myFork = forks[1];
+      var otherFork = /sub/.test(unit) ? forks[1] : forks[0];
+      var myFork = /rkt/.test(unit) ? forks[1] : forks[0];
       var carrier;
       var chance;
       var index;
       var position;
       var path;
 
-      if (unit === 'rktA') {
+      if (unit === 'rktA' || unit === 'subA') {
         chance = 0.15;
       } else {
         chance = 0.85;

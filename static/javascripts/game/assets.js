@@ -1,5 +1,8 @@
-define('game/assets', 
-       ['underscore', 'jquery', 'game/object'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'jquery', 'game/object'],
        function(_, $, GameObject) {
   var Assets = GameObject.extend({
     initialize: function() {

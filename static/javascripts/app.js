@@ -1,5 +1,4 @@
-define('app',
-       ['backbone', 'jquery', 'underscore', 'view/start', 'view/tutorial', 'view/choosemode', 'view/game', 'view/loader', 'model/assets', 'model/application', 'model/user', 'game/assets'],
+define(['backbone', 'jquery', 'underscore', 'view/start', 'view/tutorial', 'view/choosemode', 'view/game', 'view/loader', 'model/assets', 'model/application', 'model/user', 'game/assets'],
        function(Backbone, $, _, StartView, TutorialView, ChooseModeView, GameView, LoaderView, AssetsModel, ApplicationModel, UserModel, assets) {
   var App = Backbone.Router.extend({
     routes: {
@@ -107,7 +106,8 @@ define('app',
         }
         try {
           this.setCurrentView(new GameView({
-            app: this
+            app: this,
+            online: true
           })).play();
         } catch(e) {
           console.error(e.stack || e.message || e.toString());
@@ -144,6 +144,20 @@ define('app',
         this.currentView = view;
       }
       return view;
+    },
+    dispose: function() {
+      if (this.currentView) {
+        this.currentView.dispose();
+      }
+
+      this.user.off(null, null, this);
+
+      this.currentView = null;
+      this.$body = null;
+      this.$panels = null;
+      this.user = null;
+      this.model = null;
+      this.assetSources = null;
     },
     onLoadAsset: function(asset) {
       assets.registerAsset(asset.url, asset.data);

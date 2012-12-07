@@ -1,5 +1,8 @@
-define('game/entity/wall',
-       ['underscore', 'game/graphic'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/graphic'],
        function(_, Graphic) {
   return Graphic.extend({
     initialize: function(options) {

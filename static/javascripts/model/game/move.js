@@ -1,5 +1,8 @@
-define('model/game/move',
-       ['underscore', 'backbone'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'backbone'],
        function(_, Backbone) {
   var Move = Backbone.Model.extend({
     defaults: {

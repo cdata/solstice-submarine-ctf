@@ -1,5 +1,4 @@
-define('model/application',
-       ['backbone'],
+define(['backbone'],
        function(Backbone) {
 
   return Backbone.Model.extend({

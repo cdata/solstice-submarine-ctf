@@ -1,5 +1,4 @@
-define('view/tutorial',
-       ['underscore', 'backbone', 'handlebars/templates'],
+define(['underscore', 'backbone', 'handlebars/templates'],
        function(_, Backbone, templates) {
   return Backbone.View.extend({
     events: {

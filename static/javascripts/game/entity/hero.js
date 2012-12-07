@@ -1,5 +1,8 @@
-define('game/entity/hero',
-       ['underscore', 'q', 'game/graphic', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint', 'game/entity/laser'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'q', 'game/graphic', 'game/graphic/animated', 'tween', 'game/vector2', 'model/game/move', 'game/entity/waypoint', 'game/entity/laser'],
        function(_, q, Graphic, AnimatedGraphic, TWEEN, Vector2, MoveModel, Waypoint, Laser) {
   return AnimatedGraphic.extend({
     initialize: function(options) {
@@ -16,8 +19,14 @@ define('game/entity/hero',
       this.defineFrameAnimation('idle-blur', 0, 1);
       this.defineFrameAnimation('idle-focus', 2, 3);
       this.defineFrameAnimation('dead', 4, 4);
-      this.defineFrameAnimation('die', 5, 10);
-      this.defineFrameAnimation('respawn', 10, 5);
+
+      if (/sub/.test(this.name)) {
+        this.defineFrameAnimation('die', 5, 10);
+        this.defineFrameAnimation('respawn', 10, 5);
+      } else {
+        this.defineFrameAnimation('die', 9, 4);
+        this.defineFrameAnimation('respawn', 4, 9);
+      }
 
       this.shield = this.append(new Graphic({
         name: 'Shield',

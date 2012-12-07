@@ -1,5 +1,8 @@
-define('game/interface',
-       ['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn', 'model/game/outcome', 'game/vector2'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game/turn', 'model/game/outcome', 'game/vector2'],
        function(_, q, World, GameObject, Node, TurnModel, Outcome, Vector2) {
   return GameObject.extend({
     initialize: function(options) {
@@ -19,14 +22,22 @@ define('game/interface',
         rktFork: this.rktFork
       }));
       this.selected = [];
+
+      this.ui.on('click:mode', this.toggleMode, this);
+      this.ui.on('click:endTurn', this.submitTurn, this);
+      this.model.on('change:team', this.selectTeam, this);
+
+      this.disableInteraction();
+    },
+    selectTeam: function() {
+      this.world.setTeam(this.model.get('team'));
       this.world.heroAlpha.on('click', this.selectHero, this);
       this.world.heroBeta.on('click', this.selectHero, this);
       this.world.heroAlpha.model.on('change:points', this.updateTurn, this);
       this.world.heroBeta.model.on('change:points', this.updateTurn, this);
       this.world.on('click:highlight', this.selectWaypointPosition, this);
-      this.ui.on('click:mode', this.toggleMode, this);
-      this.ui.on('click:endTurn', this.submitTurn, this);
 
+      this.ui.hideMessage();
       this.enableInteraction();
     },
     submitTurn: function() {
@@ -127,31 +138,31 @@ define('game/interface',
             }));
             break;
           case Outcome.type.ATTACK:
-            if (team === 'rkt') {
+            if (team !== this.model.get('team')) {
               unit.reveal();
             }
-            resolutions.push(unit.fireLaser(step.get('points')[0]).then(function() {
-              if (team === 'rkt') {
+            resolutions.push(unit.fireLaser(step.get('points')[0]).then(_.bind(function() {
+              if (team !== this.model.get('team')) {
                 unit.conceal();
               }
-            }));
+            }, this)));
             break;
           case Outcome.type.DIE:
             unit.reveal();
-            resolutions.push(unit.die().then(function() {
-              if (team === 'rkt') {
+            resolutions.push(unit.die().then(_.bind(function() {
+              if (team !== this.model.get('team')) {
                 unit.conceal();
               }
-            }));
+            }, this)));
             break;
           case Outcome.type.RESPAWN:
             unit.position = stepPosition;
             unit.reveal();
-            resolutions.push(unit.respawn().then(function() {
-              if (team === 'rkt') {
+            resolutions.push(unit.respawn().then(_.bind(function() {
+              if (team !== this.model.get('team')) {
                 unit.conceal();
               }
-            }));
+            }, this)));
             break;
           case Outcome.type.PICKUP_FORK:
             if (team === 'sub') {
@@ -227,7 +238,9 @@ define('game/interface',
       this.world.heroBeta.model.off(null, null, this);
       this.world.off(null, null, this);
       this.ui.off(null, null, this);
+      this.model.off(null, null, this);
 
+      this.model = null;
       this.world = null;
       this.scene = null;
       this.ui = null;
@@ -241,7 +254,7 @@ define('game/interface',
         this.turn.off(null, null, this);
       }
       this.turn = new TurnModel({
-        team: 'sub'
+        team: this.model.get('team')
       });
       this.turn.on('change', this.resetEndTurn, this);
       this.world.heroAlpha.reveal();
@@ -249,8 +262,10 @@ define('game/interface',
     },
     disableInteraction: function() {
       this.interactive = false;
-      this.world.heroAlpha.model.set('points', []);
-      this.world.heroBeta.model.set('points', []);
+      if (this.model.get('team')) {
+        this.world.heroAlpha.model.set('points', []);
+        this.world.heroBeta.model.set('points', []);
+      }
       this.clearSelection();
     },
     updateTurn: function() {

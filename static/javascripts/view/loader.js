@@ -1,5 +1,4 @@
-define('view/loader', 
-       ['backbone', 'handlebars/templates', 'game/loader'],
+define(['backbone', 'handlebars/templates', 'game/loader'],
        function(Backbone, templates, Loader) {
   return Backbone.View.extend({
     initialize: function() {

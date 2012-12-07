@@ -1,19 +1,20 @@
-define('game',
-       ['underscore', 'game/object', 'game/renderer', 'game/engine', 'game/client', 'game/client/solo', 'model/game'],
-       function(_, GameObject, Renderer, Engine, Client, SoloClient, GameModel) {
+define(['underscore', 'game/object', 'game/renderer', 'game/engine', 'game/client', 'game/client/solo', 'model/game', 'game/music'],
+       function(_, GameObject, Renderer, Engine, Client, SoloClient, GameModel, Music) {
   var Game = GameObject.extend({
     initialize: function(options) {
       options = _.defaults(options || {}, {
-        solo: true
+        online: false
       });
-      this.solo = options.solo;
+      this.online = options.online;
       this.model = new GameModel();
       this.ui = options.ui;
+      this.music = new Music();
     },
     dispose: function() {
-      this.client.dispose();
+      this.client && this.client.dispose();
       this.renderer.dispose();
       this.engine.dispose();
+      this.music.dispose();
 
       this.model.off(null, null, this);
 
@@ -22,18 +23,21 @@ define('game',
       this.client = null;
       this.ui = null;
       this.model = null;
+      this.music = null;
     },
     start: function() {
       this.renderer = new Renderer();
 
-      if (this.solo) {
-        this.client = new SoloClient({
+      if (this.online) {
+        console.log('Starting new online game..');
+        this.client = new Client({
           renderer: this.renderer,
           model: this.model,
           ui: this.ui
         });
       } else {
-        this.client = new Client({
+        console.log('Starting new solo game..');
+        this.client = new SoloClient({
           renderer: this.renderer,
           model: this.model,
           ui: this.ui
@@ -43,6 +47,8 @@ define('game',
       this.engine = new Engine();
       this.engine.on('render', this.renderer.render, this.renderer);
       this.engine.start();
+
+      this.music.play();
     }
   });
 

@@ -1,5 +1,8 @@
-define('game/entity/grass',
-       ['underscore', 'game/graphic/animated'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/graphic/animated'],
        function(_, AnimatedGraphic) {
   return AnimatedGraphic.extend({
     initialize: function(options) {

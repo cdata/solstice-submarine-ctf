@@ -1,5 +1,4 @@
-define('game/entity/nemesis',
-       ['underscore', 'game/entity/hero', 'model/game/move'],
+define(['underscore', 'game/entity/hero', 'model/game/move'],
        function(_, Hero, Move) {
   return Hero.extend({
     initialize: function(options) {
@@ -10,15 +9,7 @@ define('game/entity/nemesis',
         revealDistance: 2
       });
 
-      if (options.name === 'rktB') {
-        options.url = 'assets/images/blue-rocket.png'
-      }
-
       Hero.prototype.initialize.call(this, options);
-
-      // Boy I'm lazy..
-      this.defineFrameAnimation('die', 9, 4);
-      this.defineFrameAnimation('respawn', 4, 9);
     },
     draw: function() {
       var iter = this.firstChild;

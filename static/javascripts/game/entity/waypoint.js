@@ -1,5 +1,8 @@
-define('game/entity/waypoint',
-       ['underscore', 'game/graphic', 'game/vector2'],
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
+define(['underscore', 'game/graphic', 'game/vector2'],
        function(_, Graphic, Vector2) {
   return Graphic.extend({
     initialize: function(options) {

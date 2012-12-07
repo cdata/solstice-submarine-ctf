@@ -1,7 +1,10 @@
+if (typeof define !== 'function') {
+  var define = require('amdefine')(module)
+}
+
 // Clock shamelessly adapted from Three.js. Original
 // version by alteredq (http://alteredqualia.com/)
-define('game/clock',
-       ['game/object'],
+define(['game/object'],
        function(GameObject) {
   return GameObject.extend({
     initialize: function(autoStart) {
