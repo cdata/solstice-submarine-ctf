@@ -67,12 +67,15 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
       this.ui.showMessage('Waiting for server..');
     },
     onReceivedTurn: function() {
+      console.log('Server received turn..');
       this.ui.showMessage('Waiting for opponent..');
     },
     onResolvingOutcome: function() {
+      console.log('Server resolving outcome..');
       this.ui.showMessage('Resolving outcome..');
     },
     onOutcome: function(outcomeList) {
+      console.log('Received outcome from server!');
       outcomeList = _.map(JSON.parse(outcomeList), function(outcomes) {
         return new OutcomeCollection(outcomes);
       });
@@ -85,12 +88,15 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
     },
 
     onDisconnected: function() {
+      console.log('Disconnected!');
       this.model.set('connected', false);
     },
     onMessage: function(message) {
+      console.log('Got message from server:', message);
       console.log('Message:', message);
     },
     onStart: function(team) {
+      console.log('Server assigns team:', team);
       this.model.set('team', team);
       //this.ui.hideMessage();
       //this.interface.enableInteraction();

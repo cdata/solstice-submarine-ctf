@@ -74,6 +74,9 @@ define(['game/object'],
     copy: function(other) {
       this.set(other.x, other.y);
       return this;
+    },
+    toString: function() {
+      return '{ x:' + this.x + ', y:' + this.y + ' }'
     }
   });
 

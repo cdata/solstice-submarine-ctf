@@ -348,7 +348,7 @@ define(['underscore', 'model/game/outcome', 'collection/game/outcome', 'game/vec
         });
       } else {
         console.log('Returning fork...');
-        details.myFork.set('position', details.myFork.origin);
+        details.myFork.set('position', details.myFork.get('origin').clone());
         outcomes.push({
           type: Outcome.type.RETURN_FORK,
           unit: details.unit,
@@ -376,12 +376,12 @@ define(['underscore', 'model/game/outcome', 'collection/game/outcome', 'game/vec
         });
       } else {
         details.myFork.set({
-          position: details.myFork.origin,
+          position: details.myFork.get('origin').clone(),
           carried: false,
           unit: null
         });
         details.otherFork.set({
-          position: details.otherFork.origin,
+          position: details.otherFork.get('origin').clone(),
           carried: false,
           unit: null
         });

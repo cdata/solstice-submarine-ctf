@@ -132,7 +132,13 @@ define(['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game
 
         switch (stepType) {
           case Outcome.type.MOVE_SHIELDED:
+            unit.shield.visible = true;
+            resolutions.push(unit.walkPath(step.get('points')).then(function() {
+              // Noop..
+            }));
+            break;
           case Outcome.type.MOVE:
+            unit.shield.visible = false;
             resolutions.push(unit.walkPath(step.get('points')).then(function() {
               // Noop..
             }));
@@ -232,10 +238,10 @@ define(['underscore', 'q', 'game/world', 'game/object', 'game/node', 'model/game
       }, this));
     },
     dispose: function() {
-      this.world.heroAlpha.off(null, null, this);
-      this.world.heroBeta.off(null, null, this);
-      this.world.heroAlpha.model.off(null, null, this);
-      this.world.heroBeta.model.off(null, null, this);
+      this.world.heroAlpha && this.world.heroAlpha.off(null, null, this);
+      this.world.heroBeta && this.world.heroBeta.off(null, null, this);
+      this.world.heroAlpha && this.world.heroAlpha.model.off(null, null, this);
+      this.world.heroBeta && this.world.heroBeta.model.off(null, null, this);
       this.world.off(null, null, this);
       this.ui.off(null, null, this);
       this.model.off(null, null, this);
