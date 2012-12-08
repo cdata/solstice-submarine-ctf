@@ -50,18 +50,19 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
       this.connection.on('message', _.bind(this.onMessage, this));
       this.connection.on('outcome', _.bind(this.onOutcome, this));
       this.connection.on('start', _.bind(this.onStart, this));
+      this.connection.on('resolving', _.bind(this.onResolvingOutcome, this));
       this.model.set('connected', true);
       this.ui.showMessage('Waiting for opponent to connect..');
     },
     submitTurn: function() {
-      var turn = this.model;
+      var turn = this.model.get('turn');
 
       if (!turn) {
         return;
       }
 
       this.connection.emit('turn',
-                           JSON.stringify(turn.toJSON()),
+                           [turn.get('moveA').toJSON(), turn.get('moveB').toJSON()],
                            _.bind(this.onReceivedTurn, this));
       this.ui.showMessage('Waiting for server..');
     },

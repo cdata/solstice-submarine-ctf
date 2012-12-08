@@ -48,7 +48,7 @@ define(['underscore', 'game/object', 'game/renderer', 'game/engine', 'game/clien
       this.engine.on('render', this.renderer.render, this.renderer);
       this.engine.start();
 
-      this.music.play();
+      //this.music.play();
     }
   });
 

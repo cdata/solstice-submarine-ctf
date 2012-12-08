@@ -29,21 +29,22 @@ define(['underscore', 'game/client', 'collection/game/outcome', 'model/game/move
     proxyDisconnect: function() {},
     disconnect: function() {},
     handleTurn: function(data, callback) {
-      var game = JSON.parse(data);
-      var turn = game.turn;
-      var forks = [new Fork(game.forks[0]), new Fork(game.forks[1])];
+      var game = data;
+      var turn = this.model.get('turn');
+      var team = this.model.get('team');
+      var forks = this.model.get('forks');
       var result = Arbiter.resolve([
-        game.team === 'sub' ? new Move(turn.moveA) :
-                              this.getOpponentMove(Move.unit.SUB_A, forks, this.interface.world),
+        team === 'sub' ? turn.get('moveA') :
+                         this.getOpponentMove(Move.unit.SUB_A, forks, this.interface.world),
 
-        game.team === 'sub' ? new Move(turn.moveB) :
-                              this.getOpponentMove(Move.unit.SUB_B, forks, this.interface.world),
+        team === 'sub' ? turn.get('moveB') :
+                         this.getOpponentMove(Move.unit.SUB_B, forks, this.interface.world),
 
-        game.team === 'rkt' ? new Move(turn.moveA) :
-                              this.getOpponentMove(Move.unit.RKT_A, forks, this.interface.world),
+        team === 'rkt' ? turn.get('moveA') :
+                         this.getOpponentMove(Move.unit.RKT_A, forks, this.interface.world),
 
-        game.team === 'rkt' ? new Move(turn.moveB) :
-                              this.getOpponentMove(Move.unit.RKT_B, forks, this.interface.world)
+        team === 'rkt' ? turn.get('moveB') :
+                         this.getOpponentMove(Move.unit.RKT_B, forks, this.interface.world)
       ], forks, Assets.getData('assets/data/maps/seabound.json'));
       var outcomeList = result;
 

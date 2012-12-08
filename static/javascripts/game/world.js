@@ -154,7 +154,7 @@ define(['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity
 
             tile = this.characters.append(new EntityClass({
               name: 'rkt' + (type === 32 ? 'A' : 'B'),
-              color: type === 32 ? World.color.YELLOW : World.color.TEAL,
+              color: type === 32 ? World.color.BLUE : World.color.RED,
               url: type === 32 ? 'assets/images/red-rocket.png' : 'assets/images/blue-rocket.png',
               position: position.clone()
             }));

@@ -11,7 +11,9 @@ define(['underscore', 'backbone'],
       rktScore: 0,
       subScore: 0,
       rktFork: null,
-      subFork: null
+      subFork: null,
+      rktNextMove: null,
+      subNextMove: null
     },
     submarines: function() {
       return this.get('subClient');
