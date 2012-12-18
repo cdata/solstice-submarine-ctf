@@ -49,8 +49,8 @@ define(['underscore', 'game/entity', 'game/graphic', 'game/assets', 'game/entity
 
     },
     dispose: function() {
-      this.heroAlpha.off(null, null, this);
-      this.heroBeta.off(null, null, this);
+      this.heroAlpha && this.heroAlpha.off(null, null, this);
+      this.heroBeta && this.heroBeta.off(null, null, this);
 
       this.subForkModel = null;
       this.rktForkModel = null;

@@ -8,6 +8,7 @@ define(['backbone', 'handlebars/templates', 'jquery', 'game/text'],
     },
     initialize: function(options) {
       this.model.on('change:id', this.render, this);
+      this.model.get('queue').on('change:length', this.render, this);
       this.app = options && options.app;
     },
     render: function() {
@@ -16,7 +17,7 @@ define(['backbone', 'handlebars/templates', 'jquery', 'game/text'],
       return this;
     },
     dispose: function() {
-      this.model.off('change:id', this.render, this);  
+      this.model.off('change:id', this.render, this);
     },
     login: function() {
       // Persona uses a popup. Gotta launch it

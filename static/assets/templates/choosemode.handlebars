@@ -1,5 +1,16 @@
 <header>
-  <h1 class="game-text">Choose game mode:</h1>
+  {{#if id}}
+    <h2 class="game-text {{#queue.length}}player-in-queue{{/queue.length}}{{^queue.length}}empty-queue{{/queue.length}}">
+    {{#queue.length}}
+      Someone is waiting to play online with you. Select Online Matchup to join in!
+    {{/queue.length}}
+    {{^queue.length}}
+      Start an Online Matchup and wait for someone to log in and play with you!
+    {{/queue.length}}
+    </h2>
+  {{else}}
+    <h1 class="game-text">Choose game mode:</h1>
+  {{/if}}
 </header>
 <nav>
   <ul>
@@ -13,7 +24,7 @@
       {{/id}}
     </a></li>
     <li><a href="#play-solo">
-      <span class="game-text">VS Easy CPU</span>
+      <span class="game-text">Play Offline</span>
       <span class="game-text">(Not as fun)</span>
     </a></li>
   </ul>

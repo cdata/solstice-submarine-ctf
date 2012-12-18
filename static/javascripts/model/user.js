@@ -1,8 +1,11 @@
-define(['backbone', 'underscore', 'jquery', 'persona'],
-       function(Backbone, _, $) {
+define(['backbone', 'underscore', 'jquery', 'model/queue', 'persona'],
+       function(Backbone, _, $, QueueModel) {
   return Backbone.Model.extend({
-    defaults: {
-      id: null
+    defaults: function() {
+      return {
+        id: null,
+        queue: new QueueModel()
+      };
     },
     initialize: function() {
       navigator.id.watch({
@@ -35,6 +38,12 @@ define(['backbone', 'underscore', 'jquery', 'persona'],
     },
     isLoggedIn: function() {
       return this.get('id') !== null;
+    },
+    toJSON: function() {
+      var data = Backbone.Model.prototype.toJSON.apply(this, arguments);
+      return _.extend(data, {
+        queue: this.get('queue').toJSON()
+      });
     }
   });
 });

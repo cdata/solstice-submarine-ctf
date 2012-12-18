@@ -1,18 +1,8 @@
 {
   "name": "solstice-sub-ctf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A web-based game. Entry for Github Game-off 2012.",
   "main": "./lib/server.js",
-  "dependencies": {
-    "grunt-handlebars": "~0.0.6",
-    "express": "~3.0.3",
-    "express-persona": "~0.0.7",
-    "socket.io": "~0.9.11",
-    "amdefine": "~0.0.4",
-    "underscore": "~1.4.2",
-    "requirejs": "~2.1.2",
-    "grunt-requirejs": "~0.2.14"
-  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,5 +12,19 @@
     "url": "https://github.com/cdata/solstice-submarine-ctf.git"
   },
   "author": "Chris Joel",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "backbone": "~0.9.2",
+    "express": "~3.0.3",
+    "express-persona": "~0.0.7",
+    "grunt-handlebars": "~0.0.6",
+    "grunt-requirejs": "~0.2.14",
+    "jquery": "~1.8.3",
+    "node-uuid": "~1.4.0",
+    "q": "~0.8.11",
+    "requirejs": "~2.1.2",
+    "socket.io": "~0.9.11",
+    "underscore": "~1.4.2",
+    "amdefine": "~0.0.4"
+  }
 }

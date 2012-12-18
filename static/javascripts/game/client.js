@@ -28,13 +28,13 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
         rktFork: this.rktFork
       });
       this.interface.disableInteraction();
-      this.ui.showMessage('Connecting to server..');
       this.model.on('change:turn', this.submitTurn, this);
       this.connect();
     },
     dispose: function() {
       this.connection.disconnect();
       this.connection.removeAllListeners();
+      this.model.set('connected', false);
       this.connection = null;
       this.renderer = null;
       this.interface.dispose();
@@ -43,16 +43,19 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
       this.model = null;
     },
     connect: function() {
-      //this.connection = io.connect('https://socket.solsticesub.com');
-      this.connection = io.connect('http://localhost:9001');
+      this.connection = io.connect('https://socket.solsticesub.com', {
+        'force new connection' : true
+      });
+      /*this.connection = io.connect('http://localhost:9001', {
+        'force new connection' : true
+      });*/
       this.connection.on('connect', _.bind(this.onConnected, this));
       this.connection.on('disconnect', _.bind(this.onDisconnected, this));
       this.connection.on('message', _.bind(this.onMessage, this));
       this.connection.on('outcome', _.bind(this.onOutcome, this));
       this.connection.on('start', _.bind(this.onStart, this));
       this.connection.on('resolving', _.bind(this.onResolvingOutcome, this));
-      this.model.set('connected', true);
-      this.ui.showMessage('Waiting for opponent to connect..');
+      this.ui.showMessage('Connecting to server..');
     },
     submitTurn: function() {
       var turn = this.model.get('turn');
@@ -84,16 +87,20 @@ define(['underscore', 'game/object', 'game/interface', 'io', 'collection/game/ou
     },
     onConnected: function() {
       console.log('Connected!');
+      this.ui.showMessage('Waiting for opponent to connect..');
       this.model.set('connected', true);
     },
-
     onDisconnected: function() {
       console.log('Disconnected!');
       this.model.set('connected', false);
+      app.navigate('start', { trigger: true });
     },
     onMessage: function(message) {
       console.log('Got message from server:', message);
       console.log('Message:', message);
+    },
+    onOpponentDisconnected: function() {
+      app.navigate('start', { trigger: true });
     },
     onStart: function(team) {
       console.log('Server assigns team:', team);

@@ -303,6 +303,14 @@ body > section:not(#Loader) {
   text-align: center;
 }
 
+#Choose-Mode .player-in-queue {
+  width: 528px;
+}
+
+#Choose-Mode .empty-queue {
+  width: 432px;
+}
+
 #Choose-Mode header {
   padding: 40px 0;
 }
@@ -315,7 +323,7 @@ body > section:not(#Loader) {
 #Choose-Mode nav {
   display: block;
   position: relative;
-  padding-top: 96px;
+  padding-top: 42px;
 }
 
 #Choose-Mode li {
@@ -576,8 +584,16 @@ body > section:not(#Loader) {
     padding: 20px 0;
   }
 
+  #Choose-Mode .player-in-queue {
+    width: 264px;
+  }
+
+  #Choose-Mode .empty-queue {
+    width: 216px;
+  }
+
   #Choose-Mode nav {
-    padding-top: 48px;
+    padding-top: 10px;
   }
 
   #Choose-Mode a,
@@ -755,7 +771,15 @@ body > section:not(#Loader) {
   }
 
   #Choose-Mode nav {
-    padding-top: 72px;
+    padding-top: 30px;
+  }
+
+  #Choose-Mode .player-in-queue {
+    width: 396px;
+  }
+
+  #Choose-Mode .empty-queue {
+    width: 324px;
   }
 
   #Choose-Mode a,
@@ -935,8 +959,16 @@ body > section:not(#Loader) {
     padding: 60px 0;
   }
 
+  #Choose-Mode .player-in-queue {
+    width: 792px;
+  }
+
+  #Choose-Mode .empty-queue {
+    width: 648px;
+  }
+
   #Choose-Mode nav {
-    padding-top: 144px;
+    padding-top: 60px;
   }
 
   #Choose-Mode a,

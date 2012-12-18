@@ -7,7 +7,7 @@ define(['jquery'],
   $.fn.gameText = function() {
     this.filter('.game-text').each(function(index, element) {
       var $el = $(element);
-      var text = $el.text();
+      var text = $.trim($el.text());
       var index;
       var letter;
 
